@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="logist_app.DataViewPage"
+             Title="Список клиентов"
+             
+             Padding="8">
+    <ContentPage.Resources>
+        <Style TargetType="Label">
+            <Setter Property="FontSize" Value="11" />
+            <Setter Property="VerticalOptions" Value="Center" />
+        </Style>
+        <Style TargetType="Button">
+            <Setter Property="FontSize" Value="11" />
+            <Setter Property="HeightRequest" Value="32" />
+            <Setter Property="WidthRequest" Value="100" />
+            <Setter Property="Padding" Value="4" />
+        </Style>
+    </ContentPage.Resources>
+    <Grid RowSpacing="1" RowDefinitions="32,*" ColumnDefinitions="*">
+        <Button Text="Обновить" Clicked="OnRefreshClicked" Grid.Row="0" HorizontalOptions="Center" Margin="0,4"/>
+        <ScrollView Grid.Row="1">
+            <StackLayout x:Name="ClientsStackLayout" BackgroundColor="#F0F0F0" Spacing="5"/>
+        </ScrollView>
+    </Grid>
+</ContentPage>

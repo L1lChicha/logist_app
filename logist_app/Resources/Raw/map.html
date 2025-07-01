@@ -1,0 +1,81 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Карта</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css" />
+    <style>
+        #map {
+            height: 100vh;
+            width: 100vw;
+            margin: 0;
+            padding: 0;
+        }
+
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+    </style>
+</head>
+<body>
+    <div id="map"></div>
+    <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"></script>
+    <script>
+        // Инициализация карты в Бресте
+        var map = L.map('map').setView([52.0976, 23.7341], 13);
+
+        // Тайлы OpenStreetMap
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '© OpenStreetMap contributors'
+        }).addTo(map);
+
+        var marker;
+        function setMarker(lat, lon, displayName) {
+
+            if (marker) {
+                map.removeLayer(marker);
+            }
+           
+            marker = L.marker([lat, lon]).addTo(map);
+            marker.bindPopup(displayName).openPopup();
+            
+        }
+
+        map.on('click', function (e) {
+            var lat = e.latlng.lat;
+            var lon = e.latlng.lng;
+
+            // Получение адреса через Nominatim API
+            fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`)
+                .then(response => response.json())
+                .then(data => {
+                    var address = data.display_name || "Адрес не найден";
+                    setMarker(lat, lon, address);
+
+                })
+                .catch(error => {
+                    setMarker(lat, lon, "Ошибка при получении адреса");
+                });
+     
+            });
+
+        function getSelectedLocation() {
+            if (marker) {
+                return JSON.stringify({
+                    lat: marker.getLatLng().lat,
+                    lon: marker.getLatLng().lng,
+                    address: marker.getPopup().getContent()
+                });
+               
+            } else {
+                return JSON.stringify({ error: "Маркер не установлен" });
+            }
+        }
+
+      </script>
+</body>
+</html>
