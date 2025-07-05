@@ -1,26 +1,32 @@
-<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="logist_app.DataViewPage"
              Title="Список клиентов"
-             
              Padding="8">
-    <ContentPage.Resources>
-        <Style TargetType="Label">
-            <Setter Property="FontSize" Value="11" />
-            <Setter Property="VerticalOptions" Value="Center" />
-        </Style>
-        <Style TargetType="Button">
-            <Setter Property="FontSize" Value="11" />
-            <Setter Property="HeightRequest" Value="32" />
-            <Setter Property="WidthRequest" Value="100" />
-            <Setter Property="Padding" Value="4" />
-        </Style>
-    </ContentPage.Resources>
-    <Grid RowSpacing="1" RowDefinitions="32,*" ColumnDefinitions="*">
-        <Button Text="Обновить" Clicked="OnRefreshClicked" Grid.Row="0" HorizontalOptions="Center" Margin="0,4"/>
-        <ScrollView Grid.Row="1">
-            <StackLayout x:Name="ClientsStackLayout" BackgroundColor="#F0F0F0" Spacing="5"/>
-        </ScrollView>
+    
+    <Grid RowSpacing="6" RowDefinitions="32,*" ColumnDefinitions="*">
+        <StackLayout HeightRequest="50">
+            <Button Text="Обновить" Clicked="OnRefreshClicked" HeightRequest="10" Grid.Row="0" HorizontalOptions="Center" />
+        </StackLayout>
+        <CollectionView Grid.Row="1" ItemsSource="{Binding Clients}" SelectionMode="Single"
+                SelectionChanged="OnClientSelected">
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Frame BorderColor="#CCCCCC" CornerRadius="5" Margin="5" Padding="10">
+                        <StackLayout>
+                            <Label Text="{Binding name}" FontAttributes="Bold" FontSize="14" />
+                            <Label Text="{Binding address}" FontSize="12" />
+                            <Label Text="{Binding city}" FontSize="12" />
+                            <Label Text="{Binding postal_code}" FontSize="12" />
+                            <Label Text="{Binding phone}" FontSize="12" />
+                            <Label Text="{Binding email}" FontSize="12" />
+                            <Label Text="{Binding recurrence}" FontSize="12" />
+                            <Label Text="{Binding container_count}" FontSize="12" />
+                            <Label Text="{Binding start_date, StringFormat='Start Date: {0:yyyy-MM-dd}'}" FontSize="12" />
+                        </StackLayout>
+                    </Frame>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
     </Grid>
 </ContentPage>

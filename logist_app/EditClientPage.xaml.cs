@@ -20,7 +20,7 @@ public partial class EditClientPage : ContentPage
     private readonly Entry _recurrenceEntry;
     private readonly Entry _containerCountEntry;
     private readonly DatePicker _startDatePicker;
-
+    private const string ApiUrl = "https://localhost:32769/api/Clients";
 
     public EditClientPage(ClientViewModel client, DataViewPage parentPage)
     {
@@ -97,6 +97,37 @@ public partial class EditClientPage : ContentPage
         cancelButton.Clicked += async (s, e) => await Navigation.PopAsync();
         stackLayout.Children.Add(cancelButton);
 
+        var deleteClientButton = new Button
+        {
+            Text = "Delete client",
+            FontSize = 14,
+            HeightRequest = 40,
+            WidthRequest = 100
+        };
+
+        deleteClientButton.Clicked += async (s, e) =>
+        {
+            var confirm = await DisplayAlert("Confirm", $"Delete client {client.name}?", "Yes", "No");
+            if (!confirm)
+                return;
+
+            using var httpClient = new HttpClient();
+            var response = await httpClient.DeleteAsync($"{ApiUrl}/{client.id}");
+
+            if (response.IsSuccessStatusCode)
+            {
+                //Clients.Remove(client); // Удалить из ObservableCollection
+                //await DisplayAlert("Success", "Client deleted.", "OK");
+            }
+            else
+            {
+                await DisplayAlert("Error", "Failed to delete client.", "OK");
+            }
+        };
+
+        stackLayout.Children.Add(deleteClientButton);
+
+
         Content = new ScrollView { Content = stackLayout };
     }
 
@@ -110,7 +141,7 @@ public partial class EditClientPage : ContentPage
             var response = await httpClient.PutAsJsonAsync(ApiUrl, client);
 
             var json = JsonSerializer.Serialize(client);
-            await DisplayAlert("JSON", $"Request JSON: {json}", "OK");
+
 
             if (response.IsSuccessStatusCode)
             {
@@ -148,69 +179,14 @@ public partial class EditClientPage : ContentPage
         if (success)
         {
             await DisplayAlert("Success", "Client updated successfully.", "OK");
-           
+            await Navigation.PopAsync();
         }
         else
         {
             await DisplayAlert("Error сохранение", "Failed to update client.", "OK");
         }
     }
-      
-   /*private async Task SaveChangesAsync()
-   {
-       try
-       {
-           // Валидация 
-           if (string.IsNullOrWhiteSpace(_nameEntry.Text))
-           {
-               await DisplayAlert("Error", "Name cannot be empty.", "OK");
-               return;
-           }
-           if (!int.TryParse(_containerCountEntry.Text, out int containerCount))
-           {
-               await DisplayAlert("Error", "The number of containers must be a number.", "OK");
-               return;
-           }
 
-           string connectionString = "Host=192.168.168.120;Port=5432;Database=route_schedules;Username=postgres;Password=diplomka";
 
-           await using var connection = new NpgsqlConnection(connectionString);
-           await connection.OpenAsync();
-
-           string sql = @"UPDATE clients
-                         SET name = @name, address = @address, city = @city, postal_code = @postalCode,
-                             phone = @phone, email = @email, recurrence = @recurrence,
-                             container_count = @containerCount, start_date = @startDate
-                         WHERE id = @id";
-
-           await using var command = new NpgsqlCommand(sql, connection);
-           command.Parameters.AddWithValue("id", _client.Id);
-           command.Parameters.AddWithValue("name", (object)_nameEntry.Text ?? DBNull.Value);
-           command.Parameters.AddWithValue("address", (object)_addressEntry.Text ?? DBNull.Value);
-           command.Parameters.AddWithValue("city", (object)_cityEntry.Text ?? DBNull.Value);
-           command.Parameters.AddWithValue("postalCode", (object)_postalCodeEntry.Text ?? DBNull.Value);
-           command.Parameters.AddWithValue("phone", (object)_phoneEntry.Text ?? DBNull.Value);
-           command.Parameters.AddWithValue("email", (object)_emailEntry.Text ?? DBNull.Value);
-           command.Parameters.AddWithValue("recurrence", (object)_recurrenceEntry.Text ?? DBNull.Value);
-           command.Parameters.AddWithValue("containerCount", containerCount);
-           command.Parameters.AddWithValue("startDate", _startDatePicker.Date);
-
-           int rowsAffected = await command.ExecuteNonQueryAsync();
-           if (rowsAffected > 0)
-           {
-               await DisplayAlert("Sucсess", "Client details updated.", "OK");
-               await _parentPage.RefreshDataAsync();
-               await Navigation.PopAsync();
-           }
-           else
-           {
-               await DisplayAlert("Error", "Failed to update customer data.", "OK");
-           }
-       }
-       catch (Exception ex)
-       {
-           Console.WriteLine($"Error: {ex.Message}");
-           await DisplayAlert("Error", $"Error saving data: {ex.Message}", "OK");
-       }
-   }*/
+   
 }

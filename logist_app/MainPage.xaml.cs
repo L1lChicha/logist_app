@@ -4,9 +4,11 @@ using Npgsql;
 using System;
 using System.Globalization;
 using System.Net.Http.Json;
+using System.Text;
 using System.Text.Json;
 using System.Text.Json;
 using System.Threading.Tasks;
+using Windows.Media.Protection.PlayReady;
 
 namespace logist_app;
 
@@ -145,73 +147,77 @@ public partial class MainPage : ContentPage
 
     private async void OnSubmitClicked(object sender, EventArgs e)
     {
+
+        // Собираем данные из формы
+        string name = NameEntry.Text;
+        string address = AddressEntry.Text;
+        string city = CityEntry.Text;
+        string postalCode = PostalCodeEntry.Text;
+        string phone = PhoneEntry.Text;
+        string email = EmailEntry.Text;
+        string recurrence = RecurrencePicker.SelectedItem?.ToString();
+        string containerCountText = ContainerCountEntry.Text;
+        DateTime startDate = StartDatePicker.Date;
+        string coordinates = lat + ", " + lon;
+
+        // Валидация данных
+        if (string.IsNullOrWhiteSpace(name) || string.IsNullOrWhiteSpace(address) ||
+            string.IsNullOrWhiteSpace(city) || string.IsNullOrWhiteSpace(postalCode) ||
+            string.IsNullOrWhiteSpace(phone) || string.IsNullOrWhiteSpace(email) ||
+            string.IsNullOrWhiteSpace(recurrence) || string.IsNullOrWhiteSpace(containerCountText))
+        {
+            await DisplayAlert("Error", "Please fill in all form fields.", "OK");
+            return;
+        }
+
+        if (!int.TryParse(containerCountText, out int containerCount))
+        {
+            await DisplayAlert("Error", "The number of containers must be a number.", "OK");
+            return;
+        }
+
+
+        var newClient = new ClientViewModel();
+        newClient.name = name;
+        newClient.address = address;
+        newClient.city = city;
+        newClient.postal_code = postalCode;
+        newClient.phone = phone;
+        newClient.email = email;
+        newClient.recurrence = recurrence;
+        newClient.container_count = containerCount;
+        newClient.start_date = startDate.ToUniversalTime();
+        newClient.coordinates = coordinates;
+
+        var success = await AddNewClientAsync(newClient);
+        if (success)
+        {
+            await DisplayAlert("Success", "Client added successfully.", "OK");
+        }
+        else
+        {
+            await DisplayAlert("Error", "Failed to add client.", "OK");
+        }
+    }
+
+    private async Task<bool> AddNewClientAsync(ClientViewModel newClient)
+    {
+        var ApiUrl = "https://localhost:32769/api/Clients";
+
         try
         {
-            // Собираем данные из формы
-            string name = NameEntry.Text;
-            string address = AddressEntry.Text;
-            string city = CityEntry.Text;
-            string postalCode = PostalCodeEntry.Text;
-            string phone = PhoneEntry.Text;
-            string email = EmailEntry.Text;
-            string recurrence = RecurrencePicker.SelectedItem?.ToString();
-            string containerCountText = ContainerCountEntry.Text;
-            DateTime startDate = StartDatePicker.Date;
-            string coordinates = lat +", "+ lon;
+            using var httpClient = new HttpClient();
+            var response = await httpClient.PostAsJsonAsync(ApiUrl, newClient);
+            var json = JsonSerializer.Serialize(newClient);
 
-            // Валидация данных
-            if (string.IsNullOrWhiteSpace(name) || string.IsNullOrWhiteSpace(address) ||
-                string.IsNullOrWhiteSpace(city) || string.IsNullOrWhiteSpace(postalCode) ||
-                string.IsNullOrWhiteSpace(phone) || string.IsNullOrWhiteSpace(email) ||
-                string.IsNullOrWhiteSpace(recurrence) || string.IsNullOrWhiteSpace(containerCountText))
-            {
-                await DisplayAlert("Error", "Please fill in all form fields.", "OK");
-                return;
-            }
 
-            if (!int.TryParse(containerCountText, out int containerCount))
-            {
-                await DisplayAlert("Error", "The number of containers must be a number.", "OK");
-                return;
-            }
 
-            string connectionString = "Host=localhost;Port=5;Database=route_schedules;Username=postgres;Password=postgres";
-
-            await using var connection = new NpgsqlConnection(connectionString);
-            await connection.OpenAsync();   
-
-            // Вставка клиента
-            string sql = @"INSERT INTO clients (name, address, city, postal_code, phone, email, recurrence, container_count, start_date, coordinates)
-                          VALUES (@name, @address, @city, @postal_code, @phone, @email, @recurrence, @container_count, @start_date, @coordinates)";
-
-            await using var command = new NpgsqlCommand(sql, connection);
-            command.Parameters.AddWithValue("name", name);
-            command.Parameters.AddWithValue("address", address);
-            command.Parameters.AddWithValue("city", city);
-            command.Parameters.AddWithValue("postal_code", postalCode);
-            command.Parameters.AddWithValue("phone", phone);
-            command.Parameters.AddWithValue("email", email);
-            command.Parameters.AddWithValue("recurrence", recurrence);
-            command.Parameters.AddWithValue("container_count", containerCount);
-            command.Parameters.AddWithValue("start_date", startDate);
-            command.Parameters.AddWithValue("coordinates", coordinates);
-
-            await command.ExecuteNonQueryAsync();
-
-            await DisplayAlert("Success", "Client added successfully!", "OK");
-
-            
-            NameEntry.Text = AddressEntry.Text = CityEntry.Text = PostalCodeEntry.Text = PhoneEntry.Text = EmailEntry.Text = ContainerCountEntry.Text = string.Empty;
-            RecurrencePicker.SelectedIndex = -1;
-            StartDatePicker.Date = DateTime.Today;
-        }
-        catch (NpgsqlException ex) when (ex.InnerException is System.Net.Sockets.SocketException)
-        {
-            await DisplayAlert("Network error", "Unable to connect to PostgreSQL. Check IP address and port.", "OK");
+            return response.IsSuccessStatusCode;
         }
         catch (Exception ex)
         {
-            await DisplayAlert("Error", $"Failed to save data: {ex.Message}", "OK");
+            Console.WriteLine($"Error adding client: {ex.Message}");
+            return false;
         }
     }
 
