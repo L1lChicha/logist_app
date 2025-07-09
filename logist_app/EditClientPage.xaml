@@ -3,7 +3,38 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="logist_app.EditClientPage"
              Title="EditClientPage">
-    <VerticalStackLayout>
-      
-    </VerticalStackLayout>
+        <ScrollView>
+            <StackLayout Padding="20" Spacing="10">
+                <Label Text="Name" />
+                <Entry Text="{Binding Client.name}" />
+
+                <Label Text="Address" />
+                <Entry Text="{Binding Client.address}" />
+
+                <Label Text="City" />
+                <Entry Text="{Binding Client.city}" />
+
+                <Label Text="Postal Code" />
+                <Entry Text="{Binding Client.postal_code}" />
+
+                <Label Text="Phone" />
+                <Entry Text="{Binding Client.phone}" />
+
+                <Label Text="Email" />
+                <Entry Text="{Binding Client.email}" />
+
+                <Label Text="Recurrence" />
+                <Entry Text="{Binding Client.recurrence}" />
+
+                <Label Text="Container Count" />
+                <Entry Text="{Binding Client.container_count}" Keyboard="Numeric" />
+
+                <Label Text="Start Date" />
+                <DatePicker Date="{Binding Client.start_date}" />
+
+                <Button x:Name="saveButton"  Text="Save" Command="{Binding SaveCommand}" />
+                <Button x:Name="cancelButton" Text="Cancel" Command="{Binding CancelCommand}" />
+                <Button x:Name="deleteClientButton" Text="Delete Client" Command="{Binding DeleteCommand}" />
+            </StackLayout>
+        </ScrollView>
 </ContentPage>

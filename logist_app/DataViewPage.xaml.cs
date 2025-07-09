@@ -11,6 +11,11 @@ public partial class DataViewPage : ContentPage
         BindingContext = _viewModel;
     }
 
+    public async Task RefreshClients()
+    {
+        await _viewModel.LoadDataAsync();
+    }
+
     private async void OnRefreshClicked(object sender, EventArgs e)
     {
         await _viewModel.LoadDataAsync();
@@ -20,10 +25,7 @@ public partial class DataViewPage : ContentPage
     {
         if (e.CurrentSelection.FirstOrDefault() is ClientViewModel selectedClient)
         {
-            // Пример: переход на страницу редактирования
-            await Navigation.PushAsync(new EditClientPage(selectedClient, this));
-
-            // Сброс выбора (иначе при повторном нажатии обработчик не вызовется)
+            await Navigation.PushAsync(new EditClientPage(selectedClient, RefreshClients));
             ((CollectionView)sender).SelectedItem = null;
         }
     }
