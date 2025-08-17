@@ -8,7 +8,6 @@ using System.Text;
 using System.Text.Json;
 using System.Text.Json;
 using System.Threading.Tasks;
-using Windows.Media.Protection.PlayReady;
 
 namespace logist_app;
 
@@ -24,8 +23,8 @@ public partial class MainPage : ContentPage
     private (double lat, double lon)? point;
     private string addressName;
 
-    string lat;
-    string lon;
+    private double lat;
+    private double lon;
     //получение данных метки на карте
     private async void GetLocationData(object sender, EventArgs e)
     {
@@ -40,8 +39,8 @@ public partial class MainPage : ContentPage
 
             if (data != null)
             {
-                lat = data.lat.ToString();
-                lon = data.lon.ToString();
+                lat = data.lat;
+                lon = data.lon;
 
                 //установка данных в поля
                 string rawInputAddress = data.address;
@@ -159,6 +158,7 @@ public partial class MainPage : ContentPage
         string containerCountText = ContainerCountEntry.Text;
         DateTime startDate = StartDatePicker.Date;
         string coordinates = lat + ", " + lon;
+       
 
         // Валидация данных
         if (string.IsNullOrWhiteSpace(name) || string.IsNullOrWhiteSpace(address) ||
@@ -188,6 +188,8 @@ public partial class MainPage : ContentPage
         newClient.container_count = containerCount;
         newClient.start_date = startDate.ToUniversalTime();
         newClient.coordinates = coordinates;
+        newClient.lat = lat;
+        newClient.lon = lon;
 
         var success = await AddNewClientAsync(newClient);
         if (success)
@@ -202,7 +204,7 @@ public partial class MainPage : ContentPage
 
     private async Task<bool> AddNewClientAsync(ClientViewModel newClient)
     {
-        var ApiUrl = "https://localhost:32769/api/Clients";
+        var ApiUrl = "https://localhost:32771/api/Clients";
 
         try
         {

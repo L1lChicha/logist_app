@@ -3,12 +3,12 @@
     x:Class="logist_app.AppShell"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    xmlns:local="clr-namespace:logist_app"
+    xmlns:local="clr-namespace:logist_app.Views"
     Title="logist_app">
 
     <ShellContent
         Title="Home"
-        ContentTemplate="{DataTemplate local:MainPage}"
-        Route="MainPage" />
+        ContentTemplate="{DataTemplate local:ActionPage}"
+        Route="ActionPage" />
 
 </Shell>

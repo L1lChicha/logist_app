@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="logist_app.Views.ActionPage"
+             Title="Logist app">
+
+    <ContentPage.Resources>
+        <Style TargetType="Button">
+            <Setter Property="TextColor" Value="Black"/>
+            <Setter Property="FontSize" Value="18" />
+            <Setter Property="HeightRequest" Value="100" />
+            <Setter Property="Padding" Value="0" />
+            <Setter Property="BackgroundColor" Value="#D9D9D9"/>
+            <Setter Property="WidthRequest" Value="350"/>
+            <Setter Property="Margin" Value="0,50,0,0"></Setter>
+            <Setter Property="CornerRadius" Value="20" />
+     
+
+        </Style>
+        <Style TargetType="StackLayout">
+            <Setter Property="Margin" Value="5,0,0,0"></Setter>
+        </Style>
+        <Style TargetType="WebView">
+            <Setter Property="WidthRequest" Value="820" />
+        </Style>
+    </ContentPage.Resources>
+
+    <StackLayout Orientation="Horizontal" BackgroundColor="White">
+        <StackLayout Orientation="Vertical" WidthRequest="705" >
+            <Button x:Name="createRoute" Clicked="createRoute_Clicked" Text="Create the route" Margin="0,150,0,0"/>
+            <Button x:Name="viewRoutes" Text="View the routes"/>
+            <Button x:Name="showClientsData" Clicked="showClientsData_Clicked" Text="Show clients data"/>
+            <Button x:Name="addNewClient" Clicked="addNewClient_Clicked" Text="Add new client"/>
+        </StackLayout>
+        <WebView x:Name="MapWebView"   Source="map.html" />
+    </StackLayout>
+</ContentPage>

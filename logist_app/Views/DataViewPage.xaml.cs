@@ -1,3 +1,5 @@
+using logist_app.ViewModels;
+
 namespace logist_app;
 
 public partial class DataViewPage : ContentPage
@@ -45,4 +47,6 @@ public class ClientViewModel
     public int container_count { get; set; }
     public DateTime start_date { get; set; }
     public string coordinates { get; set; }
+    public double lat { get; set; }
+    public double lon { get; set; }
 }

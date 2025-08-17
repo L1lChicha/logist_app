@@ -7,7 +7,7 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using System.Net.Http;
 
-namespace logist_app;
+namespace logist_app.ViewModels;
 
 public class EditClientViewModel : INotifyPropertyChanged
 {
@@ -25,7 +25,7 @@ public class EditClientViewModel : INotifyPropertyChanged
     public ICommand CancelCommand { get; }
 
 
-    private const string ApiUrl = "https://localhost:32769/api/Clients";
+    private const string ApiUrl = "https://localhost:32771/api/Clients";
     private readonly INavigation _navigation;
     private readonly Func<Task> _refreshCallback;
 
@@ -48,13 +48,13 @@ public class EditClientViewModel : INotifyPropertyChanged
 
         if (response.IsSuccessStatusCode)
         {
-            await App.Current.MainPage.DisplayAlert("Success", "Client updated.", "OK");
+            await Application.Current.MainPage.DisplayAlert("Success", "Client updated.", "OK");
             await _refreshCallback();
             await _navigation.PopAsync();
         }
         else
         {
-            await App.Current.MainPage.DisplayAlert("Error", "Failed to update client.", "OK");
+            await Application.Current.MainPage.DisplayAlert("Error", "Failed to update client.", "OK");
         }
     }
 
@@ -68,7 +68,7 @@ public class EditClientViewModel : INotifyPropertyChanged
 
     private async Task DeleteClientAsync()
     {
-        bool confirm = await App.Current.MainPage.DisplayAlert("Confirm", $"Delete {Client.name}?", "Yes", "No");
+        bool confirm = await Application.Current.MainPage.DisplayAlert("Confirm", $"Delete {Client.name}?", "Yes", "No");
         if (!confirm) return;
 
         using var httpClient = new HttpClient();
@@ -76,13 +76,13 @@ public class EditClientViewModel : INotifyPropertyChanged
 
         if (response.IsSuccessStatusCode)
         {
-            await App.Current.MainPage.DisplayAlert("Deleted", "Client deleted.", "OK");
+            await Application.Current.MainPage.DisplayAlert("Deleted", "Client deleted.", "OK");
             await _refreshCallback();
             await _navigation.PopAsync();
         }
         else
         {
-            await App.Current.MainPage.DisplayAlert("Error", "Failed to delete client.", "OK");
+            await Application.Current.MainPage.DisplayAlert("Error", "Failed to delete client.", "OK");
         }
     }
 

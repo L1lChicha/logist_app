@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace logist_app
+namespace logist_app.Models
 {
     public class Client
     {

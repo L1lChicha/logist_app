@@ -5,13 +5,13 @@ using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
 
-namespace logist_app;
+namespace logist_app.ViewModels;
 
 public class DataViewModel : INotifyPropertyChanged
 {
     public ObservableCollection<ClientViewModel> Clients { get; } = new();
 
-    private const string ApiUrl = "https://localhost:32769/api/Clients";
+    private const string ApiUrl = "https://localhost:32771/api/Clients";
 
     public DataViewModel()
     {
