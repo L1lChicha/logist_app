@@ -74,6 +74,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <MauiXaml Update="Views\AcceptRouteView.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="Views\ActionPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>

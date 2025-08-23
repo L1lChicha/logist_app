@@ -11,7 +11,7 @@ public class DataViewModel : INotifyPropertyChanged
 {
     public ObservableCollection<ClientViewModel> Clients { get; } = new();
 
-    private const string ApiUrl = "https://localhost:32771/api/Clients";
+    private const string ApiUrl = "https://localhost:32769/api/Clients";
 
     public DataViewModel()
     {

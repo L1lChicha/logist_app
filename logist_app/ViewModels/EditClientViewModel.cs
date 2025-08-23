@@ -25,7 +25,7 @@ public class EditClientViewModel : INotifyPropertyChanged
     public ICommand CancelCommand { get; }
 
 
-    private const string ApiUrl = "https://localhost:32771/api/Clients";
+    private const string ApiUrl = "https://localhost:32769/api/Clients";
     private readonly INavigation _navigation;
     private readonly Func<Task> _refreshCallback;
 

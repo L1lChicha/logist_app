@@ -24,44 +24,37 @@
     <div id="map"></div>
     <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"></script>
     <script>
-        // Инициализация карты в Бресте
         var map = L.map('map').setView([52.0976, 23.7341], 13);
 
-        // Тайлы OpenStreetMap
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             maxZoom: 19,
             attribution: '© OpenStreetMap contributors'
         }).addTo(map);
 
-        var marker;
-        function setMarker(lat, lon, displayName) {
+        var marker, routeLayer, startMarker, endMarker;
 
+        function setMarker(lat, lon, displayName) {
             if (marker) {
                 map.removeLayer(marker);
             }
-           
             marker = L.marker([lat, lon]).addTo(map);
             marker.bindPopup(displayName).openPopup();
-            
         }
 
         map.on('click', function (e) {
             var lat = e.latlng.lat;
             var lon = e.latlng.lng;
 
-            // Получение адреса через Nominatim API
             fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`)
                 .then(response => response.json())
                 .then(data => {
                     var address = data.display_name || "Адрес не найден";
                     setMarker(lat, lon, address);
-
                 })
                 .catch(error => {
                     setMarker(lat, lon, "Ошибка при получении адреса");
                 });
-     
-            });
+        });
 
         function getSelectedLocation() {
             if (marker) {
@@ -70,12 +63,57 @@
                     lon: marker.getLatLng().lng,
                     address: marker.getPopup().getContent()
                 });
-               
             } else {
                 return JSON.stringify({ error: "Маркер не установлен" });
             }
         }
 
-      </script>
+        function displayRoute(geoJson) {
+            try {
+                // Удаляем предыдущий маршрут и маркеры
+                if (routeLayer) map.removeLayer(routeLayer);
+                if (startMarker) map.removeLayer(startMarker);
+                if (endMarker) map.removeLayer(endMarker);
+
+                var data = JSON.parse(geoJson);
+
+                // Строим маршрут
+                routeLayer = L.geoJSON(data, {
+                    style: {
+                        color: '#3388ff',
+                        weight: 5,
+                        opacity: 0.7
+                    }
+                }).addTo(map);
+
+                // Получаем точки начала и конца
+                if (data.features.length > 0 && data.features[0].geometry.type === "LineString") {
+                    var coords = data.features[0].geometry.coordinates;
+
+                    if (coords.length > 1) {
+                        // Начальная точка
+                        var start = coords[0];
+                        startMarker = L.marker([start[1], start[0]])
+                            .bindPopup("Начало маршрута")
+                            .addTo(map);
+
+                        // Конечная точка
+                        var end = coords[coords.length - 1];
+                        endMarker = L.marker([end[1], end[0]])
+                            .bindPopup("Конец маршрута")
+                            .addTo(map);
+                    }
+                }
+
+                // Устанавливаем границы карты
+                var bounds = routeLayer.getBounds();
+                map.fitBounds(bounds);
+                map.invalidateSize();
+            } catch (e) {
+                console.error("Ошибка в displayRoute:", e.message);
+                window.location = "debug://error?message=" + encodeURIComponent(e.message);
+            }
+        }
+    </script>
 </body>
 </html>

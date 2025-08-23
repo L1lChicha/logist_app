@@ -3,11 +3,11 @@ namespace logist_app.Views;
 
 using CommunityToolkit.Maui.Core.Views;
 using System.Net.Http.Json;
-
+using System.Text.Json;
 
 public partial class RouteCreationPage : ContentPage
 {
-    private const string ApiUrl = "https://localhost:32771/api/Route";
+    private const string ApiUrl = "https://localhost:32769/api/Route/build";
     private readonly DataViewModel _viewModel;
     private List<int> selectedClientIds = new List<int>();
 
@@ -51,11 +51,20 @@ public partial class RouteCreationPage : ContentPage
         using var httpClient = new HttpClient();
         var response = await httpClient.PostAsJsonAsync(ApiUrl, selectedClientIds);
 
+      
+
         if (response.IsSuccessStatusCode)
         {
+            var stream = await response.Content.ReadAsStreamAsync();
+            var json = await JsonDocument.ParseAsync(stream);
+
+            var routeData = json.RootElement.GetProperty("routeData").ToString();
+            var routeId = int.Parse( json.RootElement.GetProperty("routeId").ToString());
             var routeGeoJson = await response.Content.ReadAsStringAsync();
+
             await DisplayAlert("Success", "Маршрут успешно построен", "OK");
-            // await MapWebView.EvaluateJavaScriptAsync($"displayRoute('{routeGeoJson.Replace("'", "\\'")}');");
+            Navigation.PushAsync(new AcceptRouteView(routeData, routeId));
+         
         }
         else
         {
@@ -63,5 +72,6 @@ public partial class RouteCreationPage : ContentPage
             Console.WriteLine($"Ошибка при получении маршрута: {response.StatusCode} {error}");
             await DisplayAlert("Error", $"{response.StatusCode}\n{error}", "OK");
         }
+
     }
 }

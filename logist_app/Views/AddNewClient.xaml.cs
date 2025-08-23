@@ -16,7 +16,7 @@ public partial class MainPage : ContentPage
     public MainPage()
     {
         InitializeComponent();
-        // MapWebView.Source = "map.html";
+         MapWebView.Source = "map.html";
     }
 
 
@@ -204,7 +204,7 @@ public partial class MainPage : ContentPage
 
     private async Task<bool> AddNewClientAsync(ClientViewModel newClient)
     {
-        var ApiUrl = "https://localhost:32771/api/Clients";
+        var ApiUrl = "https://localhost:32769/api/Clients";
 
         try
         {

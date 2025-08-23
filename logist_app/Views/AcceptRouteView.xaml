@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="logist_app.Views.AcceptRouteView"
+             Title="AcceptRouteView">
+
+    <ContentPage.Resources>
+        <Style TargetType="WebView">
+            <Setter Property="WidthRequest" Value="1200" />
+        </Style>
+        <Style TargetType="Button">
+            <Setter Property="TextColor" Value="Black"/>
+            <Setter Property="FontSize" Value="18" />
+            <Setter Property="HeightRequest" Value="70" />
+            <Setter Property="Padding" Value="0" />
+            <Setter Property="BackgroundColor" Value="#D9D9D9"/>
+            <Setter Property="WidthRequest" Value="250"/>
+            <Setter Property="Margin" Value="0,50,0,0"></Setter>
+            <Setter Property="CornerRadius" Value="20" />
+        </Style>
+    </ContentPage.Resources>
+    <StackLayout Orientation="Horizontal" BackgroundColor="White" >
+        <StackLayout WidthRequest="335" Margin="0,150,0,0">
+            <Button Text="Edit the route" x:Name="editRoute"/>
+            <Button Text="Reject the route" x:Name="rejectRoute" Clicked="rejectRoute_Clicked"/>
+            <Button Text="Confirm the route" x:Name="confirmRoute" Clicked="confirmRoute_Clicked"/>
+        </StackLayout>
+        <StackLayout  Orientation="Horizontal">
+            <WebView x:Name="MapWebView"   Source="map.html" Navigated="MapWebView_Navigated" />
+        </StackLayout>
+            
+    </StackLayout>
+</ContentPage>
