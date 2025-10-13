@@ -6,28 +6,28 @@
         <ScrollView>
             <StackLayout Padding="20" Spacing="10">
                 <Label Text="Name" />
-                <Entry Text="{Binding Client.name}" />
+                <Entry Text="{Binding Client.Name}" />
 
                 <Label Text="Address" />
-                <Entry Text="{Binding Client.address}" />
+                <Entry Text="{Binding Client.Address}" />
 
                 <Label Text="City" />
-                <Entry Text="{Binding Client.city}" />
+                <Entry Text="{Binding Client.City}" />
 
                 <Label Text="Postal Code" />
-                <Entry Text="{Binding Client.postal_code}" />
+                <Entry Text="{Binding Client.PostalCode}" />
 
                 <Label Text="Phone" />
-                <Entry Text="{Binding Client.phone}" />
+                <Entry Text="{Binding Client.Phone}" />
 
                 <Label Text="Email" />
-                <Entry Text="{Binding Client.email}" />
+                <Entry Text="{Binding Client.Email}" />
 
                 <Label Text="Recurrence" />
-                <Entry Text="{Binding Client.recurrence}" />
+                <Entry Text="{Binding Client.Recurrence}" />
 
                 <Label Text="Container Count" />
-                <Entry Text="{Binding Client.container_count}" Keyboard="Numeric" />
+                <Entry Text="{Binding Client.ContainerCount}" Keyboard="Numeric" />
 
                 <Label Text="Start Date" />
                 <DatePicker Date="{Binding Client.start_date}" />

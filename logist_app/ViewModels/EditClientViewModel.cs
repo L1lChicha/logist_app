@@ -1,11 +1,8 @@
-﻿using System;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
 using System.Net.Http.Json;
-using System.Text.Json;
-using System.Threading.Tasks;
-using System.Net.Http;
+using logist_app.Models;
 
 namespace logist_app.ViewModels;
 
@@ -24,27 +21,36 @@ public class EditClientViewModel : INotifyPropertyChanged
     public ICommand DeleteCommand { get; }
     public ICommand CancelCommand { get; }
 
-
-    private const string ApiUrl = "https://localhost:32769/api/Clients";
     private readonly INavigation _navigation;
     private readonly Func<Task> _refreshCallback;
 
-    public EditClientViewModel(ClientViewModel client, INavigation navigation, Func<Task> refreshCallback)
+    // ✅ Новые поля для DI
+    private readonly ApiSettings _apiSettings;
+    private readonly IHttpClientFactory _httpClientFactory;
+
+    // ✅ Обновлённый конструктор
+    public EditClientViewModel(
+        ClientViewModel client,
+        INavigation navigation,
+        Func<Task> refreshCallback,
+        ApiSettings apiSettings,
+        IHttpClientFactory httpClientFactory)
     {
         Client = client;
         _navigation = navigation;
         _refreshCallback = refreshCallback;
+        _apiSettings = apiSettings;
+        _httpClientFactory = httpClientFactory;
 
         SaveCommand = new Command(async () => await SaveClientAsync());
         DeleteCommand = new Command(async () => await DeleteClientAsync());
         CancelCommand = new Command(async () => await CancelAsync());
-
     }
 
     private async Task SaveClientAsync()
     {
-        using var httpClient = new HttpClient();
-        var response = await httpClient.PutAsJsonAsync($"{ApiUrl}/{Client.id}", Client);
+        var http = _httpClientFactory.CreateClient("Api");
+        var response = await http.PutAsJsonAsync($"{_apiSettings.ClientsEndpoint}/{Client.Id}", Client);
 
         if (response.IsSuccessStatusCode)
         {
@@ -54,25 +60,18 @@ public class EditClientViewModel : INotifyPropertyChanged
         }
         else
         {
-            await Application.Current.MainPage.DisplayAlert("Error", "Failed to update client.", "OK");
+            var error = await response.Content.ReadAsStringAsync();
+            await Application.Current.MainPage.DisplayAlert("Error", $"Failed to update client.\n{error}", "OK");
         }
     }
 
-    private async Task CancelAsync()
-    {
-        await _refreshCallback(); // если нужно обновление при отмене
-        await _navigation.PopAsync();
-    }
-
-
-
     private async Task DeleteClientAsync()
     {
-        bool confirm = await Application.Current.MainPage.DisplayAlert("Confirm", $"Delete {Client.name}?", "Yes", "No");
+        bool confirm = await Application.Current.MainPage.DisplayAlert("Confirm", $"Delete {Client.Name}?", "Yes", "No");
         if (!confirm) return;
 
-        using var httpClient = new HttpClient();
-        var response = await httpClient.DeleteAsync($"{ApiUrl}/{Client.id}");
+        var http = _httpClientFactory.CreateClient("Api");
+        var response = await http.DeleteAsync($"{_apiSettings.ClientsEndpoint}/{Client.Id}");
 
         if (response.IsSuccessStatusCode)
         {
@@ -82,8 +81,15 @@ public class EditClientViewModel : INotifyPropertyChanged
         }
         else
         {
-            await Application.Current.MainPage.DisplayAlert("Error", "Failed to delete client.", "OK");
+            var error = await response.Content.ReadAsStringAsync();
+            await Application.Current.MainPage.DisplayAlert("Error", $"Failed to delete client.\n{error}", "OK");
         }
+    }
+
+    private async Task CancelAsync()
+    {
+        await _refreshCallback();
+        await _navigation.PopAsync();
     }
 
     private void OnPropertyChanged([CallerMemberName] string name = "") =>

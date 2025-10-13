@@ -1,77 +1,71 @@
-using logist_app.ViewModels;
-namespace logist_app.Views;
-
-using CommunityToolkit.Maui.Core.Views;
+п»їusing logist_app.ViewModels;
+using logist_app.Models;
 using System.Net.Http.Json;
 using System.Text.Json;
 
+namespace logist_app.Views;
+
 public partial class RouteCreationPage : ContentPage
 {
-    private const string ApiUrl = "https://localhost:32769/api/Route/build";
     private readonly DataViewModel _viewModel;
-    private List<int> selectedClientIds = new List<int>();
+    private readonly ApiSettings _apiSettings;
+    private readonly IHttpClientFactory _httpClientFactory;
 
-    public RouteCreationPage()
-	{
-		InitializeComponent();
-        _viewModel = new DataViewModel();
+    private List<int> selectedClientIds = new();
+
+    // вњ… РїРѕР»СѓС‡Р°РµРј Р·Р°РІРёСЃРёРјРѕСЃС‚Рё С‡РµСЂРµР· DI
+    public RouteCreationPage(DataViewModel viewModel, ApiSettings apiSettings, IHttpClientFactory httpClientFactory)
+    {
+        InitializeComponent();
+        _viewModel = viewModel;
+        _apiSettings = apiSettings;
+        _httpClientFactory = httpClientFactory;
+
         BindingContext = _viewModel;
         createRouteButton.IsEnabled = false;
     }
-    public async Task RefreshClients()
-    {
-        await _viewModel.LoadDataAsync();
-    }
 
-    private async void OnRefreshClicked(object sender, EventArgs e)
-    {
+    public async Task RefreshClients() => await _viewModel.LoadDataAsync();
+
+    private async void OnRefreshClicked(object sender, EventArgs e) =>
         await _viewModel.LoadDataAsync();
-        
-    }
 
     private void OnClientsSelected(object sender, SelectionChangedEventArgs e)
     {
         var selectedClients = e.CurrentSelection.Cast<ClientViewModel>().ToList();
-        selectedClientIds = selectedClients.Select(c => c.id).ToList();
-
-        if (selectedClients.Count > 1) 
-        {
-            createRouteButton.IsEnabled = true;
-        }
-        else
-        {
-            createRouteButton.IsEnabled = false;
-        }
-
-
+        selectedClientIds = selectedClients.Select(c => c.Id).ToList();
+        createRouteButton.IsEnabled = selectedClients.Count > 1;
     }
 
     private async void createRouteButton_Clicked(object sender, EventArgs e)
     {
-        using var httpClient = new HttpClient();
-        var response = await httpClient.PostAsJsonAsync(ApiUrl, selectedClientIds);
-
-      
-
-        if (response.IsSuccessStatusCode)
+        try
         {
-            var stream = await response.Content.ReadAsStreamAsync();
-            var json = await JsonDocument.ParseAsync(stream);
+            var http = _httpClientFactory.CreateClient("Api");
 
-            var routeData = json.RootElement.GetProperty("routeData").ToString();
-            var routeId = int.Parse( json.RootElement.GetProperty("routeId").ToString());
-            var routeGeoJson = await response.Content.ReadAsStringAsync();
+            // РњРѕР¶РЅРѕ РѕС‚РїСЂР°РІР»СЏС‚СЊ РѕС‚РЅРѕСЃРёС‚РµР»СЊРЅС‹Рј РїСѓС‚С‘Рј (Р±Р°Р·Р° СѓР¶Рµ Р·Р°РґР°РЅР° РІ HttpClient)
+            var response = await http.PostAsJsonAsync(_apiSettings.RoutesBuildEndpoint, selectedClientIds);
 
-            await DisplayAlert("Success", "Маршрут успешно построен", "OK");
-            Navigation.PushAsync(new AcceptRouteView(routeData, routeId));
-         
+            if (response.IsSuccessStatusCode)
+            {
+                using var stream = await response.Content.ReadAsStreamAsync();
+                using var json = await JsonDocument.ParseAsync(stream);
+
+                var routeData = json.RootElement.GetProperty("routeData").ToString();
+                var routeId = int.Parse(json.RootElement.GetProperty("routeId").ToString());
+
+                await DisplayAlert("Success", "РњР°СЂС€СЂСѓС‚ СѓСЃРїРµС€РЅРѕ РїРѕСЃС‚СЂРѕРµРЅ", "OK");
+                await Navigation.PushAsync(new AcceptRouteView(routeData, routeId));
+            }
+            else
+            {
+                var error = await response.Content.ReadAsStringAsync();
+                await DisplayAlert("Error", $"{response.StatusCode}\n{error}", "OK");
+            }
         }
-        else
+        catch (Exception ex)
         {
-            var error = await response.Content.ReadAsStringAsync();
-            Console.WriteLine($"Ошибка при получении маршрута: {response.StatusCode} {error}");
-            await DisplayAlert("Error", $"{response.StatusCode}\n{error}", "OK");
+            await DisplayAlert("Error", ex.Message, "OK");
         }
-
     }
 }

@@ -8,18 +8,28 @@ public partial class ActionPage : ContentPage
 		InitializeComponent();
 	}
 
-    private void createRoute_Clicked(object sender, EventArgs e)
+    private async void createRoute_Clicked(object sender, EventArgs e)
     {
-         Navigation.PushAsync(new RouteCreationPage());
+        var page = App.Services.GetService<RouteCreationPage>();
+        await Navigation.PushAsync(page);
     }
 
-    private void showClientsData_Clicked(object sender, EventArgs e)
+    private async void showClientsData_Clicked(object sender, EventArgs e)
     {
-        Navigation.PushAsync(new DataViewPage());
+
+
+        var page = App.Services.GetService<DataViewPage>();
+        await Navigation.PushAsync(page);
     }
 
     private void addNewClient_Clicked(object sender, EventArgs e)
     {
         Navigation.PushAsync(new MainPage());
+    }
+
+    private async void viewRoutes_Clicked(object sender, EventArgs e)
+    {
+        var page = App.Services.GetService<ViewRoutesPage>();
+        await Navigation.PushAsync(page);
     }
 }

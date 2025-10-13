@@ -18,12 +18,26 @@
             <Setter Property="Margin" Value="0,50,0,0"></Setter>
             <Setter Property="CornerRadius" Value="20" />
         </Style>
+        <Style TargetType="Entry">
+            <Setter Property="BackgroundColor" Value="#D9D9D9"></Setter>
+            <Setter Property="PlaceholderColor" Value="Black"></Setter>
+            <Setter Property="FontSize" Value="18" />
+            <Setter Property="HeightRequest" Value="70" />
+            <Setter Property="Margin" Value="0,50,0,0"></Setter>
+            <Setter Property="WidthRequest" Value="300" />
+            <Setter Property="HorizontalTextAlignment" Value="Center"/>
+           
+        </Style>
     </ContentPage.Resources>
     <StackLayout Orientation="Horizontal" BackgroundColor="White" >
         <StackLayout WidthRequest="335" Margin="0,150,0,0">
             <Button Text="Edit the route" x:Name="editRoute"/>
-            <Button Text="Reject the route" x:Name="rejectRoute" Clicked="rejectRoute_Clicked"/>
-            <Button Text="Confirm the route" x:Name="confirmRoute" Clicked="confirmRoute_Clicked"/>
+            <Button Text="Reject the route" x:Name="rejectRoute" BackgroundColor="#ed514e"  TextColor="White"
+                    Clicked="rejectRoute_Clicked"/>
+
+            <Entry x:Name="RouteNameEntry" Placeholder="Set name of the route"  Margin="0,100,0,0" />
+            <Button Text="Confirm the route" x:Name="confirmRoute" BackgroundColor="#62b375" TextColor="White" Clicked="confirmRoute_Clicked"/>
+
         </StackLayout>
         <StackLayout  Orientation="Horizontal">
             <WebView x:Name="MapWebView"   Source="map.html" Navigated="MapWebView_Navigated" />

@@ -2,28 +2,43 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="logist_app.Views.RouteCreationPage"
+             xmlns:viewmodels="clr-namespace:logist_app.ViewModels"
              Title="RouteCreationPage"
              BackgroundColor="White">
+    
     <Grid BackgroundColor="White"  RowSpacing="6" RowDefinitions="32,*" ColumnDefinitions="*">
-        <StackLayout>
-            <Button x:Name="createRouteButton" Clicked="createRouteButton_Clicked" Text="Create new route" />
-        </StackLayout>
+
+        <Grid Grid.Row="0"
+              Padding="0,10,0,10"
+              BackgroundColor="White">
+            <Button x:Name="createRouteButton"
+                    Text="Создать новый маршрут"
+                    Clicked="createRouteButton_Clicked"
+                    HeightRequest="45"
+                    IsEnabled="False"
+                    TextColor="White"
+                    CornerRadius="10"
+                    FontAttributes="Bold"
+                    FontSize="16"
+                    Margin="0,0,0,10"/>
+            
+        </Grid>
         
-        <CollectionView Grid.Row="1" ItemsSource="{Binding Clients}"  SelectionMode="Multiple" SelectionChanged="OnClientsSelected">
+        <CollectionView Grid.Row="1" ItemsSource="{Binding Clients}" SelectionMode="Multiple" SelectionChanged="OnClientsSelected">
             <CollectionView.ItemTemplate>
                 <DataTemplate>
                     
                     <Frame BorderColor="#CCCCCC" CornerRadius="5" BackgroundColor="White" Padding="10,10,0,10">
                         <StackLayout BackgroundColor="White" >
-                            <Label Text="{Binding name}" FontAttributes="Bold" TextColor="Black" FontSize="14" />
-                            <Label Text="{Binding address}" FontSize="12"  TextColor="Black"/>
-                            <Label Text="{Binding city}" FontSize="12" TextColor="Black"/>
-                            <Label Text="{Binding postal_code}" FontSize="12" TextColor="Black"/>
-                            <Label Text="{Binding phone}" FontSize="12" TextColor="Black"/>
-                            <Label Text="{Binding email}" FontSize="12" TextColor="Black"/>
-                            <Label Text="{Binding recurrence}" FontSize="12" TextColor="Black"/>
-                            <Label Text="{Binding container_count}" FontSize="12" TextColor="Black"/>
-                            <Label Text="{Binding start_date, StringFormat='Start Date: {0:yyyy-MM-dd}'}" FontSize="12" TextColor="Black"/>
+                            <Label Text="{Binding Name}" FontAttributes="Bold" TextColor="Black" FontSize="14" />
+                            <Label Text="{Binding Address}" FontSize="12"  TextColor="Black"/>
+                            <Label Text="{Binding City}" FontSize="12" TextColor="Black"/>
+                            <Label Text="{Binding PostalCode}" FontSize="12" TextColor="Black"/>
+                            <Label Text="{Binding Phone}" FontSize="12" TextColor="Black"/>
+                            <Label Text="{Binding Email}" FontSize="12" TextColor="Black"/>
+                            <Label Text="{Binding Recurrence}" FontSize="12" TextColor="Black"/>
+                            <Label Text="{Binding ContainerCount}" FontSize="12" TextColor="Black"/>
+                            <Label Text="{Binding StartDate, StringFormat='Start Date: {0:yyyy-MM-dd}'}" FontSize="12" TextColor="Black"/>
                         </StackLayout>
                         <VisualStateManager.VisualStateGroups>
                             <VisualStateGroup Name="CommonStates">

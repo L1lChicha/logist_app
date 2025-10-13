@@ -8,6 +8,8 @@ using System.Text;
 using System.Text.Json;
 using System.Text.Json;
 using System.Threading.Tasks;
+using Microsoft.Extensions.DependencyInjection; 
+using logist_app.Models;
 
 namespace logist_app;
 
@@ -178,23 +180,25 @@ public partial class MainPage : ContentPage
 
 
         var newClient = new ClientViewModel();
-        newClient.name = name;
-        newClient.address = address;
-        newClient.city = city;
-        newClient.postal_code = postalCode;
-        newClient.phone = phone;
-        newClient.email = email;
-        newClient.recurrence = recurrence;
-        newClient.container_count = containerCount;
-        newClient.start_date = startDate.ToUniversalTime();
-        newClient.coordinates = coordinates;
-        newClient.lat = lat;
-        newClient.lon = lon;
+        newClient.Name = name;
+        newClient.Address = address;
+        newClient.City = city;
+        newClient.PostalCode = postalCode;
+        newClient.Phone = phone;
+        newClient.Email = email;
+        newClient.Recurrence = recurrence;
+        newClient.ContainerCount = containerCount;
+        newClient.StartDate = startDate.ToUniversalTime();
+        newClient.Coordinates = coordinates;
+        newClient.Lat = lat;
+        newClient.Lon = lon;
 
         var success = await AddNewClientAsync(newClient);
         if (success)
         {
+
             await DisplayAlert("Success", "Client added successfully.", "OK");
+            await Navigation.PopAsync();
         }
         else
         {
@@ -204,16 +208,15 @@ public partial class MainPage : ContentPage
 
     private async Task<bool> AddNewClientAsync(ClientViewModel newClient)
     {
-        var ApiUrl = "https://localhost:32769/api/Clients";
-
         try
         {
-            using var httpClient = new HttpClient();
-            var response = await httpClient.PostAsJsonAsync(ApiUrl, newClient);
-            var json = JsonSerializer.Serialize(newClient);
+            // берём зависимости из контейнера
+            var api = App.Services.GetRequiredService<ApiSettings>();
+            var httpFactory = App.Services.GetRequiredService<IHttpClientFactory>();
+            var http = httpFactory.CreateClient("Api"); // BaseAddress уже настроен в MauiProgram
 
-
-
+            // отправляем на относительный endpoint из конфигурации
+            var response = await http.PostAsJsonAsync(api.ClientsEndpoint, newClient);
             return response.IsSuccessStatusCode;
         }
         catch (Exception ex)
@@ -228,6 +231,7 @@ public partial class MainPage : ContentPage
 
     private async void OnViewDataClicked(object sender, EventArgs e)
     {
-        await Navigation.PushAsync(new DataViewPage());
+        var page = App.Services.GetService<DataViewPage>();
+        await Navigation.PushAsync(page);
     }
 }

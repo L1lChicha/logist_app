@@ -1,16 +1,37 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewmodels="clr-namespace:logist_app.ViewModels"
              x:Class="logist_app.Views.ViewRoutesPage"
              Title="ViewRoutesPage">
-    <VerticalStackLayout>
-        <Label 
-            Text="Welcome to .NET MAUI!"
-            VerticalOptions="Center" 
-            HorizontalOptions="Center" />
-    </VerticalStackLayout>
     
-    
-    
-    
+
+
+    <Grid Padding="10" RowDefinitions="Auto,*">
+            <Button Text="Обновить"
+                Clicked="RefreshButton_Clicked"
+                BackgroundColor="#007ACC"
+                TextColor="White"
+                CornerRadius="10"
+                HeightRequest="45"
+                Margin="0,0,0,10"/>
+
+            <CollectionView Grid.Row="1"
+                        ItemsSource="{Binding Routes}"
+                        SelectionMode="Single"
+                        SelectionChanged="OnRouteSelected">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Frame BorderColor="#CCC" CornerRadius="8" Padding="10" Margin="0,5" BackgroundColor="White">
+                            <StackLayout>
+                                <Label Text="{Binding Name}" FontSize="16" FontAttributes="Bold" TextColor="Black"/>
+                                <Label Text="{Binding CreatedAt, StringFormat='Дата: {0:dd.MM.yyyy HH:mm}'}" FontSize="13" TextColor="Gray"/>
+                                <Label Text="{Binding Distance, StringFormat='Длина: {0:F2} км'}" FontSize="13" TextColor="Black"/>
+                                <Label Text="{Binding Duration, StringFormat='Время: {0:F0} мин'}" FontSize="13" TextColor="Black"/>
+                            </StackLayout>
+                        </Frame>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </Grid>
 </ContentPage>

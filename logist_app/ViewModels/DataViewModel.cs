@@ -1,9 +1,9 @@
 ﻿using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
+using logist_app.Models;
 
 namespace logist_app.ViewModels;
 
@@ -11,36 +11,48 @@ public class DataViewModel : INotifyPropertyChanged
 {
     public ObservableCollection<ClientViewModel> Clients { get; } = new();
 
-    private const string ApiUrl = "https://localhost:32769/api/Clients";
+    private readonly ApiSettings _apiSettings;
+    private readonly IHttpClientFactory _httpClientFactory;
 
-    public DataViewModel()
+    public DataViewModel(ApiSettings apiSettings, IHttpClientFactory httpClientFactory)
     {
-        LoadDataAsync();
+        _apiSettings = apiSettings;
+        _httpClientFactory = httpClientFactory;
+
+        // при желании можно не автозагружать и вызывать из страницы
+        Task.Run(LoadDataAsync);
     }
 
     public async Task LoadDataAsync()
     {
         try
         {
-            Clients.Clear();
-            using var httpClient = new HttpClient();
-            var response = await httpClient.GetAsync(ApiUrl);
+            var http = _httpClientFactory.CreateClient("Api");
+            var response = await http.GetAsync(_apiSettings.ClientsEndpoint);
+            response.EnsureSuccessStatusCode();
 
-            if (response.IsSuccessStatusCode)
+            var options = new System.Text.Json.JsonSerializerOptions
             {
-                var clients = await response.Content.ReadFromJsonAsync<ObservableCollection<ClientViewModel>>();
-                if (clients != null)
-                {
-                    foreach (var client in clients)
-                        Clients.Add(client);
-                }
+                PropertyNameCaseInsensitive = true
+            };
+
+            var clients = await response.Content
+                .ReadFromJsonAsync<List<ClientViewModel>>(options);
+
+            Clients.Clear();
+            if (clients is not null)
+            {
+                foreach (var c in clients)
+                    Clients.Add(c);
             }
+
         }
         catch (Exception ex)
         {
-            // Обработка ошибок
-            Console.WriteLine($"Ошибка загрузки данных: {ex.Message}");
+            // лог — по вкусу
+            System.Diagnostics.Debug.WriteLine($"LoadDataAsync error: {ex}");
         }
+    
     }
 
     public event PropertyChangedEventHandler PropertyChanged;

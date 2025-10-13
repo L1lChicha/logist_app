@@ -28,7 +28,7 @@
     <StackLayout Orientation="Horizontal" BackgroundColor="White">
         <StackLayout Orientation="Vertical" WidthRequest="705" >
             <Button x:Name="createRoute" Clicked="createRoute_Clicked" Text="Create the route" Margin="0,150,0,0"/>
-            <Button x:Name="viewRoutes" Text="View the routes"/>
+            <Button x:Name="viewRoutes" Text="View the routes" Clicked="viewRoutes_Clicked"/>
             <Button x:Name="showClientsData" Clicked="showClientsData_Clicked" Text="Show clients data"/>
             <Button x:Name="addNewClient" Clicked="addNewClient_Clicked" Text="Add new client"/>
         </StackLayout>
