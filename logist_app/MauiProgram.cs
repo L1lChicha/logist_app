@@ -61,6 +61,14 @@ namespace logist_app
             builder.Services.AddSingleton<IEditClientVmFactory, EditClientVmFactory>();
             builder.Services.AddSingleton<RoutesListViewModel>();
             builder.Services.AddTransient<ViewRoutesPage>();
+            builder.Services.AddTransient<DataViewModel>();
+            builder.Services.AddTransient<DataViewPage>();
+            builder.Services.AddTransient<RouteCreationPage>();
+            builder.Services.AddTransient<DriverManagerView>();
+            builder.Services.AddTransient<AddNewDriverPage>();
+            builder.Services.AddSingleton<DriversViewModel>();
+            builder.Services.AddTransient<DriversDataView>();
+
             //  builder.Services.AddTransient<AddClientViewModel>();
 #if DEBUG
             builder.Logging.AddDebug();

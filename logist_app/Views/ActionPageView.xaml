@@ -12,25 +12,26 @@
             <Setter Property="Padding" Value="0" />
             <Setter Property="BackgroundColor" Value="#D9D9D9"/>
             <Setter Property="WidthRequest" Value="350"/>
-            <Setter Property="Margin" Value="0,50,0,0"></Setter>
+            <Setter Property="Margin" Value="0,0,0,50"></Setter>
             <Setter Property="CornerRadius" Value="20" />
      
 
         </Style>
         <Style TargetType="StackLayout">
-            <Setter Property="Margin" Value="5,0,0,0"></Setter>
+            <Setter Property="Margin" Value="0,0,0,0"></Setter>
         </Style>
         <Style TargetType="WebView">
-            <Setter Property="WidthRequest" Value="820" />
+            <Setter Property="WidthRequest" Value="830" />
         </Style>
     </ContentPage.Resources>
 
     <StackLayout Orientation="Horizontal" BackgroundColor="White">
-        <StackLayout Orientation="Vertical" WidthRequest="705" >
-            <Button x:Name="createRoute" Clicked="createRoute_Clicked" Text="Create the route" Margin="0,150,0,0"/>
+        <StackLayout Orientation="Vertical" WidthRequest="705" VerticalOptions="Center" >
+            <Button x:Name="createRoute" Clicked="createRoute_Clicked" Text="Create the route" />
             <Button x:Name="viewRoutes" Text="View the routes" Clicked="viewRoutes_Clicked"/>
             <Button x:Name="showClientsData" Clicked="showClientsData_Clicked" Text="Show clients data"/>
             <Button x:Name="addNewClient" Clicked="addNewClient_Clicked" Text="Add new client"/>
+            <Button x:Name="drivers" Clicked="drivers_Clicked"  Text="Drivers" Margin="0,0,0,0"/>
         </StackLayout>
         <WebView x:Name="MapWebView"   Source="map.html" />
     </StackLayout>

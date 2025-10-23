@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="logist_app.Views.RouteCreationPage"
+             Title="Route Creation Page">
+
+    <Grid RowDefinitions="Auto,*"
+          ColumnDefinitions="3*, Auto, 1*, 1*"
+          ColumnSpacing="0"
+          RowSpacing="10"
+          Margin="10,0,0,0">
+
+        <Button x:Name="createRouteButton"
+                Grid.Row="0"
+                Grid.Column="0"
+                Text="Create new route"
+                Clicked="createRouteButton_Clicked"
+                HeightRequest="45"
+                IsEnabled="False"
+                TextColor="White"
+                CornerRadius="10"
+                FontAttributes="Bold"
+                FontSize="16"
+                Margin="0,0,10,0" />
+
+        <Label Text="Sort by:" 
+               Grid.Row="0"
+               Grid.Column="1"
+               VerticalTextAlignment="Center"/>
+
+        <Picker Grid.Row="0"
+                Grid.Column="2"
+                HeightRequest="45"
+                Margin="0,0,10,0"
+                ItemsSource="{Binding PickerOptions}"
+                SelectedIndex="{Binding SelectedOptionIndex, Mode=TwoWay}">
+            
+        </Picker>
+        
+        <SearchBar x:Name="clientSearchBar"
+                   Text="{Binding FilterText, Mode=TwoWay}"
+                   Grid.Row="0"
+                   Grid.Column="3"
+                   HeightRequest="45"
+                   Placeholder="Поиск клиента"
+                   Margin="0,0,10,0"
+                   />
+
+        <CollectionView x:Name="clientsCollectionView"
+                        Grid.Row="1"
+                        Grid.ColumnSpan="4"
+                        ItemsSource="{Binding Clients}"
+                        SelectionMode="Multiple"
+                        SelectionChanged="OnClientsSelected"
+                        VerticalScrollBarVisibility="Always"
+                        Margin="-30,0,0,0">
+
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Border x:Name="Card"
+                            StrokeShape="RoundRectangle 10"
+                            StrokeThickness="1"
+                            Stroke="#E5E7EB"
+                            BackgroundColor="White"
+                            Padding="12"
+                            Margin="0,0,0,8">
+
+                        <VerticalStackLayout>
+                            <Label x:Name="NameLabel"
+                                   Text="{Binding Name}"
+                                   FontAttributes="Bold"
+                                   TextColor="Black"
+                                   FontSize="14" />
+                            <Label Text="{Binding Address}"      FontSize="12" TextColor="Black"/>
+                            <Label Text="{Binding City}"         FontSize="12" TextColor="Black"/>
+                            <Label Text="{Binding PostalCode}"   FontSize="12" TextColor="Black"/>
+                            <Label Text="{Binding Phone}"        FontSize="12" TextColor="Black"/>
+                            <Label Text="{Binding Email}"        FontSize="12" TextColor="Black"/>
+                            <Label Text="{Binding Recurrence}"   FontSize="12" TextColor="Black"/>
+                            <Label Text="{Binding ContainerCount}" FontSize="12" TextColor="Black"/>
+                            <Label Text="{Binding StartDate, StringFormat='Start Date: {0:yyyy-MM-dd}'}"
+                                   FontSize="12" TextColor="Black"/>
+                        </VerticalStackLayout>
+
+                        <VisualStateManager.VisualStateGroups>
+                            <VisualStateGroup x:Name="ItemStates">
+                                <VisualState x:Name="Normal">
+                                    <VisualState.Setters>
+                                        <Setter Property="BackgroundColor" Value="White" />
+                                        <Setter Property="Stroke" Value="#E5E7EB" />
+                                        <Setter Property="StrokeThickness" Value="1" />
+                                        <Setter TargetName="NameLabel" Property="Label.TextColor" Value="Black" />
+                                    </VisualState.Setters>
+                                </VisualState>
+                                <VisualState x:Name="Selected">
+                                    <VisualState.Setters>
+                                        <Setter Property="BackgroundColor" Value="#c7f2d1" />
+                                        <Setter Property="Stroke" Value="#62b375" />
+                                        <Setter Property="StrokeThickness" Value="1" />
+                                        <Setter TargetName="NameLabel" Property="Label.TextColor" Value="#62b375" />
+                                    </VisualState.Setters>
+                                </VisualState>
+                            </VisualStateGroup>
+                        </VisualStateManager.VisualStateGroups>
+                    </Border>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+    </Grid>
+</ContentPage>

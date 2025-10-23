@@ -12,6 +12,7 @@ namespace logist_app
             InitializeComponent();
 
             Services = serviceProvider;
+             //Application.Current.UserAppTheme = AppTheme.Light;
 
         }
 

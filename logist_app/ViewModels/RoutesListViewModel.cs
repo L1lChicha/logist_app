@@ -5,8 +5,8 @@ using logist_app.Models;
 
 public class RoutesListViewModel : INotifyPropertyChanged
 {
-    private ObservableCollection<RouteViewModel> _routes = new();
-    public ObservableCollection<RouteViewModel> Routes
+    private ObservableCollection<Route> _routes = new();
+    public ObservableCollection<Route> Routes
     {
         get => _routes;
         set { _routes = value; OnPropertyChanged(nameof(Routes)); }
@@ -29,22 +29,19 @@ public class RoutesListViewModel : INotifyPropertyChanged
         {
             var http = _httpFactory.CreateClient("Api"); // BaseUrl уже задан в AddHttpClient
             // "Route/all" — используем относительный путь относительно BaseUrl
-            var routes = await http.GetFromJsonAsync<List<RouteViewModel>>($"{_api.RoutesEndpoint}/all");
+            var routes = await http.GetFromJsonAsync<List<Route>>($"{_api.RoutesEndpoint}/all");
 
-            Console.WriteLine($"Загружено маршрутов: {routes?.Count ?? 0}");
             Routes.Clear();
 
             if (routes is not null)
             {
                 foreach (var route in routes)
                 {
-                    //Console.WriteLine($"Route ID: {route.Id}, Name: {route.Name}, GeometryJson: {(string.IsNullOrEmpty(route.geometry_json) ? "NULL or EMPTY" : "OK")}");
                     Routes.Add(route);
                 }
             }
             else
             {
-                Console.WriteLine("API вернул null");
                 await Application.Current.MainPage.DisplayAlert("Ошибка", "Не удалось загрузить маршруты: данные отсутствуют.", "OK");
             }
         }
@@ -56,14 +53,14 @@ public class RoutesListViewModel : INotifyPropertyChanged
     }
 
 
-    public async Task<RouteViewModel?> GetRouteByIdAsync(int id)
+    public async Task<Route?> GetRouteByIdAsync(int id)
     {
         try
         {
             var http = _httpFactory.CreateClient("Api");
             var url = $"{_api.RoutesEndpoint}/{id}";
 
-            var route = await http.GetFromJsonAsync<RouteViewModel>(url, new System.Text.Json.JsonSerializerOptions
+            var route = await http.GetFromJsonAsync<Route>(url, new System.Text.Json.JsonSerializerOptions
             {
                 PropertyNameCaseInsensitive = true
             });

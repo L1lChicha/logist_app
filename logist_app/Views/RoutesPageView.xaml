@@ -24,11 +24,12 @@
                     <DataTemplate>
                         <Frame BorderColor="#CCC" CornerRadius="8" Padding="10" Margin="0,5" BackgroundColor="White">
                             <StackLayout>
-                                <Label Text="{Binding Name}" FontSize="16" FontAttributes="Bold" TextColor="Black"/>
-                                <Label Text="{Binding CreatedAt, StringFormat='Дата: {0:dd.MM.yyyy HH:mm}'}" FontSize="13" TextColor="Gray"/>
-                                <Label Text="{Binding Distance, StringFormat='Длина: {0:F2} км'}" FontSize="13" TextColor="Black"/>
-                                <Label Text="{Binding Duration, StringFormat='Время: {0:F0} мин'}" FontSize="13" TextColor="Black"/>
-                            </StackLayout>
+                            <Label Text="{Binding Name, StringFormat='Name: {0}'}" FontSize="16" FontAttributes="Bold" TextColor="Black"/>
+                                <Label Text="{Binding CreatedAt, StringFormat='Created at: {0:dd.MM.yyyy HH:mm}'}" FontSize="13" TextColor="Black"/>
+                                <Label Text="{Binding Distance, StringFormat='Distance: {0:F2} км'}" FontSize="13" TextColor="Black"/>
+                                <Label Text="{Binding Duration, StringFormat='Duration: {0:F0} мин'}" FontSize="13" TextColor="Black"/>
+                                <Label Text= "{Binding Status, StringFormat='Status: {0}'}" FontSize="13" TextColor="Black"/>
+                        </StackLayout>
                         </Frame>
                     </DataTemplate>
                 </CollectionView.ItemTemplate>

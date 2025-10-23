@@ -32,10 +32,29 @@ public partial class RouteCreationPage : ContentPage
 
     private void OnClientsSelected(object sender, SelectionChangedEventArgs e)
     {
-        var selectedClients = e.CurrentSelection.Cast<ClientViewModel>().ToList();
-        selectedClientIds = selectedClients.Select(c => c.Id).ToList();
-        createRouteButton.IsEnabled = selectedClients.Count > 1;
+        foreach (var added in e.CurrentSelection.OfType<ClientViewModel>())
+            added.IsSelected = true;
+
+        foreach (var removed in e.PreviousSelection.OfType<ClientViewModel>()
+                                                   .Except(e.CurrentSelection.OfType<ClientViewModel>()))
+            removed.IsSelected = false;
+
+        // твоя логика id и кнопки
+        var selected = e.CurrentSelection.OfType<ClientViewModel>().ToList();
+        selectedClientIds = selected.Select(c => c.Id).ToList();
+        createRouteButton.IsEnabled = selected.Count > 1;
+        if (createRouteButton.IsEnabled)
+        {
+            createRouteButton.BackgroundColor = Color.FromArgb("#62b375");
+        }
+        else
+        {
+            createRouteButton.BackgroundColor = Color.FromArgb("#404040");
+        }
+        
     }
+
+    
 
     private async void createRouteButton_Clicked(object sender, EventArgs e)
     {
@@ -51,11 +70,13 @@ public partial class RouteCreationPage : ContentPage
                 using var stream = await response.Content.ReadAsStreamAsync();
                 using var json = await JsonDocument.ParseAsync(stream);
 
-                var routeData = json.RootElement.GetProperty("routeData").ToString();
-                var routeId = int.Parse(json.RootElement.GetProperty("routeId").ToString());
+                var routeData = json.RootElement.GetProperty("route_data").ToString();
+                var routeId = int.Parse(json.RootElement.GetProperty("route_id").ToString());
 
                 await DisplayAlert("Success", "Маршрут успешно построен", "OK");
                 await Navigation.PushAsync(new AcceptRouteView(routeData, routeId));
+
+                clientsCollectionView.SelectedItems.Clear();
             }
             else
             {
@@ -67,5 +88,10 @@ public partial class RouteCreationPage : ContentPage
         {
             await DisplayAlert("Error", ex.Message, "OK");
         }
+    }
+
+    private void clientSearchBar_TextChanged(object sender, TextChangedEventArgs e)
+    {
+
     }
 }

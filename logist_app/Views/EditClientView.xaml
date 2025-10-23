@@ -30,7 +30,7 @@
                 <Entry Text="{Binding Client.ContainerCount}" Keyboard="Numeric" />
 
                 <Label Text="Start Date" />
-                <DatePicker Date="{Binding Client.start_date}" />
+                <DatePicker Date="{Binding Client.StartDate}" />
 
                 <Button x:Name="saveButton"  Text="Save" Command="{Binding SaveCommand}" />
                 <Button x:Name="cancelButton" Text="Cancel" Command="{Binding CancelCommand}" />

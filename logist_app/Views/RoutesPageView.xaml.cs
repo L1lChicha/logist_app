@@ -25,9 +25,9 @@ public partial class ViewRoutesPage : ContentPage
 
     private async void OnRouteSelected(object sender, SelectionChangedEventArgs e)
     {
-        if (e.CurrentSelection.FirstOrDefault() is RouteViewModel selectedRoute)
+        if (e.CurrentSelection.FirstOrDefault() is Route selectedRoute)
         {
-            RouteViewModel routeToShow = selectedRoute;
+            Route routeToShow = selectedRoute;
 
             // если геометрия отсутствует, подгружаем с сервера
             if (string.IsNullOrEmpty(selectedRoute.GeometryJson))

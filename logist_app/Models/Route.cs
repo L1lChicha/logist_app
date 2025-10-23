@@ -6,7 +6,7 @@ using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 
-    public class RouteViewModel
+    public class Route
     {
         public int Id { get; set; }
         public string Name { get; set; }
@@ -14,4 +14,5 @@ using System.Threading.Tasks;
         public double Distance { get; set; }
         public double Duration { get; set; }
         [JsonPropertyName("geometry_json")] public string GeometryJson { get; set; }
-    }
+        [JsonPropertyName("status")] public string? Status { get; set; }
+}

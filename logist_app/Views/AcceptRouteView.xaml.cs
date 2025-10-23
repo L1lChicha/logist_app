@@ -29,12 +29,10 @@ public partial class AcceptRouteView : ContentPage
         _routeGeoJson = routeGeoJson;
         _routeId = routeId;
 
-        // Берём зависимости из DI, не меняя сигнатуру конструктора страницы
         _api = App.Services.GetRequiredService<ApiSettings>();
         _httpFactory = App.Services.GetRequiredService<IHttpClientFactory>();
 
-        // Если карта в html-файле, не забудь указать источник (в XAML или здесь)
-        // MapWebView.Source = "map.html";
+       
     }
 
     private async void MapWebView_Navigated(object sender, WebNavigatedEventArgs e)
@@ -68,14 +66,24 @@ public partial class AcceptRouteView : ContentPage
     {
         try
         {
+            var name = RouteNameEntry.Text;
+
+            if (string.IsNullOrWhiteSpace(name))
+            {
+                await DisplayAlert("Ошибка", "Введите название маршрута.", "OK");
+                return;
+            }
+
             var http = _httpFactory.CreateClient("Api");
-            // POST /Route/confirm/{id}
             var url = $"{_api.RoutesConfirmEndpoint}/{_routeId}";
-            var response = await http.PostAsync(url, null);
+
+            
+         
+            var response = await http.PostAsJsonAsync(url, new { name });
 
             if (response.IsSuccessStatusCode)
             {
-                await DisplayAlert("Готово", "Маршрут подтвержден!", "OK");
+                await DisplayAlert("Готово", "Маршрут подтверждён!", "OK");
                 await Navigation.PopToRootAsync();
             }
             else
@@ -90,12 +98,12 @@ public partial class AcceptRouteView : ContentPage
         }
     }
 
+
     private async void rejectRoute_Clicked(object sender, EventArgs e)
     {
         try
         {
             var http = _httpFactory.CreateClient("Api");
-            // POST /Route/reject/{id}
             var url = $"{_api.RoutesRejectEndpoint}/{_routeId}";
             var response = await http.PostAsync(url, null);
 
