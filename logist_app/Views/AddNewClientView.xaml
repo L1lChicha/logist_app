@@ -107,6 +107,22 @@
                 <Entry x:Name="ContainerCountEntry" Placeholder="Количество" Keyboard="Numeric" />
             </StackLayout>
             <StackLayout  Orientation="Vertical" HorizontalOptions="Start" >
+                <Label Text="Volume"/>
+                <Entry x:Name="VolumeEntry"  WidthRequest="150"/>
+            </StackLayout>
+            <StackLayout  Orientation="Vertical">
+                <Label Text="Type of load" />
+                <Picker x:Name="LoadingTypePicker" >
+                    <Picker.ItemsSource>
+                        <x:Array Type="{x:Type x:String}">
+                            <x:String>Default</x:String>
+                            <x:String>Lifting with a manipulator</x:String>
+                        </x:Array>
+                    </Picker.ItemsSource>
+                </Picker>
+            </StackLayout>
+            
+            <StackLayout  Orientation="Vertical" HorizontalOptions="Start" >
                 <Label Text="Date"/>
                 <DatePicker x:Name="StartDatePicker"  WidthRequest="150"/>
             </StackLayout>

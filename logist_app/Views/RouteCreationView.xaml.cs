@@ -1,5 +1,6 @@
-﻿using logist_app.ViewModels;
-using logist_app.Models;
+﻿using logist_app.Models;
+using logist_app.ViewModels;
+using System.Linq;
 using System.Net.Http.Json;
 using System.Text.Json;
 
@@ -7,14 +8,14 @@ namespace logist_app.Views;
 
 public partial class RouteCreationPage : ContentPage
 {
-    private readonly DataViewModel _viewModel;
+    private readonly ClientDataViewModel _viewModel;
     private readonly ApiSettings _apiSettings;
     private readonly IHttpClientFactory _httpClientFactory;
 
     private List<int> selectedClientIds = new();
 
     // ✅ получаем зависимости через DI
-    public RouteCreationPage(DataViewModel viewModel, ApiSettings apiSettings, IHttpClientFactory httpClientFactory)
+    public RouteCreationPage(ClientDataViewModel viewModel, ApiSettings apiSettings, IHttpClientFactory httpClientFactory)
     {
         InitializeComponent();
         _viewModel = viewModel;
@@ -39,7 +40,6 @@ public partial class RouteCreationPage : ContentPage
                                                    .Except(e.CurrentSelection.OfType<ClientViewModel>()))
             removed.IsSelected = false;
 
-        // твоя логика id и кнопки
         var selected = e.CurrentSelection.OfType<ClientViewModel>().ToList();
         selectedClientIds = selected.Select(c => c.Id).ToList();
         createRouteButton.IsEnabled = selected.Count > 1;

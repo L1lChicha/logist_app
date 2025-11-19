@@ -9,17 +9,22 @@ namespace logist_app.Models
 {
     public class Client
     {
-        public int Id { get; set; }
-        public string Name { get; set; }
-        public string Address { get; set; }
-        public string City { get; set; }
-        public string PostalCode { get; set; }
-        public string Phone { get; set; }
-        public string Email { get; set; }
-        public string Recurrence { get; set; }
-        public int ContainerCount { get; set; }
-        public DateTime StartDate { get; set; }
-        public double? Latitude { get; set; }
-        public double? Longitude { get; set; }
+        [JsonPropertyName("id")] public int Id { get; set; }
+        [JsonPropertyName("name")] public string Name { get; set; }
+        [JsonPropertyName("address")] public string Address { get; set; }
+        [JsonPropertyName("city")] public string City { get; set; }
+        [JsonPropertyName("postal_code")] public string PostalCode { get; set; }
+        [JsonPropertyName("phone")] public string Phone { get; set; }
+        [JsonPropertyName("email")] public string Email { get; set; }
+        [JsonPropertyName("recurrence")] public string Recurrence { get; set; }
+        [JsonPropertyName("container_count")] public int ContainerCount { get; set; }
+        [JsonPropertyName("start_date")] public DateTime StartDate { get; set; }
+        [JsonPropertyName("coordinates")] public string Coordinates { get; set; }
+        [JsonPropertyName("loading_type")] public string? LoadingType { get; set; }
+        [JsonPropertyName("volume")] public int Volume { get; set; }
+
+        [JsonPropertyName("lat")] public double Lat { get; set; }
+        [JsonPropertyName("lon")] public double Lon { get; set; }
+      
     }
 }

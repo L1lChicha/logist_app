@@ -20,7 +20,7 @@ public partial class ActionPage : ContentPage
     {
 
 
-        var page = App.Services.GetService<DataViewPage>();
+        var page = App.Services.GetService<ClientDataPageView>();
         await Navigation.PushAsync(page);
     }
 

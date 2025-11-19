@@ -55,14 +55,14 @@ namespace logist_app
             });
 
             // ✅ Регистрируем ViewModels
-            builder.Services.AddSingleton<DataViewModel>();
-            builder.Services.AddTransient<DataViewPage>();
+            builder.Services.AddSingleton<ClientDataViewModel>();
+            builder.Services.AddTransient<ClientDataPageView>();
             builder.Services.AddTransient<RouteCreationPage>();
             builder.Services.AddSingleton<IEditClientVmFactory, EditClientVmFactory>();
             builder.Services.AddSingleton<RoutesListViewModel>();
             builder.Services.AddTransient<ViewRoutesPage>();
-            builder.Services.AddTransient<DataViewModel>();
-            builder.Services.AddTransient<DataViewPage>();
+            builder.Services.AddTransient<ClientDataViewModel>();
+            builder.Services.AddTransient<ClientDataPageView>();
             builder.Services.AddTransient<RouteCreationPage>();
             builder.Services.AddTransient<DriverManagerView>();
             builder.Services.AddTransient<AddNewDriverPage>();

@@ -158,6 +158,8 @@ public partial class MainPage : ContentPage
         string email = EmailEntry.Text;
         string recurrence = RecurrencePicker.SelectedItem?.ToString();
         string containerCountText = ContainerCountEntry.Text;
+        string loadingType = LoadingTypePicker.SelectedItem?.ToString().Trim();
+        int volume = int.Parse(VolumeEntry.Text);
         DateTime startDate = StartDatePicker.Date;
         string coordinates = lat + ", " + lon;
        
@@ -166,7 +168,8 @@ public partial class MainPage : ContentPage
         if (string.IsNullOrWhiteSpace(name) || string.IsNullOrWhiteSpace(address) ||
             string.IsNullOrWhiteSpace(city) || string.IsNullOrWhiteSpace(postalCode) ||
             string.IsNullOrWhiteSpace(phone) || string.IsNullOrWhiteSpace(email) ||
-            string.IsNullOrWhiteSpace(recurrence) || string.IsNullOrWhiteSpace(containerCountText))
+            string.IsNullOrWhiteSpace(recurrence) || string.IsNullOrWhiteSpace(containerCountText) 
+            || string.IsNullOrWhiteSpace(loadingType) || string.IsNullOrWhiteSpace(volume.ToString()))
         {
             await DisplayAlert("Error", "Please fill in all form fields.", "OK");
             return;
@@ -179,7 +182,7 @@ public partial class MainPage : ContentPage
         }
 
 
-        var newClient = new ClientViewModel();
+        var newClient = new Client();
         newClient.Name = name;
         newClient.Address = address;
         newClient.City = city;
@@ -190,6 +193,8 @@ public partial class MainPage : ContentPage
         newClient.ContainerCount = containerCount;
         newClient.StartDate = startDate.ToUniversalTime();
         newClient.Coordinates = coordinates;
+        newClient.LoadingType = loadingType;
+        newClient.Volume = volume;
         newClient.Lat = lat;
         newClient.Lon = lon;
 
@@ -206,22 +211,22 @@ public partial class MainPage : ContentPage
         }
     }
 
-    private async Task<bool> AddNewClientAsync(ClientViewModel newClient)
+    private async Task<bool> AddNewClientAsync(Client newClient)
     {
         try
         {
-            // берём зависимости из контейнера
+           
             var api = App.Services.GetRequiredService<ApiSettings>();
             var httpFactory = App.Services.GetRequiredService<IHttpClientFactory>();
-            var http = httpFactory.CreateClient("Api"); // BaseAddress уже настроен в MauiProgram
+            var http = httpFactory.CreateClient("Api"); 
 
-            // отправляем на относительный endpoint из конфигурации
             var response = await http.PostAsJsonAsync(api.ClientsEndpoint, newClient);
             return response.IsSuccessStatusCode;
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Error adding client: {ex.Message}");
+            await DisplayAlert("Error", $"Failed to add client {ex.Message}", "OK");
+
             return false;
         }
     }
@@ -231,7 +236,7 @@ public partial class MainPage : ContentPage
 
     private async void OnViewDataClicked(object sender, EventArgs e)
     {
-        var page = App.Services.GetService<DataViewPage>();
+        var page = App.Services.GetService<ClientDataPageView>();
         await Navigation.PushAsync(page);
     }
 }

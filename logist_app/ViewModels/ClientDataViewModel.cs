@@ -1,4 +1,7 @@
-﻿using logist_app.Models;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using logist_app.Models;
+using logist_app.Views;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Globalization;
@@ -8,11 +11,12 @@ using System.Text.RegularExpressions;
 
 namespace logist_app.ViewModels;
 
-public class DataViewModel : INotifyPropertyChanged
+public partial class ClientDataViewModel : INotifyPropertyChanged
 {
+    //public ObservableCollection<Client> Clients { get; } = new();
+    //public List<Client> AllClients { get; } = new();
     public ObservableCollection<ClientViewModel> Clients { get; } = new();
     public List<ClientViewModel> AllClients { get; } = new();
-
     public ObservableCollection<string> PickerOptions { get; } = new();
     private List<string> _streets = new();
 
@@ -45,7 +49,7 @@ public class DataViewModel : INotifyPropertyChanged
         }
     }
 
-    public DataViewModel(ApiSettings api, IHttpClientFactory httpFactory)
+    public ClientDataViewModel(ApiSettings api, IHttpClientFactory httpFactory)
     {
         _api = api;
         _httpFactory = httpFactory;
@@ -192,7 +196,12 @@ public class DataViewModel : INotifyPropertyChanged
         }
     }
 
+
+
+
     public event PropertyChangedEventHandler? PropertyChanged;
     private void OnPropertyChanged([CallerMemberName] string name = "") =>
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+
+
 }

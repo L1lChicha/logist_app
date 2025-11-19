@@ -4,13 +4,13 @@
              x:Class="logist_app.Views.DriversDataView"
               xmlns:viewmodels="clr-namespace:logist_app.ViewModels"
              Title="DriversDataView">
-    <Grid RowSpacing="6" RowDefinitions="32,*" ColumnDefinitions="*">
-        <StackLayout HeightRequest="50">
-            <Button Text="Обновить" HeightRequest="10" Grid.Row="0" HorizontalOptions="Center" />
-        </StackLayout>
-
-        <CollectionView Grid.Row="1" ItemsSource="{Binding Drivers}" 
-            SelectionMode="Single">
+    
+    <Grid RowSpacing="6" ColumnDefinitions="3*,2*" >
+        
+        
+            
+        <CollectionView Grid.Row="0" Grid.Column="0" x:Name="driverCollectionView" ItemsSource="{Binding Drivers}" 
+            SelectionMode="Single"  SelectedItem="{Binding SelectedDriver}" > 
 
             <CollectionView.ItemTemplate>
                 <DataTemplate>
@@ -27,5 +27,36 @@
             </CollectionView.ItemTemplate>
         </CollectionView>
 
+        <VerticalStackLayout Grid.Column="1" Grid.Row="0">
+        <TableView  Intent="Data"  >
+            <TableRoot >
+                <TableSection >
+                    <EntryCell Label="Id" x:Name="IdEntryCell" 
+                               Text="{Binding SelectedDriver.Id}"/>
+                    <EntryCell Label="Name" x:Name="NameEntryCell" 
+                               Text="{Binding SelectedDriver.Name}"/>
+                    <EntryCell Label="Is active" x:Name="IsActiveEntryCell" 
+                               Text="{Binding SelectedDriver.IsActive}"/>
+                    <EntryCell Label="Phone Number" x:Name="PhoneNumberEntryCell" 
+                               Text="{Binding SelectedDriver.PhoneNumber}"/>
+                     <EntryCell Label="Created At" x:Name="CreatedAtEntryCell" 
+                                Text="{Binding SelectedDriver.CreatedAt}"/>
+                    <EntryCell Label="Authorization code" x:Name="AuthorizationCodeEntryCell"
+                               Text="{Binding Code}"/>
+                </TableSection>
+            </TableRoot>
+        </TableView>
+            <Button Text="Save" />
+            <Button Text="Edit"/>
+            <Button Text="Get authorization code" Command="{Binding GetAuthorizationCodeCommand}"/>
+
+            <Image Source="{Binding QrImage}"
+               WidthRequest="200"
+               HeightRequest="200"
+               HorizontalOptions="Center"
+               VerticalOptions="Center" />  
+
+
+        </VerticalStackLayout>
     </Grid>
 </ContentPage>

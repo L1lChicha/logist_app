@@ -1,14 +1,21 @@
 ﻿
+using CommunityToolkit.Maui.Core;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using logist_app.Models;
+using logist_app.Views;
+using Microsoft.Maui.Controls;
+using QRCoder;
 using System.Collections.ObjectModel;
 using System.Net.Http.Json;
+using System.Xml.Linq;
+
 
 namespace logist_app.ViewModels
 {
     public partial class DriversViewModel : ObservableObject
     {
+
         private readonly ApiSettings _api;
         private readonly IHttpClientFactory _httpFactory;
 
@@ -20,9 +27,11 @@ namespace logist_app.ViewModels
 
         [ObservableProperty]
         public ObservableCollection<Driver> drivers = new();
-        
-        [RelayCommand]
 
+        [ObservableProperty]
+        private Driver _selectedDriver;
+
+        [RelayCommand]
         public async Task LoadDriversAsync()
         {
             try
@@ -50,6 +59,46 @@ namespace logist_app.ViewModels
             }
         }
 
-        
+        [ObservableProperty]
+        string code;
+
+       
+
+        [RelayCommand]
+        public void ShowCode(string code)
+        {
+            Code = code;
+        }
+
+        [ObservableProperty]
+        private ImageSource qrImage;
+
+
+        [RelayCommand]
+        public async Task GetAuthorizationCode()
+        {
+
+            var id = _selectedDriver.Id;
+            int codeLength = 10;
+            int codeHoursValid = 1;
+
+            var http = _httpFactory.CreateClient("Api");
+            var url = $"{_api.DriverGetCodeUrl}/{id}";
+            var response = await http.PostAsJsonAsync(url, new { codeLength , codeHoursValid });
+            var json = await response.Content.ReadFromJsonAsync<Dictionary<string, object>>();
+            ShowCode(json["code"].ToString());
+
+
+            var generator = new QRCodeGenerator();
+            var data = generator.CreateQrCode(json["code"].ToString(), QRCodeGenerator.ECCLevel.Q);
+
+            var png = new PngByteQRCode(data);
+            byte[] qrBytes = png.GetGraphic(20); // масштаб QR — 20
+
+            QrImage = ImageSource.FromStream(() => new MemoryStream(qrBytes));
+        }
+
+
+       
     }
 }

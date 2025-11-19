@@ -69,6 +69,7 @@
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="9.0.5" />
 		<PackageReference Include="Microsoft.Maui.Controls.Maps" Version="9.0.70" />
 		<PackageReference Include="Npgsql" Version="9.0.3" />
+		<PackageReference Include="QRCoder" Version="1.7.0" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -78,11 +79,8 @@
 	  <Compile Update="Views\AddNewClientView.xaml.cs">
 	    <DependentUpon>AddNewClientView.xaml</DependentUpon>
 	  </Compile>
-	  <Compile Update="Views\DataPageView.xaml.cs">
-	    <DependentUpon>DataPageView.xaml</DependentUpon>
-	  </Compile>
-	  <Compile Update="Views\EditClientView.xaml.cs">
-	    <DependentUpon>EditClientView.xaml</DependentUpon>
+	  <Compile Update="Views\ClientDataPageView.xaml.cs">
+	    <DependentUpon>ClientDataPageView.xaml</DependentUpon>
 	  </Compile>
 	  <Compile Update="Views\RouteCreationView.xaml.cs">
 	    <DependentUpon>RouteCreationView.xaml</DependentUpon>
@@ -102,16 +100,13 @@
 	  <MauiXaml Update="Views\AddNewDriverPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="Views\DataPageView.xaml">
+	  <MauiXaml Update="Views\ClientDataPageView.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Views\DriverManagerView.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Views\DriversDataView.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
-	  <MauiXaml Update="Views\EditClientView.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Views\RouteCreationView.xaml">
@@ -126,6 +121,10 @@
 		<None Update="appsettings.json">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</None>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Folder Include="Factories\" />
 	</ItemGroup>
 
 </Project>
