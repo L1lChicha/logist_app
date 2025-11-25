@@ -89,9 +89,4 @@ public partial class RouteCreationPage : ContentPage
             await DisplayAlert("Error", ex.Message, "OK");
         }
     }
-
-    private void clientSearchBar_TextChanged(object sender, TextChangedEventArgs e)
-    {
-
-    }
-}
+}  

@@ -29,7 +29,7 @@ public partial class ViewRoutesPage : ContentPage
         {
             Route routeToShow = selectedRoute;
 
-            // если геометрия отсутствует, подгружаем с сервера
+        
             if (string.IsNullOrEmpty(selectedRoute.GeometryJson))
             {
                 var fullRoute = await _vm.GetRouteByIdAsync(selectedRoute.Id);
@@ -43,7 +43,7 @@ public partial class ViewRoutesPage : ContentPage
 
             if (string.IsNullOrEmpty(routeToShow.GeometryJson))
             {
-                //await DisplayAlert("Ошибка", "Маршрут не содержит данных геометрии.", "OK");
+                await DisplayAlert("Ошибка", "Маршрут не содержит данных геометрии.", "OK");
                 return;
             }
 

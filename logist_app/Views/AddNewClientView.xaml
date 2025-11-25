@@ -64,28 +64,28 @@
         <StackLayout Orientation="Vertical" WidthRequest="700">
             <StackLayout Orientation="Vertical">
                 <Label Text="Name"/>
-                <Entry x:Name="NameEntry" Placeholder="Имя" />
+                <Entry x:Name="NameEntry" Placeholder="Name" />
             </StackLayout>
          
                 <StackLayout  Orientation="Vertical">
                     <Label Text="Address"/>
                 </StackLayout>
             <StackLayout Orientation="Horizontal">
-                <Entry x:Name="AddressEntry" Placeholder="Адрес" WidthRequest="480" Margin="0,0,5,0"/>
+                <Entry x:Name="AddressEntry" Placeholder="Address" WidthRequest="480" Margin="0,0,5,0"/>
                 <Button Clicked="FindButton" Text="Find" HeightRequest="32" WidthRequest="100"  CornerRadius="5" BackgroundColor="#4dd1e3" Margin="0,0,0,0"></Button>
                 <Button Clicked="GetLocationData" Text="Set location" HeightRequest="32" WidthRequest="100" CornerRadius="5" BackgroundColor="#4dd1e3" Margin="0,0,0,0"></Button>
             </StackLayout>
             <StackLayout Orientation="Vertical">
                 <Label Text="City" />
-                <Entry x:Name="CityEntry" Placeholder="Город"/>
+                <Entry x:Name="CityEntry" Placeholder="City"/>
             </StackLayout>
             <StackLayout Orientation="Vertical">
                 <Label Text="Post code" />
-                <Entry x:Name="PostalCodeEntry" Placeholder="Индекс"/>
+                <Entry x:Name="PostalCodeEntry" Placeholder="Index"/>
             </StackLayout>
             <StackLayout Orientation="Vertical">
                 <Label Text="Phone number" />
-                <Entry x:Name="PhoneEntry" Placeholder="Телефон" />
+                <Entry x:Name="PhoneEntry" Placeholder="Phone number" />
             </StackLayout>
             <StackLayout Orientation="Vertical">
                 <Label Text="Email" />
@@ -104,7 +104,7 @@
             </StackLayout>
             <StackLayout  Orientation="Vertical">
                 <Label Text="Numbers of containers" />
-                <Entry x:Name="ContainerCountEntry" Placeholder="Количество" Keyboard="Numeric" />
+                <Entry x:Name="ContainerCountEntry" Placeholder="Container quantity" Keyboard="Numeric" />
             </StackLayout>
             <StackLayout  Orientation="Vertical" HorizontalOptions="Start" >
                 <Label Text="Volume"/>

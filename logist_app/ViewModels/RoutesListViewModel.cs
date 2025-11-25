@@ -1,11 +1,20 @@
-﻿using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Net.Http.Json;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
 using logist_app.Models;
+using Microsoft.Maui.Controls;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Globalization;
+using System.Net.Http.Json;
 
-public class RoutesListViewModel : INotifyPropertyChanged
+public partial class RoutesListViewModel : ObservableObject
 {
     private ObservableCollection<Route> _routes = new();
+    public List<Route> allRoutes{ get; set; } = new();
+
+
+    [ObservableProperty]
+    private string selectedItem;
+
     public ObservableCollection<Route> Routes
     {
         get => _routes;
@@ -52,6 +61,21 @@ public class RoutesListViewModel : INotifyPropertyChanged
         }
     }
 
+
+    partial void OnSelectedItemChanged(string value)
+    {
+        string sortParam = value;
+        //IEnumerable<Client> query = (IEnumerable<Client>)allRoutes;
+        switch (sortParam)
+        {
+            case "Confirmed":
+          
+                var sorted = allRoutes.Where(c => c.CreatedBy == "Confirmed").ToList();
+                allRoutes.Clear();
+                allRoutes.AddRange(sorted);
+                break;
+        }
+    }
 
     public async Task<Route?> GetRouteByIdAsync(int id)
     {

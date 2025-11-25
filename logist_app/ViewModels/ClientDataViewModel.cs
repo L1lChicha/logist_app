@@ -1,12 +1,14 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using logist_app.Models;
+using logist_app.ViewModels;
 using logist_app.Views;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Globalization;
 using System.Net.Http.Json;
 using System.Runtime.CompilerServices;
+using System.Text.Json;
 using System.Text.RegularExpressions;
 
 namespace logist_app.ViewModels;
@@ -62,15 +64,30 @@ public partial class ClientDataViewModel : INotifyPropertyChanged
         try
         {
             var http = _httpFactory.CreateClient("Api");
-            var data = await http.GetFromJsonAsync<List<ClientViewModel>>(_api.ClientsEndpoint,
-                new System.Text.Json.JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+
+            var clientsDto = await http.GetFromJsonAsync<List<Client>>(
+                _api.ClientsEndpoint,
+                new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
 
             AllClients.Clear();
-            if (data is { Count: > 0 }) AllClients.AddRange(data);
+            Clients.Clear();
 
+            if (clientsDto != null)
+            {
+                var vmList = clientsDto.Select(c => new ClientViewModel(c)).ToList();
+
+                AllClients.AddRange(vmList);
+
+                MainThread.BeginInvokeOnMainThread(() =>
+                {
+                    foreach (var v in vmList)
+                        Clients.Add(v);
+                });
+            }
+         
             ApplyFilter(FilterText);
-            BuildPickerOptionsFromStreets(); // после загрузки — сформировать пункты
-            SelectedOptionIndex = 0; // первичная отрисовка
+            BuildPickerOptionsFromStreets(); 
+            SelectedOptionIndex = 0; 
         }
         catch (Exception ex)
         {
