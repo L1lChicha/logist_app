@@ -36,18 +36,17 @@ public partial class RoutesListViewModel : ObservableObject
     {
         try
         {
-            var http = _httpFactory.CreateClient("Api"); // BaseUrl уже задан в AddHttpClient
-            // "Route/all" — используем относительный путь относительно BaseUrl
+            var http = _httpFactory.CreateClient("Api");
             var routes = await http.GetFromJsonAsync<List<Route>>($"{_api.RoutesEndpoint}/all");
 
+            allRoutes = routes ?? new List<Route>();
             Routes.Clear();
 
             if (routes is not null)
             {
-                foreach (var route in routes)
-                {
+                foreach (var route in allRoutes)
                     Routes.Add(route);
-                }
+               
             }
             else
             {
@@ -64,17 +63,38 @@ public partial class RoutesListViewModel : ObservableObject
 
     partial void OnSelectedItemChanged(string value)
     {
-        string sortParam = value;
-        //IEnumerable<Client> query = (IEnumerable<Client>)allRoutes;
-        switch (sortParam)
+     
+        IEnumerable<Route> query = allRoutes;
+
+        switch (value)
         {
             case "Confirmed":
-          
-                var sorted = allRoutes.Where(c => c.CreatedBy == "Confirmed").ToList();
-                allRoutes.Clear();
-                allRoutes.AddRange(sorted);
+                query = query.Where(c => string.Equals(c.Status, "confirmed", StringComparison.OrdinalIgnoreCase));
                 break;
+            case "Draft":
+                query = query.Where(c => string.Equals(c.Status, "draft", StringComparison.OrdinalIgnoreCase));
+                break;
+            case "Rejected":
+                query = query.Where(c => string.Equals(c.Status, "rejected", StringComparison.OrdinalIgnoreCase));
+                break;
+            case "All":
+                RestoreAll();
+                break;
+            default:
+                RestoreAll();
+                return;
         }
+
+        Routes.Clear();
+        foreach (var r in query)
+            Routes.Add(r);
+    }
+
+    private void RestoreAll()
+    {
+        Routes.Clear();
+        foreach (var r in _routes)
+            Routes.Add(r);
     }
 
     public async Task<Route?> GetRouteByIdAsync(int id)

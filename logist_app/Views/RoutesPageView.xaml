@@ -29,7 +29,8 @@
                 SelectedItem="{Binding SelectedItem, Mode=TwoWay}">
             <Picker.ItemsSource>
                 <x:Array Type="{x:Type x:String}">
-                    <x:String>Pending</x:String>
+                    <x:String>All</x:String>
+                    <x:String>Draft</x:String>
                     <x:String>Confirmed</x:String>
                     <x:String>Rejected</x:String>
                 </x:Array>
