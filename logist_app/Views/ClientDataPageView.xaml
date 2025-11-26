@@ -9,12 +9,12 @@
     
     <Grid RowSpacing="6" RowDefinitions="32,*" ColumnDefinitions="*">
         <StackLayout HeightRequest="50">
-            <Button Text="Refresh" Clicked="OnRefreshClicked" HeightRequest="10" Grid.Row="0" HorizontalOptions="Center" />
+            <Button Text="Refresh" Command="{Binding RefreshCommand}" HeightRequest="10" Grid.Row="0" HorizontalOptions="Center" />
         </StackLayout>
 
-        <CollectionView Grid.Row="1" ItemsSource="{Binding Clients}"  
+        <CollectionView Grid.Row="1"
+                        ItemsSource="{Binding Clients}"  
                         SelectedItem="{Binding SelectedClient, Mode=TwoWay} "
-                     
                         SelectionMode="Single" 
                         x:Name="ClientsCollectionView">
            

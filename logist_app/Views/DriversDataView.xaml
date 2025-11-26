@@ -48,7 +48,10 @@
         </TableView>
             <Button Text="Save" />
             <Button Text="Edit"/>
-            <Button Text="Get authorization code" Command="{Binding GetAuthorizationCodeCommand}"/>
+            <Button Text="Get authorization code" 
+                    x:Name="getCodeButton" 
+                    IsEnabled="{Binding IsButtonEnabled}"  
+                    Command="{Binding GetAuthorizationCodeCommand}"/>
 
             <Image Source="{Binding QrImage}"
                WidthRequest="200"

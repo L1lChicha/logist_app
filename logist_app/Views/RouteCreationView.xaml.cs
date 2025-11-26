@@ -25,6 +25,11 @@ public partial class RouteCreationPage : ContentPage
         BindingContext = _viewModel;
         createRouteButton.IsEnabled = false;
     }
+    protected override async void OnAppearing()
+    {
+        base.OnAppearing();
+        await _viewModel.LoadDataAsync();
+    }
 
     public async Task RefreshClients() => await _viewModel.LoadDataAsync();
 

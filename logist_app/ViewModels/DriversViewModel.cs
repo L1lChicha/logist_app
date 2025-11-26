@@ -31,6 +31,16 @@ namespace logist_app.ViewModels
         [ObservableProperty]
         private Driver _selectedDriver;
 
+        [ObservableProperty]
+        private bool isButtonEnabled = false;
+
+
+        partial void OnSelectedDriverChanged(Driver value)
+        {
+            IsButtonEnabled = value != null;
+        }
+
+
         [RelayCommand]
         public async Task LoadDriversAsync()
         {

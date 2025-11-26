@@ -7,23 +7,23 @@ namespace logist_app.Factories
 {
     public interface IEditClientVmFactory
     {
-        EditClientViewModel Create(ClientViewModel client, INavigation nav, Func<Task> refresh);
+        EditClientViewModel Create(Client client, INavigation nav, Func<Task> refresh);
     }
 
-    public class EditClientVmFactory : IEditClientVmFactory
-    {
-        private readonly ApiSettings _api;
-        private readonly IHttpClientFactory _http;
+    //public class EditClientVmFactory : IEditClientVmFactory
+    //{
+    //    private readonly ApiSettings _api;
+    //    private readonly IHttpClientFactory _http;
 
-        public EditClientVmFactory(ApiSettings api, IHttpClientFactory http)
-        {
-            _api = api;
-            _http = http;
-        }
+    //    public EditClientVmFactory(ApiSettings api, IHttpClientFactory http)
+    //    {
+    //        _api = api;
+    //        _http = http;
+    //    }
 
-        public EditClientViewModel Create(ClientViewModel client, INavigation nav, Func<Task> refresh)
-        {
-            return new EditClientViewModel(client, nav, refresh, _api, _http);
-        }
-    }
+    //    //public EditClientViewModel Create(Client client, INavigation nav, Func<Task> refresh)
+    //    //{
+    //    //    return new EditClientViewModel(client, nav, refresh, _api, _http);
+    //    //}
+    //}
 }

@@ -32,9 +32,9 @@
                 <Label Text="Start Date" />
                 <DatePicker Date="{Binding Client.StartDate}" />
 
-                <Button x:Name="saveButton"  Text="Save" Command="{Binding SaveCommand}" />
+                <Button x:Name="saveButton"  Text="Save" Command="{Binding SaveClientCommand}" />
                 <Button x:Name="cancelButton" Text="Cancel" Command="{Binding CancelCommand}" />
-                <Button x:Name="deleteClientButton" Text="Delete Client" Command="{Binding DeleteCommand}" />
+                <Button x:Name="deleteClientButton" Text="Delete Client" Command="{Binding DeleteClientCommand}" />
             </StackLayout>
         </ScrollView>
 </ContentPage>

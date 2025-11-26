@@ -24,9 +24,7 @@ public partial class ClientDataPageView: ContentPage
         base.OnAppearing();
         await _viewModel.LoadDataAsync();
     }
-    //  public async Task RefreshClients() => await _viewModel.LoadDataAsync();
+    
 
-    private async void OnRefreshClicked(object sender, EventArgs e) =>
-        await _viewModel.LoadDataAsync();
    
 }

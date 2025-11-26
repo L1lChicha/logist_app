@@ -1,62 +1,43 @@
-﻿using System.ComponentModel;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using logist_app.Models;
+using System.ComponentModel;
+using System.Net.Http.Json;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
-using System.Net.Http.Json;
-using logist_app.Models;
 
 namespace logist_app.ViewModels;
 
-public class EditClientViewModel : INotifyPropertyChanged
+public partial class EditClientViewModel : ObservableObject
 {
-    public event PropertyChangedEventHandler PropertyChanged;
+    [ObservableProperty]
+    private Client client;
 
-    private ClientViewModel _client;
-    public ClientViewModel Client
-    {
-        get => _client;
-        set { _client = value; OnPropertyChanged(); }
-    }
-
-    public ICommand SaveCommand { get; }
-    public ICommand DeleteCommand { get; }
-    public ICommand CancelCommand { get; }
-
-    private readonly INavigation _navigation;
-    private readonly Func<Task> _refreshCallback;
-
-    // ✅ Новые поля для DI
-    private readonly ApiSettings _apiSettings;
-    private readonly IHttpClientFactory _httpClientFactory;
-
-    // ✅ Обновлённый конструктор
-    public EditClientViewModel(
-        ClientViewModel client,
-        INavigation navigation,
-        Func<Task> refreshCallback,
-        ApiSettings apiSettings,
-        IHttpClientFactory httpClientFactory)
+    private readonly ApiSettings _api;
+    private readonly IHttpClientFactory _httpFactory;
+    public void Initialize(Client client)
     {
         Client = client;
-        _navigation = navigation;
-        _refreshCallback = refreshCallback;
-        _apiSettings = apiSettings;
-        _httpClientFactory = httpClientFactory;
-
-        SaveCommand = new Command(async () => await SaveClientAsync());
-        DeleteCommand = new Command(async () => await DeleteClientAsync());
-        CancelCommand = new Command(async () => await CancelAsync());
     }
 
+    public EditClientViewModel(ApiSettings apiSettings, IHttpClientFactory httpFactory)
+    {
+        _api = apiSettings;
+        _httpFactory = httpFactory;
+
+    }
+
+
+    [RelayCommand]
     private async Task SaveClientAsync()
     {
-        var http = _httpClientFactory.CreateClient("Api");
-        var response = await http.PutAsJsonAsync($"{_apiSettings.ClientsEndpoint}/{Client.Id}", Client);
+        var http = _httpFactory.CreateClient("Api");
+        var response = await http.PutAsJsonAsync($"{_api.ClientsEndpoint}/{client.Id}", client);
 
         if (response.IsSuccessStatusCode)
         {
             await Application.Current.MainPage.DisplayAlert("Success", "Client updated.", "OK");
-            await _refreshCallback();
-            await _navigation.PopAsync();
+
         }
         else
         {
@@ -65,19 +46,19 @@ public class EditClientViewModel : INotifyPropertyChanged
         }
     }
 
-    private async Task DeleteClientAsync()
-    {
+    [RelayCommand]
+    private async Task DeleteClient()
+     {
         bool confirm = await Application.Current.MainPage.DisplayAlert("Confirm", $"Delete {Client.Name}?", "Yes", "No");
         if (!confirm) return;
 
-        var http = _httpClientFactory.CreateClient("Api");
-        var response = await http.DeleteAsync($"{_apiSettings.ClientsEndpoint}/{Client.Id}");
+        var http = _httpFactory.CreateClient("Api");
+        var response = await http.DeleteAsync($"{_api.ClientsEndpoint}/{Client.Id}");
 
         if (response.IsSuccessStatusCode)
         {
             await Application.Current.MainPage.DisplayAlert("Deleted", "Client deleted.", "OK");
-            await _refreshCallback();
-            await _navigation.PopAsync();
+        
         }
         else
         {
@@ -85,13 +66,11 @@ public class EditClientViewModel : INotifyPropertyChanged
             await Application.Current.MainPage.DisplayAlert("Error", $"Failed to delete client.\n{error}", "OK");
         }
     }
-
-    private async Task CancelAsync()
+    [RelayCommand]
+    private async Task Cancel()
     {
-        await _refreshCallback();
-        await _navigation.PopAsync();
+
+        await Application.Current.MainPage.Navigation.PopAsync();
     }
 
-    private void OnPropertyChanged([CallerMemberName] string name = "") =>
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
 }

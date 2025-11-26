@@ -1,5 +1,8 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using logist_app.Models;
+using logist_app.Views;
+using CommunityToolkit.Mvvm.Messaging;
 using Microsoft.Maui.Controls;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -10,15 +13,22 @@ public partial class RoutesListViewModel : ObservableObject
 {
     private ObservableCollection<Route> _routes = new();
     public List<Route> allRoutes{ get; set; } = new();
-
-
-    [ObservableProperty]
-    private string selectedItem;
-
+    public record AlertMessage(string Title, string Message, string Cancel);
     public ObservableCollection<Route> Routes
     {
         get => _routes;
         set { _routes = value; OnPropertyChanged(nameof(Routes)); }
+    }
+    [ObservableProperty]
+    private string selectedFiltr;
+
+    [ObservableProperty]
+    private Route selectedRoute;
+
+    [RelayCommand]
+    public async Task RefreshAsync()
+    {
+        await LoadRoutesAsync();
     }
 
     public event PropertyChangedEventHandler PropertyChanged;
@@ -50,18 +60,55 @@ public partial class RoutesListViewModel : ObservableObject
             }
             else
             {
-                await Application.Current.MainPage.DisplayAlert("Ошибка", "Не удалось загрузить маршруты: данные отсутствуют.", "OK");
+                WeakReferenceMessenger.Default.Send(new AlertMessage("Ошибка", "Не удалось загрузить маршруты: данные отсутствуют.", "OK"));
             }
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Ошибка загрузки маршрутов: {ex.Message}");
-            await Application.Current.MainPage.DisplayAlert("Ошибка", $"Не удалось загрузить маршруты: {ex.Message}", "OK");
+            WeakReferenceMessenger.Default.Send(new AlertMessage("Ошибка", $"Не удалось загрузить маршруты: {ex.Message}", "OK"));
         }
     }
 
 
-    partial void OnSelectedItemChanged(string value)
+
+    //[RelayCommand]
+    private async Task OpenRouteAsync(Route route)
+    {
+        if (route == null) return;
+
+        Route routeToShow = route;
+
+        if (string.IsNullOrEmpty(route.GeometryJson))
+        {
+            var fullRoute = await GetRouteByIdAsync(route.Id);
+            if (fullRoute == null)
+            {
+                WeakReferenceMessenger.Default.Send(new AlertMessage("Ошибка", "Не удалось загрузить маршрут", "OK"));
+
+                SelectedRoute = null;
+                return;
+            }
+            routeToShow = fullRoute;
+        }
+
+        if (string.IsNullOrEmpty(routeToShow.GeometryJson))
+        {
+            WeakReferenceMessenger.Default.Send(new AlertMessage("Ошибка", "Маршрут не содержит данных геометрии.", "OK"));
+            SelectedRoute = null;
+            return;
+        }
+        await Shell.Current.Navigation.PushAsync(new AcceptRouteView(routeToShow.GeometryJson, routeToShow.Id));   
+        SelectedRoute = null;
+    }
+
+    partial void OnSelectedRouteChanged(Route value)
+    {
+      
+        if (value != null)
+            _ = OpenRouteAsync(value);
+    }
+
+    partial void OnSelectedFiltrChanged(string value)
     {
      
         IEnumerable<Route> query = allRoutes;

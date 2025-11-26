@@ -41,7 +41,7 @@ namespace logist_app
 
             // ✅ Регистрируем IConfiguration
             builder.Services.AddSingleton<IConfiguration>(builder.Configuration);
-            builder.Services.AddSingleton<IEditClientVmFactory, EditClientVmFactory>();
+            //builder.Services.AddSingleton<IEditClientVmFactory, EditClientVmFactory>();
 
 
             // ✅ Регистрируем типизированные настройки
@@ -58,7 +58,7 @@ namespace logist_app
             builder.Services.AddSingleton<ClientDataViewModel>();
             builder.Services.AddTransient<ClientDataPageView>();
             builder.Services.AddTransient<RouteCreationPage>();
-            builder.Services.AddSingleton<IEditClientVmFactory, EditClientVmFactory>();
+           // builder.Services.AddSingleton<IEditClientVmFactory, EditClientVmFactory>();
             builder.Services.AddSingleton<RoutesListViewModel>();
             builder.Services.AddTransient<ViewRoutesPage>();
             builder.Services.AddTransient<ClientDataViewModel>();
@@ -66,8 +66,10 @@ namespace logist_app
             builder.Services.AddTransient<RouteCreationPage>();
             builder.Services.AddTransient<DriverManagerView>();
             builder.Services.AddTransient<AddNewDriverPage>();
-            builder.Services.AddSingleton<DriversViewModel>();
+            builder.Services.AddTransient<DriversViewModel>();
+            builder.Services.AddTransient<EditClientViewModel>();
             builder.Services.AddTransient<DriversDataView>();
+            builder.Services.AddTransient<EditClientPage>();
 
             //  builder.Services.AddTransient<AddClientViewModel>();
 #if DEBUG

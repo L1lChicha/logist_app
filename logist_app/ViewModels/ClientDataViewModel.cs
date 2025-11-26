@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
 using logist_app.Models;
 using logist_app.ViewModels;
 using logist_app.Views;
@@ -13,12 +14,12 @@ using System.Text.RegularExpressions;
 
 namespace logist_app.ViewModels;
 
-public partial class ClientDataViewModel : INotifyPropertyChanged
+public partial class ClientDataViewModel : ObservableObject
 {
-    //public ObservableCollection<Client> Clients { get; } = new();
-    //public List<Client> AllClients { get; } = new();
-    public ObservableCollection<ClientViewModel> Clients { get; } = new();
-    public List<ClientViewModel> AllClients { get; } = new();
+    public record AlertMessage(string Title, string Message, string Cancel);
+    public ObservableCollection<Client> Clients { get; } = new();
+    public List<Client> allClients { get; set; } = new();
+
     public ObservableCollection<string> PickerOptions { get; } = new();
     private List<string> _streets = new();
 
@@ -47,7 +48,7 @@ public partial class ClientDataViewModel : INotifyPropertyChanged
             if (_selectedOptionIndex == value) return;
             _selectedOptionIndex = value;
             OnPropertyChanged();
-            ApplySortOrStreetFilter(); // реагируем на выбор в пикере
+            ApplySortOrStreetFilter(); 
         }
     }
 
@@ -55,44 +56,47 @@ public partial class ClientDataViewModel : INotifyPropertyChanged
     {
         _api = api;
         _httpFactory = httpFactory;
-        // Лучше вызывать из страницы OnAppearing, но если хочешь автозагрузку:
-        _ = LoadDataAsync();
+      
     }
+
 
     public async Task LoadDataAsync()
     {
         try
         {
             var http = _httpFactory.CreateClient("Api");
+            var routes = await http.GetFromJsonAsync<List<Client>>($"{_api.ClientsEndpoint}");
 
-            var clientsDto = await http.GetFromJsonAsync<List<Client>>(
-                _api.ClientsEndpoint,
-                new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
-
-            AllClients.Clear();
+            allClients = routes ?? new List<Client>();
             Clients.Clear();
 
-            if (clientsDto != null)
+            if (routes is not null)
             {
-                var vmList = clientsDto.Select(c => new ClientViewModel(c)).ToList();
+                foreach (var route in allClients)
+                    Clients.Add(route);
 
-                AllClients.AddRange(vmList);
-
-                MainThread.BeginInvokeOnMainThread(() =>
-                {
-                    foreach (var v in vmList)
-                        Clients.Add(v);
-                });
             }
-         
+            else
+            {
+                WeakReferenceMessenger.Default.Send(new AlertMessage("Ошибка", "Не удалось загрузить маршруты: данные отсутствуют.", "OK"));
+            }
+
             ApplyFilter(FilterText);
             BuildPickerOptionsFromStreets(); 
             SelectedOptionIndex = 0; 
         }
         catch (Exception ex)
         {
-            System.Diagnostics.Debug.WriteLine($"LoadDataAsync error: {ex}");
+            WeakReferenceMessenger.Default.Send(new AlertMessage("Ошибка", $"Не удалось загрузить маршруты: {ex.Message}", "OK"));
         }
+    }
+
+
+
+    [RelayCommand]
+    public async Task RefreshAsync()
+    {
+        await LoadDataAsync();
     }
 
 
@@ -107,7 +111,7 @@ public partial class ClientDataViewModel : INotifyPropertyChanged
 
         // 2) собрать уникальные улицы из адресов
         var streetSet = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-        foreach (var c in AllClients)
+        foreach (var c in allClients)
         {
             var street = ExtractStreet(c.Address);
             if (!string.IsNullOrWhiteSpace(street))
@@ -152,7 +156,7 @@ public partial class ClientDataViewModel : INotifyPropertyChanged
 
     private void ApplySortOrStreetFilter()
     {
-        IEnumerable<ClientViewModel> query = AllClients;
+        IEnumerable<Client> query = allClients;
 
         switch (SelectedOptionIndex)
         {
@@ -201,7 +205,7 @@ public partial class ClientDataViewModel : INotifyPropertyChanged
         var q = (query ?? string.Empty).Trim().ToLowerInvariant();
 
         Clients.Clear();
-        foreach (var c in AllClients.Where(c =>
+        foreach (var c in allClients.Where(c =>
                  string.IsNullOrEmpty(q) ||
                  (c.Name?.ToLowerInvariant().Contains(q) ?? false) ||
                  (c.Address?.ToLowerInvariant().Contains(q) ?? false) ||
@@ -219,6 +223,45 @@ public partial class ClientDataViewModel : INotifyPropertyChanged
     public event PropertyChangedEventHandler? PropertyChanged;
     private void OnPropertyChanged([CallerMemberName] string name = "") =>
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+
+
+
+
+
+
+
+
+
+    [ObservableProperty]
+    private Client selectedClient;
+
+    partial void OnSelectedClientChanged(Client value)
+    {
+        if (value != null)
+            _ = OpenClientAsync(value);
+    }
+
+    private EditClientViewModel editVM;
+      
+    [RelayCommand]
+    private async Task OpenClientAsync(Client client)
+    {
+        if (client == null)
+        {
+            WeakReferenceMessenger.Default.Send(new AlertMessage("Ошибка", "Маршрут не содержит данных геометрии.", "OK"));
+            return;
+        }
+
+        Client clientToShow = client;
+        var page = App.Services.GetService<EditClientPage>();
+        page.Initialize(clientToShow);
+
+        await Shell.Current.Navigation.PushAsync(page);
+        SelectedClient = null;
+    }
+
+
+
 
 
 }
