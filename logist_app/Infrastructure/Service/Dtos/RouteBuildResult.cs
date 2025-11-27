@@ -16,6 +16,7 @@ namespace logist_app.Infrastructure.Service.Dtos
         [JsonPropertyName("route_data")]
         public string RouteData { get; set; }
 
+        public string Response { get; set; }
         public class ApiError
         {
             public string Message { get; set; }

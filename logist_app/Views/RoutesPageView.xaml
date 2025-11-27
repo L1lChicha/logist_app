@@ -26,7 +26,7 @@
                 Title="Sort by"
                 Grid.Row="1"
                 Grid.Column="1"
-                SelectedItem="{Binding SelectedFiltr, Mode=TwoWay}">
+                SelectedItem="{Binding SelectedFilter, Mode=TwoWay}">
             <Picker.ItemsSource>
                 <x:Array Type="{x:Type x:String}">
                     <x:String>All</x:String>

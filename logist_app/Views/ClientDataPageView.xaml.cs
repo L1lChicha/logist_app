@@ -22,7 +22,7 @@ public partial class ClientDataPageView: ContentPage
     protected override async void OnAppearing()
     {
         base.OnAppearing();
-        await _viewModel.LoadDataAsync();
+        await _viewModel.LoadClientsAsync();
     }
     
 

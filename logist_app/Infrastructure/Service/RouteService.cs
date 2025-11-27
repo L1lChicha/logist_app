@@ -1,4 +1,5 @@
-﻿using logist_app.Core.Interfaces;
+﻿using logist_app.Core.Entities;
+using logist_app.Core.Interfaces;
 using logist_app.Infrastructure.Service.Dtos;
 using logist_app.Models;
 using System;
@@ -24,37 +25,51 @@ namespace logist_app.Infrastructure.Service
             api = _apiSettings;
         }
 
-        //public async Task<RouteBuildResult> BuildRoute()
-        //{
-        //    try
-        //    {
-        //        var http = httpFactory.CreateClient("Api");
-        //        var response = await http.PostAsJsonAsync(api.RoutesBuildEndpoint, selectedClientIds);
+        public async Task<RouteBuildResult> BuildRoute(List<int> clientsId)
+        {
+            try
+            {
+                var http = httpFactory.CreateClient("Api");
+                var response = await http.PostAsJsonAsync(api.RoutesBuildEndpoint, clientsId);
 
-        //        if (response.IsSuccessStatusCode)
-        //        {
-        //            using var stream = await response.Content.ReadAsStreamAsync();
-        //            using var json = await JsonDocument.ParseAsync(stream);
+                if (response.IsSuccessStatusCode)
+                {
+                    using var stream = await response.Content.ReadAsStreamAsync();
+                    using var json = await JsonDocument.ParseAsync(stream);
 
-        //            var routeData = json.RootElement.GetProperty("route_data").ToString();
-        //            var routeId = int.Parse(json.RootElement.GetProperty("route_id").ToString());
+                    var routeDataElement = json.RootElement.GetProperty("route_data");
+                    var routeDataJson = routeDataElement.GetRawText();
 
-        //            //await DisplayAlert("Success", "Маршрут успешно построен", "OK");
-        //            //await Navigation.PushAsync(new AcceptRouteView(routeData, routeId));
+                    var routeId = json.RootElement.GetProperty("route_id").GetInt32();
 
+                   // var routeData = json.RootElement.GetProperty("route_data").GetString();
                    
-        //        }
-        //        else
-        //        {
-        //            var error = await response.Content.ReadAsStringAsync();
-        //          //  await DisplayAlert("Error", $"{response.StatusCode}\n{error}", "OK");
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //       // await DisplayAlert("Error", ex.Message, "OK");
-        //    }
 
-        //}
+                    return new RouteBuildResult
+                    {
+                     //   RouteData = routeData,
+                        RouteId = routeId,
+                        Response = response.StatusCode.ToString()
+                    };
+                }
+                else
+                {
+                    var error = await response.Content.ReadAsStringAsync();
+                    return new RouteBuildResult
+                    {
+                        Response = $"Server returned {(int)response.StatusCode}: {error}"
+                    };
+                }
+            }
+            catch (Exception ex)
+            {
+                return new RouteBuildResult
+                {
+                   
+                    Response = ex.Message
+                };
+            }
+        }
+
     }
 }

@@ -20,7 +20,7 @@ public partial class RoutesListViewModel : ObservableObject
         set { _routes = value; OnPropertyChanged(nameof(Routes)); }
     }
     [ObservableProperty]
-    private string selectedFiltr;
+    private string selectedFilter;
 
     [ObservableProperty]
     private Route selectedRoute;
@@ -108,9 +108,9 @@ public partial class RoutesListViewModel : ObservableObject
             _ = OpenRouteAsync(value);
     }
 
-    partial void OnSelectedFiltrChanged(string value)
+    partial void OnSelectedFilterChanged(string value)
     {
-     
+
         IEnumerable<Route> query = allRoutes;
 
         switch (value)

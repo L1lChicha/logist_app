@@ -56,6 +56,8 @@ namespace logist_app
             });
 
             // ✅ Регистрируем ViewModels
+
+            builder.Services.AddSingleton<IRouteService, RouteService>();
             builder.Services.AddSingleton<ClientDataViewModel>();
             builder.Services.AddTransient<ClientDataPageView>();
             builder.Services.AddTransient<RouteCreationView>();

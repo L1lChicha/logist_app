@@ -16,7 +16,7 @@
                 Grid.Row="0"
                 Grid.Column="0"
                 Text="Create new route"
-                Command="{Binding CreateRoute}"
+                Command="{Binding CreateRouteCommand}"
                 HeightRequest="45"
                 IsEnabled="{Binding IsCreateButtonEnabled}"
                 
