@@ -10,6 +10,7 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection; 
 using logist_app.Models;
+using logist_app.Core.Entities;
 
 namespace logist_app;
 

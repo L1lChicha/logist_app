@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using logist_app.Models;
+using logist_app.Core.Entities;
 
 namespace logist_app.ViewModels
 {

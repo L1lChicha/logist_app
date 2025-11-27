@@ -1,7 +1,7 @@
 namespace logist_app;
 using logist_app.ViewModels;
-using logist_app.Factories;
-using logist_app.Models;
+
+using logist_app.Core.Entities;
 
 public partial class EditClientPage : ContentPage
 {

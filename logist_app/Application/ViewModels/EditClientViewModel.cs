@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using logist_app.Core.Entities;
 using logist_app.Models;
 using System.ComponentModel;
 using System.Net.Http.Json;

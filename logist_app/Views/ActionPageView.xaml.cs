@@ -12,7 +12,7 @@ public partial class ActionPage : ContentPage
 
     private async void createRoute_Clicked(object sender, EventArgs e)
     {
-        var page = App.Services.GetService<RouteCreationPage>();
+        var page = App.Services.GetService<RouteCreationView>();
         await Navigation.PushAsync(page);
     }
 

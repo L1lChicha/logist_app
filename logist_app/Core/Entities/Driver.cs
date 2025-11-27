@@ -6,7 +6,7 @@ using System.Text;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
-namespace logist_app.Models
+namespace logist_app.Core.Entities
 {
     
     public class Driver

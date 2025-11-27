@@ -7,7 +7,8 @@ using logist_app.Models;
 using logist_app.ViewModels;
 using logist_app.Views;
 using Microsoft.Extensions.DependencyInjection;
-using logist_app.Factories;
+using logist_app.Core.Interfaces;
+using logist_app.Infrastructure.Service;
 
 namespace logist_app
 {
@@ -18,7 +19,7 @@ namespace logist_app
             var builder = MauiApp.CreateBuilder();
 
             builder
-                .UseMauiApp<App>() // это вызовет App(IServiceProvider)
+                .UseMauiApp<App>() 
                 .UseMauiCommunityToolkit()
 #if ANDROID || IOS || MACCATALYST
                 .UseMauiMaps()
@@ -57,19 +58,21 @@ namespace logist_app
             // ✅ Регистрируем ViewModels
             builder.Services.AddSingleton<ClientDataViewModel>();
             builder.Services.AddTransient<ClientDataPageView>();
-            builder.Services.AddTransient<RouteCreationPage>();
+            builder.Services.AddTransient<RouteCreationView>();
            // builder.Services.AddSingleton<IEditClientVmFactory, EditClientVmFactory>();
             builder.Services.AddSingleton<RoutesListViewModel>();
             builder.Services.AddTransient<ViewRoutesPage>();
-            builder.Services.AddTransient<ClientDataViewModel>();
-            builder.Services.AddTransient<ClientDataPageView>();
-            builder.Services.AddTransient<RouteCreationPage>();
             builder.Services.AddTransient<DriverManagerView>();
             builder.Services.AddTransient<AddNewDriverPage>();
             builder.Services.AddTransient<DriversViewModel>();
             builder.Services.AddTransient<EditClientViewModel>();
             builder.Services.AddTransient<DriversDataView>();
             builder.Services.AddTransient<EditClientPage>();
+
+            builder.Services.AddTransient<RouteCreationViewModel>();
+
+            builder.Services.AddTransient<IClientService, ClientService>();
+            // builder.Services.AddTransient<RouteCreationViewModel>;
 
             //  builder.Services.AddTransient<AddClientViewModel>();
 #if DEBUG

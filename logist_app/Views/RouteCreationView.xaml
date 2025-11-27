@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="logist_app.Views.RouteCreationPage"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             x:Class="logist_app.Views.RouteCreationView"
+             xmlns:viewmodels="clr-namespace:logist_app.ViewModels"
              Title="Route Creation Page">
 
     <Grid RowDefinitions="Auto,*"
@@ -14,9 +16,10 @@
                 Grid.Row="0"
                 Grid.Column="0"
                 Text="Create new route"
-                Clicked="createRouteButton_Clicked"
+                Command="{Binding CreateRoute}"
                 HeightRequest="45"
-                IsEnabled="False"
+                IsEnabled="{Binding IsCreateButtonEnabled}"
+                
                 TextColor="White"
                 CornerRadius="10"
                 FontAttributes="Bold"
@@ -33,6 +36,7 @@
                 HeightRequest="45"
                 Margin="0,0,10,0"
                 ItemsSource="{Binding PickerOptions}"
+                
                 SelectedIndex="{Binding SelectedOptionIndex, Mode=TwoWay}">
             
         </Picker>
@@ -51,11 +55,11 @@
                         Grid.ColumnSpan="4"
                         ItemsSource="{Binding Clients}"
                         SelectionMode="Multiple"
-                        SelectionChanged="OnClientsSelected"
+                        SelectionChangedCommand="{Binding SelectionChangedCommand}"
+                        SelectionChangedCommandParameter="{Binding Source={RelativeSource Self}, Path=SelectedItems}"
                         VerticalScrollBarVisibility="Always"
                         Margin="-30,0,0,0">
-
-            <CollectionView.ItemTemplate>
+             <CollectionView.ItemTemplate>
                 <DataTemplate>
                     <Border x:Name="Card"
                             StrokeShape="RoundRectangle 10"
@@ -105,6 +109,7 @@
                     </Border>
                 </DataTemplate>
             </CollectionView.ItemTemplate>
+
         </CollectionView>
     </Grid>
 </ContentPage>

@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
+using logist_app.Core.Entities;
 using logist_app.Models;
 using logist_app.ViewModels;
 using logist_app.Views;

@@ -124,7 +124,8 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Folder Include="Factories\" />
+	  <Folder Include="Application\Factories\" />
+	  <Folder Include="Infrastructure\Repositories\" />
 	</ItemGroup>
 
 </Project>

@@ -1,3 +1,4 @@
+using logist_app.Core.Entities;
 using logist_app.Models;
 using logist_app.ViewModels;
 using System.Net;

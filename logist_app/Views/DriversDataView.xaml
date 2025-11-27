@@ -2,15 +2,19 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="logist_app.Views.DriversDataView"
-              xmlns:viewmodels="clr-namespace:logist_app.ViewModels"
+             xmlns:viewmodels="clr-namespace:logist_app.ViewModels"
              Title="DriversDataView">
     
     <Grid RowSpacing="6" ColumnDefinitions="3*,2*" >
         
         
             
-        <CollectionView Grid.Row="0" Grid.Column="0" x:Name="driverCollectionView" ItemsSource="{Binding Drivers}" 
-            SelectionMode="Single"  SelectedItem="{Binding SelectedDriver}" > 
+        <CollectionView Grid.Row="0"
+                        Grid.Column="0"
+                        x:Name="driverCollectionView"
+                        ItemsSource="{Binding Drivers}" 
+                        SelectionMode="Single"
+                        SelectedItem="{Binding SelectedDriver}" > 
 
             <CollectionView.ItemTemplate>
                 <DataTemplate>

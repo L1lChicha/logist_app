@@ -2,6 +2,7 @@
 using CommunityToolkit.Maui.Core;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using logist_app.Core.Entities;
 using logist_app.Models;
 using logist_app.Views;
 using Microsoft.Maui.Controls;

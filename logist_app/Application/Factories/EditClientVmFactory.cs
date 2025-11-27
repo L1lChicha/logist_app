@@ -1,7 +1,7 @@
-﻿using logist_app.Models;
-using logist_app.ViewModels;
+﻿using logist_app.ViewModels;
 using System.Threading.Tasks;
 using Microsoft.Maui.Controls;
+using logist_app.Core.Entities;
 
 namespace logist_app.Factories
 {
