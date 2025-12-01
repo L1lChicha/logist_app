@@ -115,7 +115,8 @@
                 <Picker x:Name="LoadingTypePicker" >
                     <Picker.ItemsSource>
                         <x:Array Type="{x:Type x:String}">
-                            <x:String>Default</x:String>
+                            <x:String>Side load</x:String>
+                            <x:String>Rear load</x:String>
                             <x:String>Lifting with a manipulator</x:String>
                         </x:Array>
                     </Picker.ItemsSource>

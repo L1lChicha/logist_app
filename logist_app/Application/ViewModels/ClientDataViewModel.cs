@@ -26,7 +26,7 @@ public partial class ClientDataViewModel : ObservableObject
     [ObservableProperty]
     private ObservableCollection<Client> clients = new();
 
-
+    
 
     [ObservableProperty]
     private Client selectedClient;

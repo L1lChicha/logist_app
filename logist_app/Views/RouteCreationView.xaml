@@ -54,27 +54,39 @@
                         Grid.Row="1"
                         Grid.ColumnSpan="4"
                         ItemsSource="{Binding Clients}"
-                        SelectionMode="Multiple"
-                        SelectionChangedCommand="{Binding SelectionChangedCommand}"
-                        SelectionChangedCommandParameter="{Binding Source={RelativeSource Self}, Path=SelectedItems}"
+                        SelectionMode="None"
                         VerticalScrollBarVisibility="Always"
-                        Margin="-30,0,0,0">
+                        Margin="0,0,0,0">
              <CollectionView.ItemTemplate>
-                <DataTemplate>
+                <DataTemplate x:DataType="viewmodels:SelectableClient">
                     <Border x:Name="Card"
                             StrokeShape="RoundRectangle 10"
                             StrokeThickness="1"
-                            Stroke="#E5E7EB"
-                            BackgroundColor="White"
                             Padding="12"
                             Margin="0,0,0,8">
+
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer 
+                                Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:RouteCreationViewModel}}, Path=ToggleSelectionCommand}"
+                                CommandParameter="{Binding}" />
+                        </Border.GestureRecognizers>
 
                         <VerticalStackLayout>
                             <Label x:Name="NameLabel"
                                    Text="{Binding Name}"
                                    FontAttributes="Bold"
-                                   TextColor="Black"
-                                   FontSize="14" />
+                                   FontSize="14">
+                                <Label.Style>
+                                    <Style TargetType="Label">
+                                        <Setter Property="TextColor" Value="Black" />
+                                        <Style.Triggers>
+                                            <DataTrigger TargetType="Label" Binding="{Binding IsSelected}" Value="True">
+                                                <Setter Property="TextColor" Value="#62b375" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Label.Style>
+                            </Label>
                             <Label Text="{Binding Address}"      FontSize="12" TextColor="Black"/>
                             <Label Text="{Binding City}"         FontSize="12" TextColor="Black"/>
                             <Label Text="{Binding PostalCode}"   FontSize="12" TextColor="Black"/>
@@ -86,26 +98,18 @@
                                    FontSize="12" TextColor="Black"/>
                         </VerticalStackLayout>
 
-                        <VisualStateManager.VisualStateGroups>
-                            <VisualStateGroup x:Name="ItemStates">
-                                <VisualState x:Name="Normal">
-                                    <VisualState.Setters>
-                                        <Setter Property="BackgroundColor" Value="White" />
-                                        <Setter Property="Stroke" Value="#E5E7EB" />
-                                        <Setter Property="StrokeThickness" Value="1" />
-                                        <Setter TargetName="NameLabel" Property="Label.TextColor" Value="Black" />
-                                    </VisualState.Setters>
-                                </VisualState>
-                                <VisualState x:Name="Selected">
-                                    <VisualState.Setters>
+                        <Border.Style>
+                            <Style TargetType="Border">
+                                <Setter Property="BackgroundColor" Value="White" />
+                                <Setter Property="Stroke" Value="#E5E7EB" />
+                                <Style.Triggers>
+                                    <DataTrigger TargetType="Border" Binding="{Binding IsSelected}" Value="True">
                                         <Setter Property="BackgroundColor" Value="#c7f2d1" />
                                         <Setter Property="Stroke" Value="#62b375" />
-                                        <Setter Property="StrokeThickness" Value="1" />
-                                        <Setter TargetName="NameLabel" Property="Label.TextColor" Value="#62b375" />
-                                    </VisualState.Setters>
-                                </VisualState>
-                            </VisualStateGroup>
-                        </VisualStateManager.VisualStateGroups>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Border.Style>
                     </Border>
                 </DataTemplate>
             </CollectionView.ItemTemplate>

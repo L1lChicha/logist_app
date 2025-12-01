@@ -21,7 +21,7 @@ namespace logist_app.Core.Entities
         [JsonPropertyName("start_date")] public DateTime StartDate { get; set; }
         [JsonPropertyName("coordinates")] public string Coordinates { get; set; }
         [JsonPropertyName("loading_type")] public string? LoadingType { get; set; }
-        [JsonPropertyName("volume")] public int Volume { get; set; }
+        [JsonPropertyName("volume")] public double Volume { get; set; }
 
         [JsonPropertyName("lat")] public double Lat { get; set; }
         [JsonPropertyName("lon")] public double Lon { get; set; }

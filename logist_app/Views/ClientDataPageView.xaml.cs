@@ -2,12 +2,13 @@
 
 using logist_app.Models;
 using logist_app.ViewModels;
+using logist_app.Infrastructure.Service;
 using logist_app.Views;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Text.Json.Serialization;
 
-namespace logist_app;
+namespace logist_app.Views;
 
 public partial class ClientDataPageView: ContentPage
 {

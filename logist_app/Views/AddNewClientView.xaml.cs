@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection; 
 using logist_app.Models;
 using logist_app.Core.Entities;
+using logist_app.Views;
 
 namespace logist_app;
 
@@ -159,8 +160,8 @@ public partial class MainPage : ContentPage
         string email = EmailEntry.Text;
         string recurrence = RecurrencePicker.SelectedItem?.ToString();
         string containerCountText = ContainerCountEntry.Text;
-        string loadingType = LoadingTypePicker.SelectedItem?.ToString().Trim();
-        int volume = int.Parse(VolumeEntry.Text);
+        string loadingType = LoadingTypePicker.SelectedItem?.ToString().Trim().ToLower();
+        double volume = double.Parse(VolumeEntry.Text);
         DateTime startDate = StartDatePicker.Date;
         string coordinates = lat + ", " + lon;
        

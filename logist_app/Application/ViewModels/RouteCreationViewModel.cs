@@ -26,31 +26,38 @@ namespace logist_app.ViewModels
         public record AlertMessage(string Title, string Message);
         
         [ObservableProperty]
-        public ObservableCollection<Client> clients = new();
-
-        [ObservableProperty]
-        private List<Client> selectedClients = new();
+        public ObservableCollection<SelectableClient> clients = new();
 
         [ObservableProperty]
         private bool isCreateButtonEnabled = false;
 
-        
+        // Словарь для хранения SelectableClient по Id клиента (сохраняет состояние выделения)
+        private Dictionary<int, SelectableClient> _selectableClientsCache = new();
 
+        // Получаем выбранных клиентов
+        public List<Client> SelectedClients => _selectableClientsCache.Values
+            .Where(c => c.IsSelected)
+            .Select(c => c.Client)
+            .ToList();
 
         [RelayCommand]
-        private void SelectionChanged(object? selectedItems)
+        private void ToggleSelection(SelectableClient client)
         {
-            var list = selectedItems as IList<object>;
-            if (list is null) return;
-            SelectedClients = list.Cast<Client>().ToList();
-            IsCreateButtonEnabled = SelectedClients.Count > 1;
+            if (client is null) return;
+            client.IsSelected = !client.IsSelected;
+            UpdateCreateButtonState();
+        }
+
+        private void UpdateCreateButtonState()
+        {
+            IsCreateButtonEnabled = _selectableClientsCache.Values.Count(c => c.IsSelected) > 1;
         }
 
         [RelayCommand]
         private async Task CreateRoute()
         {
-          
-            var response = await _routeService.BuildRoute(SelectedClients.Select(c => c.Id).ToList());
+            var selectedClients = SelectedClients;
+            var response = await _routeService.BuildRoute(selectedClients.Select(c => c.Id).ToList());
 
             if(response.Response == "OK")
             {
@@ -67,9 +74,16 @@ namespace logist_app.ViewModels
 
             allClients = clientsFromServer.ToList();
 
+            // Создаём SelectableClient для каждого клиента и кэшируем
+            _selectableClientsCache.Clear();
+            foreach (var c in allClients)
+            {
+                _selectableClientsCache[c.Id] = new SelectableClient(c);
+            }
+
             Clients.Clear();
             foreach (var c in allClients)
-                Clients.Add(c);
+                Clients.Add(_selectableClientsCache[c.Id]);
             
             BuildPickerOptionsFromStreets();
             SelectedOptionIndex = 0;
@@ -196,10 +210,13 @@ namespace logist_app.ViewModels
                     break;
             }
 
-            // Обновляем коллекцию
+            // Обновляем коллекцию, используя кэшированные SelectableClient
             Clients.Clear();
             foreach (var item in query)
-                Clients.Add(item);
+            {
+                if (_selectableClientsCache.TryGetValue(item.Id, out var selectableClient))
+                    Clients.Add(selectableClient);
+            }
         }
 
 
@@ -216,7 +233,8 @@ namespace logist_app.ViewModels
                      (c.Email?.ToLowerInvariant().Contains(q) ?? false) ||
                      (c.Phone?.ToLowerInvariant().Contains(q) ?? false)))
             {
-                Clients.Add(c);
+                if (_selectableClientsCache.TryGetValue(c.Id, out var selectableClient))
+                    Clients.Add(selectableClient);
             }
         }
 
