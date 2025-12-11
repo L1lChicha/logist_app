@@ -106,16 +106,6 @@ namespace logist_app.ViewModels
             }
         }
 
-        public string Recurrence
-        {
-            get => Model.Recurrence;
-            set
-            {
-                if (Model.Recurrence == value) return;
-                Model.Recurrence = value;
-                OnPropertyChanged();
-            }
-        }
 
         public int ContainerCount
         {
@@ -157,6 +147,17 @@ namespace logist_app.ViewModels
             {
                 if (Model.Lon == value) return;
                 Model.Lon = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public RecurrenceSettings Schedule
+        {
+            get => Model.Schedule;
+            set
+            {
+                if (Model.Schedule == value) return;
+                Model.Schedule = value;
                 OnPropertyChanged();
             }
         }

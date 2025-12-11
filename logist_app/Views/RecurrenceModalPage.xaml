@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="logist_app.RecurrenceModalPage"
+             Title="Configure Schedule"
+             BackgroundColor="Black">
+
+    <ScrollView>
+        <VerticalStackLayout Spacing="15" Padding="20">
+            <Label Text="Настройка расписания" FontSize="20" FontAttributes="Bold" HorizontalOptions="Center"/>
+
+            <Label Text="Тип повторения:" FontAttributes="Bold"/>
+            <Picker x:Name="TypePicker" SelectedIndexChanged="OnTypeChanged">
+                <Picker.ItemsSource>
+                    <x:Array Type="{x:Type x:String}">
+                        <x:String>Daily</x:String>
+                        <x:String>Weekly</x:String>
+                        <x:String>Monthly</x:String>
+                    </x:Array>
+                </Picker.ItemsSource>
+            </Picker>
+
+            <Label Text="Интервал (каждые X дн/нед/мес):" FontAttributes="Bold"/>
+            <Entry x:Name="IntervalEntry" Text="1" Keyboard="Numeric"/>
+
+            <VerticalStackLayout x:Name="WeeklySection" IsVisible="False">
+                <Label Text="Дни недели:" FontAttributes="Bold" Margin="0,10,0,0"/>
+                <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto,Auto,Auto">
+                    <HorizontalStackLayout Grid.Row="0" Grid.Column="0">
+                        <CheckBox x:Name="cbMon"/>
+                        <Label Text="Mon" VerticalOptions="Center"/>
+                    </HorizontalStackLayout>
+                    <HorizontalStackLayout Grid.Row="0" Grid.Column="1">
+                        <CheckBox x:Name="cbTue"/>
+                        <Label Text="Tue" VerticalOptions="Center"/>
+                    </HorizontalStackLayout>
+                    <HorizontalStackLayout Grid.Row="1" Grid.Column="0">
+                        <CheckBox x:Name="cbWed"/>
+                        <Label Text="Wed" VerticalOptions="Center"/>
+                    </HorizontalStackLayout>
+                    <HorizontalStackLayout Grid.Row="1" Grid.Column="1">
+                        <CheckBox x:Name="cbThu"/>
+                        <Label Text="Thu" VerticalOptions="Center"/>
+                    </HorizontalStackLayout>
+                    <HorizontalStackLayout Grid.Row="2" Grid.Column="0">
+                        <CheckBox x:Name="cbFri"/>
+                        <Label Text="Fri" VerticalOptions="Center"/>
+                    </HorizontalStackLayout>
+                    <HorizontalStackLayout Grid.Row="2" Grid.Column="1">
+                        <CheckBox x:Name="cbSat"/>
+                        <Label Text="Sat" VerticalOptions="Center"/>
+                    </HorizontalStackLayout>
+                    <HorizontalStackLayout Grid.Row="3" Grid.Column="0">
+                        <CheckBox x:Name="cbSun"/>
+                        <Label Text="Sun" VerticalOptions="Center"/>
+                    </HorizontalStackLayout>
+                </Grid>
+
+                <Label Text="Номера недель (опционально):" FontAttributes="Bold" Margin="0,10,0,0"/>
+                <HorizontalStackLayout Spacing="10">
+                    <HorizontalStackLayout>
+                        <CheckBox x:Name="cbW1"/>
+                        <Label Text="1" VerticalOptions="Center"/>
+                    </HorizontalStackLayout>
+                    <HorizontalStackLayout>
+                        <CheckBox x:Name="cbW2"/>
+                        <Label Text="2" VerticalOptions="Center"/>
+                    </HorizontalStackLayout>
+                    <HorizontalStackLayout>
+                        <CheckBox x:Name="cbW3"/>
+                        <Label Text="3" VerticalOptions="Center"/>
+                    </HorizontalStackLayout>
+                    <HorizontalStackLayout>
+                        <CheckBox x:Name="cbW4"/>
+                        <Label Text="4" VerticalOptions="Center"/>
+                    </HorizontalStackLayout>
+                    <HorizontalStackLayout>
+                        <CheckBox x:Name="cbW5"/>
+                        <Label Text="5" VerticalOptions="Center"/>
+                    </HorizontalStackLayout>
+                </HorizontalStackLayout>
+            </VerticalStackLayout>
+
+            <VerticalStackLayout x:Name="MonthlySection" IsVisible="False">
+                <Label Text="Дни месяца (через запятую, напр. 1, 15):" FontAttributes="Bold"/>
+                <Entry x:Name="DaysOfMonthEntry" Placeholder="e.g. 5, 20"/>
+            </VerticalStackLayout>
+
+            <Grid ColumnDefinitions="*,*"  Margin="0,20,0,0">
+                <Button Text="Cancel" Clicked="OnCancelClicked" BackgroundColor="Gray" Grid.Column="0"/>
+                <Button Text="Save" Clicked="OnSaveClicked" BackgroundColor="#008B09" Grid.Column="1"/>
+            </Grid>
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

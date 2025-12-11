@@ -1,14 +1,15 @@
-﻿using System.Reflection;
-using Microsoft.Extensions.Configuration;
-using CommunityToolkit.Maui;
-using Microsoft.Maui.Maps;
-using Microsoft.Extensions.Logging;
+﻿using CommunityToolkit.Maui;
+using logist_app.Core.Interfaces;
+using logist_app.Infrastructure.Service;
 using logist_app.Models;
 using logist_app.ViewModels;
 using logist_app.Views;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using logist_app.Core.Interfaces;
-using logist_app.Infrastructure.Service;
+using Microsoft.Extensions.Logging;
+using Microsoft.Maui.Maps;
+using Plugin.LocalNotification;
+using System.Reflection;
 
 namespace logist_app
 {
@@ -21,9 +22,11 @@ namespace logist_app
             builder
                 .UseMauiApp<App>() 
                 .UseMauiCommunityToolkit()
+                //.UseLocalNotification()
 #if ANDROID || IOS || MACCATALYST
                 .UseMauiMaps()
 #endif
+
                 .ConfigureFonts(fonts =>
                 {
                     fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
@@ -56,12 +59,14 @@ namespace logist_app
             });
 
             // ✅ Регистрируем ViewModels
-
+            builder.Services.AddSingleton<SignalRService>();
             builder.Services.AddSingleton<IRouteService, RouteService>();
             builder.Services.AddSingleton<ClientDataViewModel>();
             builder.Services.AddTransient<ClientDataPageView>();
             builder.Services.AddTransient<RouteCreationView>();
-           // builder.Services.AddSingleton<IEditClientVmFactory, EditClientVmFactory>();
+            builder.Services.AddTransient<LoginViewModel>();
+            builder.Services.AddTransient<LoginPageView>();
+            // builder.Services.AddSingleton<IEditClientVmFactory, EditClientVmFactory>();
             builder.Services.AddSingleton<RoutesListViewModel>();
             builder.Services.AddTransient<ViewRoutesPage>();
             builder.Services.AddTransient<DriverManagerView>();
@@ -77,10 +82,11 @@ namespace logist_app
             // builder.Services.AddTransient<RouteCreationViewModel>;
 
             //  builder.Services.AddTransient<AddClientViewModel>();
+
+            builder.UseLocalNotification();
 #if DEBUG
             builder.Logging.AddDebug();
 #endif
-
             var app = builder.Build();
 
             // создаём App с контейнером

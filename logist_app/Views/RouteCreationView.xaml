@@ -6,7 +6,7 @@
              xmlns:viewmodels="clr-namespace:logist_app.ViewModels"
              Title="Route Creation Page">
 
-    <Grid RowDefinitions="Auto,*"
+    <Grid RowDefinitions="Auto,Auto,*"
           ColumnDefinitions="3*, Auto, 1*, 1*"
           ColumnSpacing="0"
           RowSpacing="10"
@@ -50,8 +50,46 @@
                    Margin="0,0,10,0"
                    />
 
+
+
+        <CollectionView Grid.Row="1"
+                Grid.ColumnSpan="4"
+                ItemsSource="{Binding SelectedClientsCollection}" 
+                HeightRequest="60"
+                VerticalScrollBarVisibility="Never"
+                HorizontalScrollBarVisibility="Never"
+                IsVisible="{Binding SelectedClientsCollection.Count, Converter={toolkit:IntToBoolConverter}}">
+
+            <CollectionView.ItemsLayout>
+                <LinearItemsLayout Orientation="Horizontal" ItemSpacing="10"/>
+            </CollectionView.ItemsLayout>
+
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="viewmodels:SelectableClient">
+                    <Border StrokeShape="RoundRectangle 15"
+                    StrokeThickness="1"
+                    BackgroundColor="#e6f7ea"
+                    Stroke="#62b375"
+                    Padding="10,5"
+                    Margin="5,0">
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer 
+                        Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:RouteCreationViewModel}}, Path=ToggleSelectionCommand}"
+                        CommandParameter="{Binding}" />
+                        </Border.GestureRecognizers>
+
+                        <HorizontalStackLayout Spacing="5" VerticalOptions="Center">
+                            <Label Text="{Binding Name}" TextColor="#62b375" FontAttributes="Bold" FontSize="12"/>
+                            <Label Text="✕" TextColor="#62b375" FontSize="12"/>
+                        </HorizontalStackLayout>
+                    </Border>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+
         <CollectionView x:Name="clientsCollectionView"
-                        Grid.Row="1"
+                        Grid.Row="2"
                         Grid.ColumnSpan="4"
                         ItemsSource="{Binding Clients}"
                         SelectionMode="None"
@@ -92,10 +130,10 @@
                             <Label Text="{Binding PostalCode}"   FontSize="12" TextColor="Black"/>
                             <Label Text="{Binding Phone}"        FontSize="12" TextColor="Black"/>
                             <Label Text="{Binding Email}"        FontSize="12" TextColor="Black"/>
-                            <Label Text="{Binding Recurrence}"   FontSize="12" TextColor="Black"/>
                             <Label Text="{Binding ContainerCount}" FontSize="12" TextColor="Black"/>
                             <Label Text="{Binding StartDate, StringFormat='Start Date: {0:yyyy-MM-dd}'}"
                                    FontSize="12" TextColor="Black"/>
+                            <Label Text="{Binding LoadingType}" FontSize="12" TextColor="Black"/>
                         </VerticalStackLayout>
 
                         <Border.Style>

@@ -60,12 +60,13 @@ namespace logist_app.ViewModels
                 }
                 else
                 {
-                    await Application.Current.MainPage.DisplayAlert("Error", "Не удалось загрузить маршруты: данные отсутствуют.", "OK");
+                    await Shell.Current.DisplayAlert("Error", "Не удалось загрузить маршруты: данные отсутствуют.", "OK");
+
                 }
             }
             catch (Exception ex) 
             {
-                await Application.Current.MainPage.DisplayAlert("Error", $"Не удалось загрузить маршруты: данные отсутствуют. {ex.Message}", "OK");
+                await Shell.Current.DisplayAlert("Error", $"Не удалось загрузить водителей: данные отсутствуют. {ex.Message}", "OK");
 
             }
         }
@@ -89,24 +90,73 @@ namespace logist_app.ViewModels
         public async Task GetAuthorizationCode()
         {
 
-            var id = _selectedDriver.Id;
-            int codeLength = 10;
-            int codeHoursValid = 1;
+            try
+            {
+                var id = _selectedDriver.Id;
+                int codeLength = 10;
+                int codeHoursValid = 1;
 
-            var http = _httpFactory.CreateClient("Api");
-            var url = $"{_api.DriverGetCodeUrl}/{id}";
-            var response = await http.PostAsJsonAsync(url, new { codeLength , codeHoursValid });
-            var json = await response.Content.ReadFromJsonAsync<Dictionary<string, object>>();
-            ShowCode(json["code"].ToString());
+                var http = _httpFactory.CreateClient("Api");
+                var url = $"{_api.DriverGetCodeUrl}/{id}";
+
+                // 1. Отправляем запрос
+                var response = await http.PostAsJsonAsync(url, new { codeLength, codeHoursValid });
+
+                // 2. Проверяем статус (200-299)
+                if (response.IsSuccessStatusCode)
+                {
+                    // Успех! Читаем код
+                    var json = await response.Content.ReadFromJsonAsync<Dictionary<string, object>>();
+
+                    if (json != null && json.ContainsKey("code"))
+                    {
+                        ShowCode(json["code"].ToString() ?? "No code");
+                        var generator = new QRCodeGenerator();
+                        var data = generator.CreateQrCode(json["code"].ToString() ?? "No code", QRCodeGenerator.ECCLevel.Q);
+
+                        var png = new PngByteQRCode(data);
+                        byte[] qrBytes = png.GetGraphic(20); // масштаб QR — 20
+
+                        QrImage = ImageSource.FromStream(() => new MemoryStream(qrBytes));
+                    }
+                    else
+                    {
+                        //await Application.Current.MainPage.DisplayAlert("Ошибка", "Сервер вернул пустой ответ", "OK");
+                        await Shell.Current.DisplayAlert("Ошибка", "Сервер вернул пустой ответ", "OK");
+                    }
+                }
+                else
+                {
+                   
+                    string errorMessage = "Неизвестная ошибка сервера";
+                    try
+                    {
+                        // Часто сервер шлет JSON вида { "message": "Текст ошибки" } или "title"
+                        var errorJson = await response.Content.ReadFromJsonAsync<Dictionary<string, object>>();
+                        if (errorJson != null && errorJson.ContainsKey("message"))
+                        {
+                            errorMessage = errorJson["message"]?.ToString() ?? "Неизвестная ошибка";
+                        }
+                    }
+                    catch
+                    {
+                        // Если сервер прислал не JSON, а просто текст или HTML (например, nginx 502 error)
+                        errorMessage = await response.Content.ReadAsStringAsync();
+                    }
+                    await Shell.Current.DisplayAlert("Ошибка запроса",
+                        $"Код: {response.StatusCode}\nДетали: {errorMessage}", "OK");
+             
+                }
+            }
+            catch (Exception ex)
+            {
+                await Shell.Current.DisplayAlert("Ошибка сети",
+                    $"Не удалось связаться с сервером.\n{ex.Message}", "OK");
+              
+            }
 
 
-            var generator = new QRCodeGenerator();
-            var data = generator.CreateQrCode(json["code"].ToString(), QRCodeGenerator.ECCLevel.Q);
-
-            var png = new PngByteQRCode(data);
-            byte[] qrBytes = png.GetGraphic(20); // масштаб QR — 20
-
-            QrImage = ImageSource.FromStream(() => new MemoryStream(qrBytes));
+           
         }
 
 

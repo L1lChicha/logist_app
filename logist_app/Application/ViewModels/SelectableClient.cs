@@ -23,7 +23,7 @@ namespace logist_app.ViewModels
         public string PostalCode => Client.PostalCode;
         public string Phone => Client.Phone;
         public string Email => Client.Email;
-        public string Recurrence => Client.Recurrence;
+       // public string Recurrence => Client.Recurrence;
         public int ContainerCount => Client.ContainerCount;
         public DateTime StartDate => Client.StartDate;
         public string Coordinates => Client.Coordinates;

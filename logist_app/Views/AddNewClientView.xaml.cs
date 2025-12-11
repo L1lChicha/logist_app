@@ -1,4 +1,8 @@
 ﻿
+using logist_app.Core.Entities;
+using logist_app.Models;
+using logist_app.Views;
+using Microsoft.Extensions.DependencyInjection; 
 using Microsoft.Maui.Controls;
 using Npgsql;
 using System;
@@ -8,19 +12,16 @@ using System.Text;
 using System.Text.Json;
 using System.Text.Json;
 using System.Threading.Tasks;
-using Microsoft.Extensions.DependencyInjection; 
-using logist_app.Models;
-using logist_app.Core.Entities;
-using logist_app.Views;
+//using static JetBrains.Annotations.Async;
 
 namespace logist_app;
 
-public partial class MainPage : ContentPage
+public partial class AddNewClientView : ContentPage
 {
-    public MainPage()
+    public AddNewClientView()
     {
         InitializeComponent();
-         MapWebView.Source = "map.html";
+        MapWebView.Source = "map.html";
     }
 
 
@@ -158,7 +159,7 @@ public partial class MainPage : ContentPage
         string postalCode = PostalCodeEntry.Text;
         string phone = PhoneEntry.Text;
         string email = EmailEntry.Text;
-        string recurrence = RecurrencePicker.SelectedItem?.ToString();
+        //string recurrence = RecurrencePicker.SelectedItem?.ToString();
         string containerCountText = ContainerCountEntry.Text;
         string loadingType = LoadingTypePicker.SelectedItem?.ToString().Trim().ToLower();
         double volume = double.Parse(VolumeEntry.Text);
@@ -169,8 +170,7 @@ public partial class MainPage : ContentPage
         // Валидация данных
         if (string.IsNullOrWhiteSpace(name) || string.IsNullOrWhiteSpace(address) ||
             string.IsNullOrWhiteSpace(city) || string.IsNullOrWhiteSpace(postalCode) ||
-            string.IsNullOrWhiteSpace(phone) || string.IsNullOrWhiteSpace(email) ||
-            string.IsNullOrWhiteSpace(recurrence) || string.IsNullOrWhiteSpace(containerCountText) 
+            string.IsNullOrWhiteSpace(phone) || string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(containerCountText) 
             || string.IsNullOrWhiteSpace(loadingType) || string.IsNullOrWhiteSpace(volume.ToString()))
         {
             await DisplayAlert("Error", "Please fill in all form fields.", "OK");
@@ -191,7 +191,7 @@ public partial class MainPage : ContentPage
         newClient.PostalCode = postalCode;
         newClient.Phone = phone;
         newClient.Email = email;
-        newClient.Recurrence = recurrence;
+       // newClient.Recurrence = recurrence;
         newClient.ContainerCount = containerCount;
         newClient.StartDate = startDate.ToUniversalTime();
         newClient.Coordinates = coordinates;
@@ -199,6 +199,7 @@ public partial class MainPage : ContentPage
         newClient.Volume = volume;
         newClient.Lat = lat;
         newClient.Lon = lon;
+        newClient.Schedule = _recurrenceSettings;
 
         var success = await AddNewClientAsync(newClient);
         if (success)
@@ -241,4 +242,40 @@ public partial class MainPage : ContentPage
         var page = App.Services.GetService<ClientDataPageView>();
         await Navigation.PushAsync(page);
     }
+
+
+    private RecurrenceSettings _recurrenceSettings = new RecurrenceSettings();
+    private async void OnRecurrenceConfigClicked(object sender, EventArgs e)
+    {
+        // Открываем модальное окно и передаем текущие настройки + функцию обратного вызова
+        var modalPage = new RecurrenceModalPage(_recurrenceSettings, (newSettings) =>
+        {
+            _recurrenceSettings = newSettings;
+            UpdateRecurrenceLabel();
+        });
+
+        await Navigation.PushModalAsync(modalPage);
+
+
+    }
+
+    private void UpdateRecurrenceLabel()
+    {
+        string summary = $"{_recurrenceSettings.Type}, Interval: {_recurrenceSettings.Interval}";
+
+        if (_recurrenceSettings.Type == "Weekly" && _recurrenceSettings.DaysOfWeek.Any())
+        {
+            summary += $"\nDays: {string.Join(", ", _recurrenceSettings.DaysOfWeek)}";
+        }
+
+        if (_recurrenceSettings.WeeksOfMonth.Any())
+        {
+            summary += $"\nWeeks: {string.Join(", ", _recurrenceSettings.WeeksOfMonth)}";
+        }
+
+        RecurrenceSummaryLabel.Text = summary;
+    }
+
+   
+
 }

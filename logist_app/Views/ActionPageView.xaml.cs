@@ -3,9 +3,9 @@ using System.Threading.Tasks;
 
 namespace logist_app.Views;
 
-public partial class ActionPage : ContentPage
+public partial class ActionPageView : ContentPage
 {
-	public ActionPage()
+	public ActionPageView()
 	{
 		InitializeComponent();
 	}
@@ -26,7 +26,7 @@ public partial class ActionPage : ContentPage
 
     private void addNewClient_Clicked(object sender, EventArgs e)
     {
-        Navigation.PushAsync(new MainPage());
+        Navigation.PushAsync(new AddNewClientView());
     }
 
     private async void viewRoutes_Clicked(object sender, EventArgs e)

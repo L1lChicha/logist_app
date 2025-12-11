@@ -24,7 +24,9 @@ namespace logist_app.ViewModels
         }
 
         public record AlertMessage(string Title, string Message);
-        
+
+        public ObservableCollection<SelectableClient> SelectedClientsCollection { get; } = new();
+
         [ObservableProperty]
         public ObservableCollection<SelectableClient> clients = new();
 
@@ -40,11 +42,40 @@ namespace logist_app.ViewModels
             .Select(c => c.Client)
             .ToList();
 
+        //[RelayCommand]
+        //private void ToggleSelection(SelectableClient client)
+        //{
+        //    if (client is null) return;
+        //    client.IsSelected = !client.IsSelected;
+        //    UpdateCreateButtonState();
+        //}
+
+
+
         [RelayCommand]
         private void ToggleSelection(SelectableClient client)
         {
             if (client is null) return;
+
+            // Переключаем состояние
             client.IsSelected = !client.IsSelected;
+
+            // 2. СИНХРОНИЗИРУЕМ КОЛЛЕКЦИЮ ДЛЯ ВЕРХНЕГО СПИСКА
+            if (client.IsSelected)
+            {
+                if (!SelectedClientsCollection.Contains(client))
+                {
+                    SelectedClientsCollection.Add(client);
+                }
+            }
+            else
+            {
+                if (SelectedClientsCollection.Contains(client))
+                {
+                    SelectedClientsCollection.Remove(client);
+                }
+            }
+
             UpdateCreateButtonState();
         }
 

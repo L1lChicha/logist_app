@@ -44,7 +44,6 @@
                             <Label Text="{Binding PostalCode, StringFormat='Postal code: {0}'}" TextColor="Black" />
                             <Label Text="{Binding Phone, StringFormat='Phone: {0}'}" TextColor="Black"/>
                             <Label Text="{Binding Email, StringFormat='Email: {0}'}" TextColor="Black"/>
-                            <Label Text="{Binding Recurrence, StringFormat='Reccurence: {0}'}" TextColor="Black"/>
                             <Label Text="{Binding ContainerCount, StringFormat='Container count: {0}'}" TextColor="Black"/>
                             <Label Text="{Binding StartDate, StringFormat='Start Date: {0:yyyy-MM-dd}'}" TextColor="Black"/>
 
