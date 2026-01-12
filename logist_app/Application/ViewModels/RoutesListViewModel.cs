@@ -1,8 +1,9 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
+using logist_app.Core.Entities;
 using logist_app.Models;
 using logist_app.Views;
-using CommunityToolkit.Mvvm.Messaging;
 using Microsoft.Maui.Controls;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -28,6 +29,7 @@ public partial class RoutesListViewModel : ObservableObject
     [RelayCommand]
     public async Task RefreshAsync()
     {
+        allRoutes.Clear();
         await LoadRoutesAsync();
     }
 
@@ -46,6 +48,9 @@ public partial class RoutesListViewModel : ObservableObject
     {
         try
         {
+
+            if (allRoutes.Count != 0)
+                return;
             var http = _httpFactory.CreateClient("Api");
             var routes = await http.GetFromJsonAsync<List<Route>>($"{_api.RoutesEndpoint}/all");
 
@@ -159,7 +164,7 @@ public partial class RoutesListViewModel : ObservableObject
             if (route == null)
             {
                 //Console.WriteLine($"Маршрут с ID {id} не найден");
-               // await Application.Current.MainPage.DisplayAlert("Ошибка", $"Маршрут {id} не найден", "OK");
+                // await Application.Current.MainPage.DisplayAlert("Ошибка", $"Маршрут {id} не найден", "OK");
                 return null;
             }
 

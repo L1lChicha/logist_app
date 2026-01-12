@@ -1,13 +1,10 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using CommunityToolkit.Mvvm.Messaging;
 using logist_app.Core.Entities;
 using logist_app.Core.Interfaces;
-using Microsoft.Maui.Storage;
 using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 
 
@@ -33,7 +30,6 @@ namespace logist_app.ViewModels
         [ObservableProperty]
         private bool isCreateButtonEnabled = false;
 
-        // Словарь для хранения SelectableClient по Id клиента (сохраняет состояние выделения)
         private Dictionary<int, SelectableClient> _selectableClientsCache = new();
 
         // Получаем выбранных клиентов
@@ -82,6 +78,7 @@ namespace logist_app.ViewModels
         private void UpdateCreateButtonState()
         {
             IsCreateButtonEnabled = _selectableClientsCache.Values.Count(c => c.IsSelected) > 1;
+           
         }
 
         [RelayCommand]
@@ -98,14 +95,15 @@ namespace logist_app.ViewModels
             
         }
 
-        [RelayCommand]
-        public async Task LoadClientsAsync()
-        {
-            var clientsFromServer = await _clientService.GetClientsAsync();
 
+        [RelayCommand]
+        public async Task Refresh()
+        {
+            SelectedClientsCollection.Clear();
+
+            var clientsFromServer = await _clientService.GetClientsAsync();
             allClients = clientsFromServer.ToList();
 
-            // Создаём SelectableClient для каждого клиента и кэшируем
             _selectableClientsCache.Clear();
             foreach (var c in allClients)
             {
@@ -115,10 +113,22 @@ namespace logist_app.ViewModels
             Clients.Clear();
             foreach (var c in allClients)
                 Clients.Add(_selectableClientsCache[c.Id]);
-            
+
+            // 4. Перестраиваем фильтры
             BuildPickerOptionsFromStreets();
             SelectedOptionIndex = 0;
             ApplyFilter(FilterText);
+
+            UpdateCreateButtonState();
+        }
+
+        [RelayCommand]
+        public async Task LoadClientsAsync()
+        {
+            if (allClients.Count != 0)
+                return;
+
+            await Refresh();
         }
 
 

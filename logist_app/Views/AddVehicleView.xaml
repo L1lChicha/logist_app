@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:logist_app.ViewModels"
+             x:Class="logist_app.Views.AddVehicleView"
+             Title="Новый транспорт">
+
+    <ScrollView>
+        <VerticalStackLayout Spacing="15" Padding="20">
+
+            <Label Text="Данные автомобиля" FontSize="18" FontAttributes="Bold" Margin="0,0,0,10"/>
+            <Entry Placeholder="Модель (напр. Gazelle Next)" Text="{Binding Model}" />
+            <Entry Placeholder="Госномер (напр. А777АА)" Text="{Binding LicensePlate}" />
+            <Entry Placeholder="Тип загрузки (напр. Rear)" Text="{Binding LoadingType}"  />
+            <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
+                <Entry Grid.Column="0" Placeholder="Тоннаж (т)" Keyboard="Numeric" Text="{Binding TonnageStr}" />
+                <Entry Grid.Column="1"  Placeholder="Объем (м³)" Keyboard="Numeric" Text="{Binding CapacityStr}" />
+            </Grid>
+
+            <Button Text="Сохранить" 
+                    Command="{Binding AddCommand}" 
+                    BackgroundColor="#62b375"
+                    TextColor="White"
+                    CornerRadius="10"
+                    HeightRequest="50"
+                    Margin="0,20,0,0"/>
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

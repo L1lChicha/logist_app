@@ -2,39 +2,184 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="logist_app.EditClientPage"
-             Title="EditClientPage">
-        <ScrollView>
-            <StackLayout Padding="20" Spacing="10">
-                <Label Text="Name" />
-                <Entry Text="{Binding Client.Name}" />
+             Title="Edit Client"
+             BackgroundColor="#F5F5F5">
 
-                <Label Text="Address" />
-                <Entry Text="{Binding Client.Address}" />
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <Color x:Key="PrimaryColor">#007ACC</Color>
+            <Color x:Key="SuccessColor">#1E8E3E</Color>
+            <Color x:Key="DestructiveColor">#D93025</Color>
+            <Color x:Key="TextPrimary">#1F1F1F</Color>
+            <Color x:Key="TextSecondary">#757575</Color>
 
-                <Label Text="City" />
-                <Entry Text="{Binding Client.City}" />
+            <Style x:Key="InputBorderStyle" TargetType="Border">
+                <Setter Property="Stroke" Value="#E0E0E0"/>
+                <Setter Property="StrokeThickness" Value="1"/>
+                <Setter Property="StrokeShape" Value="RoundRectangle 8"/>
+                <Setter Property="BackgroundColor" Value="White"/>
+                <Setter Property="Padding" Value="10,0"/>
+                <Setter Property="HeightRequest" Value="45"/>
+            </Style>
 
-                <Label Text="Postal Code" />
-                <Entry Text="{Binding Client.PostalCode}" />
+            <Style TargetType="Label">
+                <Setter Property="TextColor" Value="{StaticResource TextPrimary}"/>
+                <Setter Property="FontSize" Value="13"/>
+                <Setter Property="FontAttributes" Value="Bold"/>
+                <Setter Property="Margin" Value="0,0,0,5"/>
+            </Style>
 
-                <Label Text="Phone" />
-                <Entry Text="{Binding Client.Phone}" />
+            <Style TargetType="Entry">
+                <Setter Property="TextColor" Value="Black"/>
+                <Setter Property="PlaceholderColor" Value="#9CA3AF"/>
+                <Setter Property="FontSize" Value="14"/>
+                <Setter Property="BackgroundColor" Value="Transparent"/>
+                <Setter Property="VerticalOptions" Value="Center"/>
+            </Style>
+        </ResourceDictionary>
+    </ContentPage.Resources>
 
-                <Label Text="Email" />
-                <Entry Text="{Binding Client.Email}" />
+    <ScrollView>
+        <Grid RowDefinitions="Auto, *" Padding="20">
+            
+            <Border Grid.Row="0"
+                    BackgroundColor="White"
+                    StrokeThickness="0"
+                    StrokeShape="RoundRectangle 15"
+                    WidthRequest="1000" 
+                    HorizontalOptions="Center"> <Border.Shadow>
+                    <Shadow Brush="Black" Offset="0,4" Radius="10" Opacity="0.05"/>
+                </Border.Shadow>
 
-                <Label Text="Recurrence" />
-                <Entry Text="{Binding Client.Recurrence}" />
+                <VerticalStackLayout Padding="25" Spacing="20">
 
-                <Label Text="Container Count" />
-                <Entry Text="{Binding Client.ContainerCount}" Keyboard="Numeric" />
+                    <Label Text="Edit Client Details" 
+                           FontSize="22" 
+                           TextColor="{StaticResource TextPrimary}"
+                           HorizontalOptions="Center"
+                           Margin="0,0,0,10"/>
 
-                <Label Text="Start Date" />
-                <DatePicker Date="{Binding Client.StartDate}" />
+                    <VerticalStackLayout Spacing="0">
+                        <Label Text="Client Name"/>
+                        <Border Style="{StaticResource InputBorderStyle}">
+                            <Entry Text="{Binding Client.Name}" Placeholder="Company or Name" />
+                        </Border>
+                    </VerticalStackLayout>
 
-                <Button x:Name="saveButton"  Text="Save" Command="{Binding SaveClientCommand}" />
-                <Button x:Name="cancelButton" Text="Cancel" Command="{Binding CancelCommand}" />
-                <Button x:Name="deleteClientButton" Text="Delete Client" Command="{Binding DeleteClientCommand}" />
-            </StackLayout>
-        </ScrollView>
+                    <VerticalStackLayout Spacing="0">
+                        <Label Text="Address"/>
+                        <Border Style="{StaticResource InputBorderStyle}">
+                            <Entry Text="{Binding Client.Address}" Placeholder="Street Address" />
+                        </Border>
+                    </VerticalStackLayout>
+
+                    <Grid ColumnDefinitions="*, 0.5*" ColumnSpacing="15">
+                        <VerticalStackLayout Grid.Column="0" Spacing="0">
+                            <Label Text="City"/>
+                            <Border Style="{StaticResource InputBorderStyle}">
+                                <Entry Text="{Binding Client.City}" Placeholder="City" />
+                            </Border>
+                        </VerticalStackLayout>
+
+                        <VerticalStackLayout Grid.Column="1" Spacing="0">
+                            <Label Text="Postal Code"/>
+                            <Border Style="{StaticResource InputBorderStyle}">
+                                <Entry Text="{Binding Client.PostalCode}" Placeholder="Zip" Keyboard="Numeric"/>
+                            </Border>
+                        </VerticalStackLayout>
+                    </Grid>
+
+                    <Grid ColumnDefinitions="*, *" ColumnSpacing="15">
+                        <VerticalStackLayout Grid.Column="0" Spacing="0">
+                            <Label Text="Phone"/>
+                            <Border Style="{StaticResource InputBorderStyle}">
+                                <Entry Text="{Binding Client.Phone}" Placeholder="+1..." Keyboard="Telephone"/>
+                            </Border>
+                        </VerticalStackLayout>
+
+                        <VerticalStackLayout Grid.Column="1" Spacing="0">
+                            <Label Text="Email"/>
+                            <Border Style="{StaticResource InputBorderStyle}">
+                                <Entry Text="{Binding Client.Email}" Placeholder="name@example.com" Keyboard="Email"/>
+                            </Border>
+                        </VerticalStackLayout>
+                    </Grid>
+
+                    <BoxView HeightRequest="1" Color="#F0F0F0" Margin="0,5"/>
+
+                    <Label Text="Logistics &amp; Schedule" FontSize="16" TextColor="{StaticResource PrimaryColor}"/>
+
+                    <Grid ColumnDefinitions="*, *" ColumnSpacing="15">
+                        <VerticalStackLayout Grid.Column="0" Spacing="0">
+                            <Label Text="Container Count"/>
+                            <Border Style="{StaticResource InputBorderStyle}">
+                                <Entry Text="{Binding Client.ContainerCount}" Keyboard="Numeric"/>
+                            </Border>
+                        </VerticalStackLayout>
+
+                        <VerticalStackLayout Grid.Column="1" Spacing="0">
+                            <Label Text="Start Date"/>
+                            <Border Style="{StaticResource InputBorderStyle}">
+                                <DatePicker Date="{Binding Client.StartDate}" TextColor="Black"/>
+                            </Border>
+                        </VerticalStackLayout>
+                    </Grid>
+
+                    <VerticalStackLayout Spacing="5">
+                        <Label Text="Recurrence Rule"/>
+                        <Button Text="Configure Schedule" 
+                                Command="{Binding ConfigureRecurrenceCommand}" 
+                                BackgroundColor="White" 
+                                TextColor="{StaticResource TextPrimary}"
+                                BorderColor="#E0E0E0"
+                                BorderWidth="1"
+                                CornerRadius="8"
+                                HeightRequest="45"
+                                HorizontalOptions="Fill"/>
+                        <Label Text="{Binding RecurrenceSummary}" 
+                               TextColor="{StaticResource TextSecondary}" 
+                               FontSize="12"
+                               Margin="5,0,0,0"/>
+                    </VerticalStackLayout>
+
+                    <VerticalStackLayout Spacing="10" Margin="0,15,0,0">
+                        
+                        <Grid ColumnDefinitions="*, *" ColumnSpacing="15">
+                            <Button x:Name="cancelButton" 
+                                    Grid.Column="0"
+                                    Text="Cancel" 
+                                    Command="{Binding CancelCommand}" 
+                                    BackgroundColor="White" 
+                                    TextColor="{StaticResource TextPrimary}"
+                                    BorderColor="#E0E0E0"
+                                    BorderWidth="1"
+                                    CornerRadius="10"
+                                    HeightRequest="50"
+                                    FontAttributes="Bold"/>
+
+                            <Button x:Name="saveButton" 
+                                    Grid.Column="1"
+                                    Text="Save Changes" 
+                                    Command="{Binding SaveClientCommand}" 
+                                    BackgroundColor="{StaticResource SuccessColor}" 
+                                    TextColor="White"
+                                    CornerRadius="10"
+                                    HeightRequest="50"
+                                    FontAttributes="Bold"/>
+                        </Grid>
+
+                        <Button x:Name="deleteClientButton" 
+                                Text="Delete Client" 
+                                Command="{Binding DeleteClientCommand}" 
+                                BackgroundColor="#FCE8E6" 
+                                TextColor="{StaticResource DestructiveColor}"
+                                CornerRadius="10"
+                                HeightRequest="45"
+                                Margin="0,10,0,0"/>
+                    </VerticalStackLayout>
+
+                </VerticalStackLayout>
+            </Border>
+        </Grid>
+    </ScrollView>
 </ContentPage>

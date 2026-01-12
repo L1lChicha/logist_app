@@ -1,69 +1,259 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="logist_app.Views.DriversDataView"
              xmlns:viewmodels="clr-namespace:logist_app.ViewModels"
-             Title="DriversDataView">
-    
-    <Grid RowSpacing="6" ColumnDefinitions="3*,2*" >
-        
-        
-            
-        <CollectionView Grid.Row="0"
-                        Grid.Column="0"
-                        x:Name="driverCollectionView"
-                        ItemsSource="{Binding Drivers}" 
-                        SelectionMode="Single"
-                        SelectedItem="{Binding SelectedDriver}" > 
+             x:Class="logist_app.Views.DriversDataView"
+             Title="Drivers Management"
+             BackgroundColor="#F5F5F5">
 
-            <CollectionView.ItemTemplate>
-                <DataTemplate>
-                    <Border StrokeShape="RoundRectangle 10" BackgroundColor="White"  Margin="5" Padding="10"  >
-                        <VerticalStackLayout>
-                            <Label Text="{Binding Id, StringFormat='Id: {0}'}" FontAttributes="Bold" FontSize="20" TextColor="Black"/>
-                            <Label Text="{Binding Name, StringFormat='Name: {0}'}" FontAttributes="Bold" FontSize="20" TextColor="Black"/>
-                            <Label Text="{Binding IsActive, StringFormat='Is active: {0}'}" FontAttributes="Bold" FontSize="20" TextColor="Black"/>
-                            <Label Text="{Binding PhoneNumber, StringFormat='Phone number: {0}'}"  TextColor="Black"/>
-                            <Label Text="{Binding CreatedAt, StringFormat='Works since: {0:yyyy-MM-dd}'}" TextColor="Black"/>
-                        </VerticalStackLayout>
-                    </Border>
-                </DataTemplate>
-            </CollectionView.ItemTemplate>
-        </CollectionView>
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <Color x:Key="PrimaryColor">#007ACC</Color>
+            <Color x:Key="TextPrimary">#1F1F1F</Color>
+            <Color x:Key="TextSecondary">#757575</Color>
+            <Color x:Key="SuccessColor">#1E8E3E</Color>
+            <Color x:Key="InactiveColor">#9E9E9E</Color>
 
-        <VerticalStackLayout Grid.Column="1" Grid.Row="0">
-        <TableView  Intent="Data"  >
-            <TableRoot >
-                <TableSection >
-                    <EntryCell Label="Id" x:Name="IdEntryCell" 
-                               Text="{Binding SelectedDriver.Id}"/>
-                    <EntryCell Label="Name" x:Name="NameEntryCell" 
-                               Text="{Binding SelectedDriver.Name}"/>
-                    <EntryCell Label="Is active" x:Name="IsActiveEntryCell" 
-                               Text="{Binding SelectedDriver.IsActive}"/>
-                    <EntryCell Label="Phone Number" x:Name="PhoneNumberEntryCell" 
-                               Text="{Binding SelectedDriver.PhoneNumber}"/>
-                     <EntryCell Label="Created At" x:Name="CreatedAtEntryCell" 
-                                Text="{Binding SelectedDriver.CreatedAt}"/>
-                    <EntryCell Label="Authorization code" x:Name="AuthorizationCodeEntryCell"
-                               Text="{Binding Code}"/>
-                </TableSection>
-            </TableRoot>
-        </TableView>
-            <Button Text="Save" />
-            <Button Text="Edit"/>
-            <Button Text="Get authorization code" 
-                    x:Name="getCodeButton" 
-                    IsEnabled="{Binding IsButtonEnabled}"  
-                    Command="{Binding GetAuthorizationCodeCommand}"/>
+            <Style x:Key="FormEntryStyle" TargetType="Entry">
+                <Setter Property="FontSize" Value="14"/>
+                <Setter Property="TextColor" Value="{StaticResource TextPrimary}"/>
+                <Setter Property="PlaceholderColor" Value="#999"/>
+                <Setter Property="BackgroundColor" Value="Transparent"/>
+                <Setter Property="HeightRequest" Value="40"/>
+            </Style>
 
-            <Image Source="{Binding QrImage}"
-               WidthRequest="200"
-               HeightRequest="200"
-               HorizontalOptions="Center"
-               VerticalOptions="Center" />  
+            <Style x:Key="FormLabelStyle" TargetType="Label">
+                <Setter Property="FontSize" Value="12"/>
+                <Setter Property="TextColor" Value="{StaticResource TextPrimary}"/>
+                <Setter Property="FontAttributes" Value="Bold"/>
+                <Setter Property="Margin" Value="0,10,0,0"/>
+            </Style>
+        </ResourceDictionary>
+    </ContentPage.Resources>
 
+    <Grid ColumnDefinitions="400, *" Padding="15" ColumnSpacing="20">
 
-        </VerticalStackLayout>
+        <Grid Grid.Column="0" RowDefinitions="Auto, *">
+
+            <Label Grid.Row="0" 
+                   Text="Drivers List" 
+                   FontSize="22" 
+                   FontAttributes="Bold" 
+                   TextColor="{StaticResource TextPrimary}"
+                   Margin="0,0,0,15"/>
+
+            <RefreshView Grid.Row="1">
+                <CollectionView x:Name="driverCollectionView"
+                                ItemsSource="{Binding Drivers}" 
+                                SelectionMode="Single"
+                                SelectedItem="{Binding SelectedDriver}">
+
+                    <CollectionView.ItemsLayout>
+                        <LinearItemsLayout Orientation="Vertical" ItemSpacing="10"/>
+                    </CollectionView.ItemsLayout>
+
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Border StrokeShape="RoundRectangle 12" 
+                                    StrokeThickness="0"
+                                    BackgroundColor="White" 
+                                    Padding="15">
+                                <Border.Shadow>
+                                    <Shadow Brush="Black" Offset="0,2" Radius="5" Opacity="0.05"/>
+                                </Border.Shadow>
+
+                                <VisualStateManager.VisualStateGroups>
+                                    <VisualStateGroup Name="CommonStates">
+                                        <VisualState Name="Normal" />
+                                        <VisualState Name="Selected">
+                                            <VisualState.Setters>
+                                                <Setter Property="BackgroundColor" Value="#F0F7FF" />
+                                                <Setter Property="Stroke" Value="{StaticResource PrimaryColor}" />
+                                                <Setter Property="StrokeThickness" Value="1" />
+                                            </VisualState.Setters>
+                                        </VisualState>
+                                    </VisualStateGroup>
+                                </VisualStateManager.VisualStateGroups>
+
+                                <Grid RowDefinitions="Auto, Auto, Auto" ColumnDefinitions="*, Auto">
+
+                                    <VerticalStackLayout Grid.Row="0" Grid.Column="0">
+                                        <Label Text="{Binding Name}" 
+                                               FontSize="18" 
+                                               FontAttributes="Bold" 
+                                               TextColor="{StaticResource TextPrimary}"/>
+                                        <Label Text="{Binding Id, StringFormat='ID: {0}'}" 
+                                               FontSize="12" 
+                                               TextColor="{StaticResource TextPrimary}"/>
+                                    </VerticalStackLayout>
+
+                                    <Border Grid.Row="0" Grid.Column="1" 
+                                            StrokeShape="RoundRectangle 8" 
+                                            StrokeThickness="0"
+                                            Padding="8,4"
+                                            VerticalOptions="Start">
+                                        <Border.Triggers>
+                                            <DataTrigger TargetType="Border" Binding="{Binding IsActive}" Value="True">
+                                                <Setter Property="BackgroundColor" Value="#E6F4EA"/>
+                                            </DataTrigger>
+                                            <DataTrigger TargetType="Border" Binding="{Binding IsActive}" Value="False">
+                                                <Setter Property="BackgroundColor" Value="#F5F5F5"/>
+                                            </DataTrigger>
+                                        </Border.Triggers>
+                                        <Label FontSize="12" FontAttributes="Bold">
+                                            <Label.Triggers>
+                                                <DataTrigger TargetType="Label" Binding="{Binding IsActive}" Value="True">
+                                                    <Setter Property="Text" Value="Active"/>
+                                                    <Setter Property="TextColor" Value="{StaticResource SuccessColor}"/>
+                                                </DataTrigger>
+                                                <DataTrigger TargetType="Label" Binding="{Binding IsActive}" Value="False">
+                                                    <Setter Property="Text" Value="Inactive"/>
+                                                    <Setter Property="TextColor" Value="{StaticResource InactiveColor}"/>
+                                                </DataTrigger>
+                                            </Label.Triggers>
+                                        </Label>
+                                    </Border>
+
+                                    <BoxView Grid.Row="1" Grid.ColumnSpan="2" HeightRequest="1" Color="#F0F0F0" Margin="0,10"/>
+
+                                    <VerticalStackLayout Grid.Row="2" Grid.ColumnSpan="2" Spacing="4">
+                                        <HorizontalStackLayout Spacing="5">
+                                            <Label Text="Phone number: " TextColor="Black" FontSize="12"/>
+                                            <Label Text="{Binding PhoneNumber}" FontSize="13" TextColor="{StaticResource TextPrimary}"/>
+                                        </HorizontalStackLayout>
+                                        <HorizontalStackLayout Spacing="5">
+                                            <Label Text="Joined:" FontSize="12" TextColor="Black"/>
+                                            <Label Text="{Binding CreatedAt, StringFormat=' {0:MMM dd, yyyy}'}" FontSize="12" TextColor="{StaticResource TextPrimary}"/>
+                                        </HorizontalStackLayout>
+                                    </VerticalStackLayout>
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </RefreshView>
+        </Grid>
+
+        <Border Grid.Column="1" 
+                BackgroundColor="White" 
+                StrokeShape="RoundRectangle 15"
+                StrokeThickness="0"
+                Padding="0">
+            <Border.Shadow>
+                <Shadow Brush="Black" Offset="0,4" Radius="10" Opacity="0.05"/>
+            </Border.Shadow>
+
+            <Grid RowDefinitions="Auto, *, Auto">
+
+                <Label Grid.Row="0" 
+                       Text="Driver Details" 
+                       FontSize="20" 
+                       FontAttributes="Bold" 
+                       TextColor="{StaticResource TextPrimary}"
+                       Padding="20,20,20,10"/>
+
+                <ScrollView Grid.Row="1">
+                    <VerticalStackLayout Padding="20" Spacing="5">
+
+                        <Label Text="ID" Style="{StaticResource FormLabelStyle}"/>
+                        <Border Stroke="#E0E0E0" StrokeShape="RoundRectangle 8" BackgroundColor="#F9F9F9" Padding="10,0">
+                            <Entry Text="{Binding SelectedDriver.Id}" IsReadOnly="True" Style="{StaticResource FormEntryStyle}" TextColor="{StaticResource TextPrimary}"/>
+                        </Border>
+
+                        <Label Text="FULL NAME" Style="{StaticResource FormLabelStyle}"/>
+                        <Border Stroke="#E0E0E0" StrokeShape="RoundRectangle 8" Padding="10,0">
+                            <Entry Text="{Binding SelectedDriver.Name}" Placeholder="Enter full name" Style="{StaticResource FormEntryStyle}"/>
+                        </Border>
+
+                        <Grid ColumnDefinitions="*, *" ColumnSpacing="15">
+                            <VerticalStackLayout Grid.Column="0">
+                                <Label Text="PHONE NUMBER" Style="{StaticResource FormLabelStyle}"/>
+                                <Border Stroke="#E0E0E0" StrokeShape="RoundRectangle 8" Padding="10,0">
+                                    <Entry Text="{Binding SelectedDriver.PhoneNumber}" Keyboard="Telephone" Style="{StaticResource FormEntryStyle}"/>
+                                </Border>
+                            </VerticalStackLayout>
+
+                            <VerticalStackLayout Grid.Column="1">
+                                <Label Text="STATUS" Style="{StaticResource FormLabelStyle}"/>
+                                <Border Stroke="#E0E0E0" StrokeShape="RoundRectangle 8" Padding="0" HeightRequest="42">
+                                    <Grid ColumnDefinitions="*, Auto" Padding="10,0">
+                                        <Label Text="Is Active?" VerticalOptions="Center"/>
+                                        <Switch Grid.Column="1" IsToggled="{Binding SelectedDriver.IsActive}" OnColor="{StaticResource SuccessColor}"/>
+                                    </Grid>
+                                </Border>
+                            </VerticalStackLayout>
+                        </Grid>
+
+                        <Border Stroke="#E0E0E0" StrokeShape="RoundRectangle 12" StrokeThickness="1" Margin="0,20,0,0" Padding="15">
+                            <Grid RowDefinitions="Auto, Auto, Auto" RowSpacing="10">
+                                <Label Grid.Row="0" Text="Authorization" FontAttributes="Bold" FontSize="16"/>
+
+                                <HorizontalStackLayout Grid.Row="1" Spacing="10">
+                                    <Button Text="Generate Code" 
+                                            x:Name="getCodeButton"
+                                            Command="{Binding GetAuthorizationCodeCommand}"
+                                            IsEnabled="{Binding IsButtonEnabled}"
+                                            BackgroundColor="{StaticResource PrimaryColor}" 
+                                            TextColor="White" 
+                                            HeightRequest="36" 
+                                            CornerRadius="8" 
+                                            FontSize="12"/>
+
+                                    <Label Text="{Binding Code, StringFormat='Code: {0}'}" 
+                                           VerticalOptions="Center" 
+                                           FontSize="16" 
+                                           FontAttributes="Bold" 
+                                           TextColor="{StaticResource TextPrimary}"/>
+                                </HorizontalStackLayout>
+
+                                <Border Grid.Row="2" 
+                                        HorizontalOptions="Center" 
+                                        Stroke="#EEE" 
+                                        StrokeThickness="1" 
+                                        Padding="10"
+                                        BackgroundColor="White">
+                                    <Image Source="{Binding QrImage}" 
+                                           WidthRequest="180" 
+                                           HeightRequest="180" 
+                                           Aspect="AspectFit"/>
+                                </Border>
+                            </Grid>
+                        </Border>
+
+                    </VerticalStackLayout>
+                </ScrollView>
+
+                <Border Grid.Row="2" 
+                        StrokeThickness="0" 
+                        BackgroundColor="#FAFAFA" 
+                        Padding="20">
+                    <Grid ColumnDefinitions="*, *, *" ColumnSpacing="10">
+                        <Button Grid.Column="0" 
+                                Text="Add New" 
+                                x:Name="AddNewDriverButton" 
+                                Clicked="AddNewDriverButton_Clicked"
+                                BackgroundColor="White" 
+                                TextColor="{StaticResource PrimaryColor}" 
+                                BorderColor="{StaticResource PrimaryColor}" 
+                                BorderWidth="1"
+                                CornerRadius="8"/>
+
+                        <Button Grid.Column="1" 
+                                Text="Save Changes" 
+                                BackgroundColor="{StaticResource SuccessColor}" 
+                                TextColor="White" 
+                                CornerRadius="8"/>
+
+                        <Button Grid.Column="2" 
+                                Text="Delete" 
+                                BackgroundColor="#FCE8E6" 
+                                TextColor="#D93025" 
+                                CornerRadius="8"/>
+                    </Grid>
+                </Border>
+
+            </Grid>
+        </Border>
+
     </Grid>
 </ContentPage>

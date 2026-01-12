@@ -45,8 +45,13 @@ namespace logist_app.ViewModels
         [RelayCommand]
         public async Task LoadDriversAsync()
         {
+
+            if (Drivers.Count != 0)
+                return;
             try
             {
+
+
                 var http = _httpFactory.CreateClient("Api");
                 var drivers = await http.GetFromJsonAsync<List<Driver>>($"{_api.DriversEndpoint}/all");
                 Drivers.Clear();

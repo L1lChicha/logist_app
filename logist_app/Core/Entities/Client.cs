@@ -28,7 +28,8 @@ namespace logist_app.Core.Entities
 
         [JsonPropertyName("is_distributed")] public bool IsDistributed { get; set; }
 
-        [Column(TypeName = "jsonb")] public RecurrenceSettings Schedule { get; set; }
+        [Column(TypeName = "jsonb")]
+        [JsonPropertyName("schedule")] public RecurrenceSettings Schedule { get; set; }
 
     }
 }

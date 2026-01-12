@@ -3,93 +3,203 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="logist_app.RecurrenceModalPage"
              Title="Configure Schedule"
-             BackgroundColor="Black">
+             BackgroundColor="#F5F5F5">
 
-    <ScrollView>
-        <VerticalStackLayout Spacing="15" Padding="20">
-            <Label Text="Настройка расписания" FontSize="20" FontAttributes="Bold" HorizontalOptions="Center"/>
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <Color x:Key="PrimaryColor">#007ACC</Color>
+            <Color x:Key="SuccessColor">#1E8E3E</Color>
+            <Color x:Key="TextPrimary">#1F1F1F</Color>
+            <Color x:Key="TextSecondary">#757575</Color>
 
-            <Label Text="Тип повторения:" FontAttributes="Bold"/>
-            <Picker x:Name="TypePicker" SelectedIndexChanged="OnTypeChanged">
-                <Picker.ItemsSource>
-                    <x:Array Type="{x:Type x:String}">
-                        <x:String>Daily</x:String>
-                        <x:String>Weekly</x:String>
-                        <x:String>Monthly</x:String>
-                    </x:Array>
-                </Picker.ItemsSource>
-            </Picker>
+            <Style x:Key="CheckboxCardStyle" TargetType="Border">
+                <Setter Property="StrokeShape" Value="RoundRectangle 8"/>
+                <Setter Property="Stroke" Value="#E0E0E0"/>
+                <Setter Property="StrokeThickness" Value="1"/>
+                <Setter Property="BackgroundColor" Value="White"/>
+                <Setter Property="Padding" Value="10,5"/>
+                <Setter Property="Margin" Value="0,0,5,5"/>
+            </Style>
 
-            <Label Text="Интервал (каждые X дн/нед/мес):" FontAttributes="Bold"/>
-            <Entry x:Name="IntervalEntry" Text="1" Keyboard="Numeric"/>
+            <Style x:Key="InputBorderStyle" TargetType="Border">
+                <Setter Property="Stroke" Value="#E0E0E0"/>
+                <Setter Property="StrokeThickness" Value="1"/>
+                <Setter Property="StrokeShape" Value="RoundRectangle 8"/>
+                <Setter Property="BackgroundColor" Value="White"/>
+                <Setter Property="Padding" Value="10,0"/>
+                <Setter Property="HeightRequest" Value="45"/>
+            </Style>
+        </ResourceDictionary>
+    </ContentPage.Resources>
 
-            <VerticalStackLayout x:Name="WeeklySection" IsVisible="False">
-                <Label Text="Дни недели:" FontAttributes="Bold" Margin="0,10,0,0"/>
-                <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto,Auto,Auto">
-                    <HorizontalStackLayout Grid.Row="0" Grid.Column="0">
-                        <CheckBox x:Name="cbMon"/>
-                        <Label Text="Mon" VerticalOptions="Center"/>
-                    </HorizontalStackLayout>
-                    <HorizontalStackLayout Grid.Row="0" Grid.Column="1">
-                        <CheckBox x:Name="cbTue"/>
-                        <Label Text="Tue" VerticalOptions="Center"/>
-                    </HorizontalStackLayout>
-                    <HorizontalStackLayout Grid.Row="1" Grid.Column="0">
-                        <CheckBox x:Name="cbWed"/>
-                        <Label Text="Wed" VerticalOptions="Center"/>
-                    </HorizontalStackLayout>
-                    <HorizontalStackLayout Grid.Row="1" Grid.Column="1">
-                        <CheckBox x:Name="cbThu"/>
-                        <Label Text="Thu" VerticalOptions="Center"/>
-                    </HorizontalStackLayout>
-                    <HorizontalStackLayout Grid.Row="2" Grid.Column="0">
-                        <CheckBox x:Name="cbFri"/>
-                        <Label Text="Fri" VerticalOptions="Center"/>
-                    </HorizontalStackLayout>
-                    <HorizontalStackLayout Grid.Row="2" Grid.Column="1">
-                        <CheckBox x:Name="cbSat"/>
-                        <Label Text="Sat" VerticalOptions="Center"/>
-                    </HorizontalStackLayout>
-                    <HorizontalStackLayout Grid.Row="3" Grid.Column="0">
-                        <CheckBox x:Name="cbSun"/>
-                        <Label Text="Sun" VerticalOptions="Center"/>
-                    </HorizontalStackLayout>
-                </Grid>
+    <Grid RowDefinitions="*, Auto">
 
-                <Label Text="Номера недель (опционально):" FontAttributes="Bold" Margin="0,10,0,0"/>
-                <HorizontalStackLayout Spacing="10">
-                    <HorizontalStackLayout>
-                        <CheckBox x:Name="cbW1"/>
-                        <Label Text="1" VerticalOptions="Center"/>
-                    </HorizontalStackLayout>
-                    <HorizontalStackLayout>
-                        <CheckBox x:Name="cbW2"/>
-                        <Label Text="2" VerticalOptions="Center"/>
-                    </HorizontalStackLayout>
-                    <HorizontalStackLayout>
-                        <CheckBox x:Name="cbW3"/>
-                        <Label Text="3" VerticalOptions="Center"/>
-                    </HorizontalStackLayout>
-                    <HorizontalStackLayout>
-                        <CheckBox x:Name="cbW4"/>
-                        <Label Text="4" VerticalOptions="Center"/>
-                    </HorizontalStackLayout>
-                    <HorizontalStackLayout>
-                        <CheckBox x:Name="cbW5"/>
-                        <Label Text="5" VerticalOptions="Center"/>
-                    </HorizontalStackLayout>
-                </HorizontalStackLayout>
+        <ScrollView Grid.Row="0">
+            <VerticalStackLayout Spacing="20" Padding="20">
+
+                <Label Text="Schedule Settings" 
+                       FontSize="22" 
+                       FontAttributes="Bold" 
+                       TextColor="{StaticResource TextPrimary}"
+                       HorizontalOptions="Center"
+                       Margin="0,10,0,10"/>
+
+                <VerticalStackLayout Spacing="5">
+                    <Label Text="Recurrence Type" TextColor="{StaticResource TextPrimary}" FontAttributes="Bold"/>
+                    <Border Style="{StaticResource InputBorderStyle}">
+                        <Picker x:Name="TypePicker" 
+                                SelectedIndexChanged="OnTypeChanged"
+                                Title="Select type"
+                                TextColor="{StaticResource TextPrimary}">
+                            <Picker.ItemsSource>
+                                <x:Array Type="{x:Type x:String}">
+                                    <x:String>Daily</x:String>
+                                    <x:String>Weekly</x:String>
+                                    <x:String>Monthly</x:String>
+                                </x:Array>
+                            </Picker.ItemsSource>
+                        </Picker>
+                    </Border>
+                </VerticalStackLayout>
+
+                <VerticalStackLayout Spacing="5">
+                    <Label Text="Interval (every X days/weeks)" TextColor="{StaticResource TextPrimary}" FontAttributes="Bold"/>
+                    <Border Style="{StaticResource InputBorderStyle}">
+                        <Entry x:Name="IntervalEntry" 
+                               Text="1" 
+                               Keyboard="Numeric"
+                               TextColor="{StaticResource TextPrimary}"
+                               Placeholder="Enter number"/>
+                    </Border>
+                </VerticalStackLayout>
+
+                <BoxView HeightRequest="1" Color="#E0E0E0" Margin="0,5"/>
+
+                <VerticalStackLayout x:Name="WeeklySection" IsVisible="False" Spacing="15">
+
+                    <Label Text="Days of the Week" TextColor="{StaticResource TextPrimary}" FontSize="16" FontAttributes="Bold"/>
+
+                    <FlexLayout Wrap="Wrap" JustifyContent="Start">
+
+                        <Border Style="{StaticResource CheckboxCardStyle}">
+                            <HorizontalStackLayout Spacing="5">
+                                <CheckBox x:Name="cbMon" Color="{StaticResource PrimaryColor}"/>
+                                <Label Text="Mon" VerticalOptions="Center" TextColor="Black"/>
+                            </HorizontalStackLayout>
+                        </Border>
+
+                        <Border Style="{StaticResource CheckboxCardStyle}">
+                            <HorizontalStackLayout Spacing="5">
+                                <CheckBox x:Name="cbTue" Color="{StaticResource PrimaryColor}"/>
+                                <Label Text="Tue" VerticalOptions="Center" TextColor="Black"/>
+                            </HorizontalStackLayout>
+                        </Border>
+
+                        <Border Style="{StaticResource CheckboxCardStyle}">
+                            <HorizontalStackLayout Spacing="5">
+                                <CheckBox x:Name="cbWed" Color="{StaticResource PrimaryColor}"/>
+                                <Label Text="Wed" VerticalOptions="Center" TextColor="Black"/>
+                            </HorizontalStackLayout>
+                        </Border>
+
+                        <Border Style="{StaticResource CheckboxCardStyle}">
+                            <HorizontalStackLayout Spacing="5">
+                                <CheckBox x:Name="cbThu" Color="{StaticResource PrimaryColor}"/>
+                                <Label Text="Thu" VerticalOptions="Center" TextColor="Black"/>
+                            </HorizontalStackLayout>
+                        </Border>
+
+                        <Border Style="{StaticResource CheckboxCardStyle}">
+                            <HorizontalStackLayout Spacing="5">
+                                <CheckBox x:Name="cbFri" Color="{StaticResource PrimaryColor}"/>
+                                <Label Text="Fri" VerticalOptions="Center" TextColor="Black"/>
+                            </HorizontalStackLayout>
+                        </Border>
+
+                        <Border Style="{StaticResource CheckboxCardStyle}">
+                            <HorizontalStackLayout Spacing="5">
+                                <CheckBox x:Name="cbSat" Color="{StaticResource PrimaryColor}"/>
+                                <Label Text="Sat" VerticalOptions="Center" TextColor="Black"/>
+                            </HorizontalStackLayout>
+                        </Border>
+
+                        <Border Style="{StaticResource CheckboxCardStyle}">
+                            <HorizontalStackLayout Spacing="5">
+                                <CheckBox x:Name="cbSun" Color="{StaticResource PrimaryColor}"/>
+                                <Label Text="Sun" VerticalOptions="Center" TextColor="Black"/>
+                            </HorizontalStackLayout>
+                        </Border>
+                    </FlexLayout>
+
+                    <Label Text="Week Numbers (Optional)" TextColor="{StaticResource TextPrimary}" FontAttributes="Bold" Margin="0,10,0,0"/>
+
+                    <FlexLayout Wrap="Wrap" JustifyContent="SpaceBetween">
+                        <HorizontalStackLayout Spacing="0">
+                            <CheckBox x:Name="cbW1" Color="{StaticResource PrimaryColor}"/>
+                            <Label Text="1st" VerticalOptions="Center" TextColor="Black"/>
+                        </HorizontalStackLayout>
+                        <HorizontalStackLayout Spacing="0">
+                            <CheckBox x:Name="cbW2" Color="{StaticResource PrimaryColor}"/>
+                            <Label Text="2nd" VerticalOptions="Center" TextColor="Black"/>
+                        </HorizontalStackLayout>
+                        <HorizontalStackLayout Spacing="0">
+                            <CheckBox x:Name="cbW3" Color="{StaticResource PrimaryColor}"/>
+                            <Label Text="3rd" VerticalOptions="Center" TextColor="Black"/>
+                        </HorizontalStackLayout>
+                        <HorizontalStackLayout Spacing="0">
+                            <CheckBox x:Name="cbW4" Color="{StaticResource PrimaryColor}"/>
+                            <Label Text="4th" VerticalOptions="Center" TextColor="Black"/>
+                        </HorizontalStackLayout>
+                        <HorizontalStackLayout Spacing="0">
+                            <CheckBox x:Name="cbW5" Color="{StaticResource PrimaryColor}"/>
+                            <Label Text="5th" VerticalOptions="Center" TextColor="Black"/>
+                        </HorizontalStackLayout>
+                    </FlexLayout>
+                </VerticalStackLayout>
+
+                <VerticalStackLayout x:Name="MonthlySection" IsVisible="False" Spacing="5">
+                    <Label Text="Days of Month" TextColor="{StaticResource TextPrimary}" FontAttributes="Bold"/>
+                    <Label Text="Enter days separated by comma (e.g., 1, 15, 25)" FontSize="12" TextColor="#999"/>
+                    <Border Style="{StaticResource InputBorderStyle}">
+                        <Entry x:Name="DaysOfMonthEntry" 
+                               Placeholder="e.g. 5, 20" 
+                               TextColor="{StaticResource TextPrimary}"/>
+                    </Border>
+                </VerticalStackLayout>
+
+                <BoxView HeightRequest="80" Color="Transparent"/>
+
             </VerticalStackLayout>
+        </ScrollView>
 
-            <VerticalStackLayout x:Name="MonthlySection" IsVisible="False">
-                <Label Text="Дни месяца (через запятую, напр. 1, 15):" FontAttributes="Bold"/>
-                <Entry x:Name="DaysOfMonthEntry" Placeholder="e.g. 5, 20"/>
-            </VerticalStackLayout>
+        <Border Grid.Row="1" 
+                StrokeThickness="0"
+                BackgroundColor="White"
+                Padding="20,15"
+                Shadow="{Shadow Brush=Black, Offset='0,-5', Radius=10, Opacity=0.1}">
 
-            <Grid ColumnDefinitions="*,*"  Margin="0,20,0,0">
-                <Button Text="Cancel" Clicked="OnCancelClicked" BackgroundColor="Gray" Grid.Column="0"/>
-                <Button Text="Save" Clicked="OnSaveClicked" BackgroundColor="#008B09" Grid.Column="1"/>
+            <Grid ColumnDefinitions="*, *" ColumnSpacing="15">
+                <Button Grid.Column="0"
+                        Text="Cancel" 
+                        Clicked="OnCancelClicked" 
+                        BackgroundColor="White" 
+                        TextColor="{StaticResource TextPrimary}"
+                        BorderColor="#E0E0E0"
+                        BorderWidth="1"
+                        CornerRadius="10"
+                        HeightRequest="50"
+                        FontAttributes="Bold"/>
+
+                <Button Grid.Column="1"
+                        Text="Save Schedule" 
+                        Clicked="OnSaveClicked" 
+                        BackgroundColor="{StaticResource SuccessColor}" 
+                        TextColor="White"
+                        CornerRadius="10"
+                        HeightRequest="50"
+                        FontAttributes="Bold"/>
             </Grid>
-        </VerticalStackLayout>
-    </ScrollView>
+        </Border>
+
+    </Grid>
 </ContentPage>

@@ -2,12 +2,111 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="logist_app.Views.AddNewDriverPage"
-             Title="AddNewDriverPage">
-    <VerticalStackLayout>
-        <Label Text="name"/>
-        <Entry x:Name="nameEntry"/>
-        <Label Text="Phone number"/>
-        <Entry x:Name="phoneEntry"/>
-        <Button x:Name="createNewDriverButton" Clicked="createNewDriverButton_Clicked" Text="Add driver" ></Button>
-    </VerticalStackLayout>
+             Title="Add New Driver"
+             BackgroundColor="#F5F5F5">
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <Color x:Key="PrimaryColor">#007ACC</Color>
+            <Color x:Key="SuccessColor">#1E8E3E</Color>
+            <Color x:Key="TextPrimary">#1F1F1F</Color>
+            <Color x:Key="TextSecondary">#757575</Color>
+
+            <Style x:Key="InputBorderStyle" TargetType="Border">
+                <Setter Property="Stroke" Value="#E0E0E0"/>
+                <Setter Property="StrokeThickness" Value="1"/>
+                <Setter Property="StrokeShape" Value="RoundRectangle 8"/>
+                <Setter Property="BackgroundColor" Value="White"/>
+                <Setter Property="Padding" Value="10,0"/>
+                <Setter Property="HeightRequest" Value="45"/>
+            </Style>
+
+            <Style TargetType="Label">
+                <Setter Property="TextColor" Value="{StaticResource TextPrimary}"/>
+                <Setter Property="FontSize" Value="13"/>
+                <Setter Property="FontAttributes" Value="Bold"/>
+                <Setter Property="Margin" Value="0,0,0,5"/>
+            </Style>
+
+            <Style TargetType="Entry">
+                <Setter Property="TextColor" Value="Black"/>
+                <Setter Property="PlaceholderColor" Value="#9CA3AF"/>
+                <Setter Property="FontSize" Value="14"/>
+                <Setter Property="BackgroundColor" Value="Transparent"/>
+                <Setter Property="VerticalOptions" Value="Center"/>
+            </Style>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <ScrollView>
+        <Grid RowDefinitions="*" Padding="20">
+
+            <Border VerticalOptions="Center"
+                    HorizontalOptions="Center"
+                    BackgroundColor="White"
+                    StrokeThickness="0"
+                    StrokeShape="RoundRectangle 15"
+                    WidthRequest="350">
+
+                <Border.Shadow>
+                    <Shadow Brush="Black" Offset="0,4" Radius="10" Opacity="0.1"/>
+                </Border.Shadow>
+
+                <VerticalStackLayout Padding="25" Spacing="20">
+
+                    <VerticalStackLayout Spacing="5" HorizontalOptions="Center">
+                        <Label Text="New Driver" 
+                               FontSize="22" 
+                               TextColor="{StaticResource TextPrimary}"
+                               HorizontalOptions="Center"/>
+                        <Label Text="Enter driver details below" 
+                               FontSize="12" 
+                               TextColor="{StaticResource TextSecondary}"
+                               HorizontalOptions="Center"
+                               FontAttributes="None"/>
+                    </VerticalStackLayout>
+
+                    <BoxView HeightRequest="1" Color="#F0F0F0" Margin="0,5"/>
+
+                    <VerticalStackLayout Spacing="0">
+                        <Label Text="Full Name"/>
+                        <Border Style="{StaticResource InputBorderStyle}">
+                            <Entry x:Name="nameEntry" 
+                                   Placeholder="e.g. John Doe" />
+                        </Border>
+                    </VerticalStackLayout>
+
+                    <VerticalStackLayout Spacing="0">
+                        <Label Text="Phone Number"/>
+                        <Border Style="{StaticResource InputBorderStyle}">
+                            <Entry x:Name="phoneEntry" 
+                                   Placeholder="+1 (555) 000-0000" 
+                                   Keyboard="Telephone"/>
+                        </Border>
+                    </VerticalStackLayout>
+
+                    <VerticalStackLayout Spacing="10" Margin="0,15,0,0">
+
+                        <Button x:Name="createNewDriverButton" 
+                                Clicked="createNewDriverButton_Clicked" 
+                                Text="Add Driver" 
+                                BackgroundColor="{StaticResource SuccessColor}" 
+                                TextColor="White"
+                                CornerRadius="10"
+                                HeightRequest="50"
+                                FontAttributes="Bold"
+                                Shadow="{Shadow Brush={StaticResource SuccessColor}, Offset='0,3', Radius=5, Opacity=0.3}"/>
+
+                        <Button Text="Cancel" 
+                                BackgroundColor="Transparent" 
+                                TextColor="{StaticResource TextSecondary}"
+                                FontSize="14"
+                                HeightRequest="40"
+                                Clicked="OnCancelClicked"/>
+                    </VerticalStackLayout>
+
+                </VerticalStackLayout>
+            </Border>
+        </Grid>
+    </ScrollView>
 </ContentPage>

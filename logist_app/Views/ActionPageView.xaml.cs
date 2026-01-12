@@ -24,21 +24,28 @@ public partial class ActionPageView : ContentPage
         await Navigation.PushAsync(page);
     }
 
-    private void addNewClient_Clicked(object sender, EventArgs e)
+    private async void addNewClient_Clicked(object sender, EventArgs e)
     {
-        Navigation.PushAsync(new AddNewClientView());
+        var page = App.Services.GetService<AddNewClientView>();
+        await Navigation.PushAsync(page);
     }
 
     private async void viewRoutes_Clicked(object sender, EventArgs e)
     {
-        var page = App.Services.GetService<ViewRoutesPage>();
+        var page = App.Services.GetService<RoutesPageView>();
         await Navigation.PushAsync(page);
     }
 
    
     private async void drivers_Clicked(object sender, EventArgs e)
     {
-        var page = App.Services.GetService<DriverManagerView>();
+        var page = App.Services.GetService<DriversDataView>();
+        await Navigation.PushAsync(page);
+    }
+
+    private async void vehicles_Clicked(object sender, EventArgs e)
+    {
+        var page = App.Services.GetService<VehiclesDataView>();
         await Navigation.PushAsync(page);
     }
 }

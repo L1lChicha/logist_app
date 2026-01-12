@@ -1,7 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFrameworks>net9.0-android;net9.0-ios;net9.0-maccatalyst</TargetFrameworks>
 		<TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows'))">$(TargetFrameworks);net9.0-windows10.0.19041.0</TargetFrameworks>
 		<!-- Uncomment to also build the tizen app. You will need to install tizen by following this: https://github.com/Samsung/Tizen.NET -->
 		<!-- <TargetFrameworks>$(TargetFrameworks);net9.0-tizen</TargetFrameworks> -->
@@ -21,10 +20,10 @@
 		<Nullable>enable</Nullable>
 
 		<!-- Display name -->
-		<ApplicationTitle>logist_app</ApplicationTitle>
+		<ApplicationTitle>EcoLogistics</ApplicationTitle>
 
 		<!-- App Identifier -->
-		<ApplicationId>com.companyname.logist_app</ApplicationId>
+		<ApplicationId>com.companyname.logist-app</ApplicationId>
 
 		<!-- Versions -->
 		<ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>
@@ -39,12 +38,14 @@
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</SupportedOSPlatformVersion>
 		<TargetPlatformMinVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</TargetPlatformMinVersion>
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'tizen'">6.5</SupportedOSPlatformVersion>
+		<DefaultLanguage>ru</DefaultLanguage>
+		<PackageCertificateThumbprint>AF0969C9AAC571D92108FA5BDC7E9D271006F60A</PackageCertificateThumbprint>
+		<AppxPackageSigningEnabled>True</AppxPackageSigningEnabled>
 	</PropertyGroup>
 
 	<ItemGroup>
 		<!-- App Icon -->
-		<MauiIcon Include="Resources\AppIcon\appicon.svg" ForegroundFile="Resources\AppIcon\appiconfg.svg" Color="#512BD4" />
-
+		<MauiIcon Include="Resources\AppIcon\appicon.svg" Color="#512BD4" />
 		<!-- Splash Screen -->
 		<MauiSplashScreen Include="Resources\Splash\splash.svg" Color="#512BD4" BaseSize="128,128" />
 
@@ -72,6 +73,7 @@
 		<PackageReference Include="Npgsql" Version="9.0.3" />
 		<PackageReference Include="Plugin.LocalNotification" Version="12.0.2" />
 		<PackageReference Include="QRCoder" Version="1.7.0" />
+		<PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.15.0" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -84,11 +86,17 @@
 	  <Compile Update="Views\ClientDataPageView.xaml.cs">
 	    <DependentUpon>ClientDataPageView.xaml</DependentUpon>
 	  </Compile>
+	  <Compile Update="Views\NotificationsView.xaml.cs">
+	    <DependentUpon>NotificationsView.xaml</DependentUpon>
+	  </Compile>
 	  <Compile Update="Views\RouteCreationView.xaml.cs">
 	    <DependentUpon>RouteCreationView.xaml</DependentUpon>
 	  </Compile>
 	  <Compile Update="Views\RoutesPageView.xaml.cs">
 	    <DependentUpon>RoutesPageView.xaml</DependentUpon>
+	  </Compile>
+	  <Compile Update="Views\VehiclesDataView.xaml.cs">
+	    <DependentUpon>VehiclesDataView.xaml</DependentUpon>
 	  </Compile>
 	</ItemGroup>
 
@@ -100,6 +108,9 @@
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Views\AddNewDriverPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Views\AddVehicleView.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Views\ClientDataPageView.xaml">
@@ -114,6 +125,9 @@
 	  <MauiXaml Update="Views\LoginPageView.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
+	  <MauiXaml Update="Views\NotificationsView.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="Views\RecurrenceModalPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
@@ -121,6 +135,9 @@
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Views\RoutesPageView.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Views\VehiclesDataView.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	</ItemGroup>

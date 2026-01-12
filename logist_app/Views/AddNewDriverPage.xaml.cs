@@ -46,7 +46,10 @@ public partial class AddNewDriverPage : ContentPage
 
     }
 
-
+    private async void OnCancelClicked(object sender, EventArgs e)
+    {
+        await Navigation.PopAsync(); // Или PopModalAsync, смотря как открывали
+    }
     private async Task<bool> AddNewDriverAsync(Driver newDriver)
     {
         try

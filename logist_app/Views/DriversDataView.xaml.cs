@@ -22,5 +22,11 @@ public partial class DriversDataView : ContentPage
         await _vm.LoadDriversAsync();
     }
 
+    private async void AddNewDriverButton_Clicked(object sender, EventArgs e)
+    {
+        var page = App.Services.GetService<AddNewDriverPage>();
+        await Navigation.PushAsync(page);
+    }
+
 
 }

@@ -1,57 +1,211 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="logist_app.Views.ClientDataPageView"
              xmlns:services="clr-namespace:logist_app.Infrastructure.Service"
-             Title="Clients list "
-             Padding="8">
-    
-    
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             Title="Clients"
+             BackgroundColor="#F5F5F5">
+
     <ContentPage.Resources>
         <ResourceDictionary>
             <services:IndexConverterService x:Key="IndexConverter" />
+
+            <Color x:Key="PrimaryColor">#007ACC</Color>
+            <Color x:Key="TextPrimary">#1F1F1F</Color>
+            <Color x:Key="TextSecondary">#757575</Color>
+            <Color x:Key="AccentGreen">#1E8E3E</Color>
         </ResourceDictionary>
     </ContentPage.Resources>
 
+    <Grid RowDefinitions="Auto, Auto, *" Padding="15" RowSpacing="15">
 
-    <Grid RowSpacing="6" RowDefinitions="32,*" ColumnDefinitions="*">
-        <StackLayout HeightRequest="50">
-            <Button Text="Refresh" Command="{Binding RefreshCommand}" HeightRequest="10" Grid.Row="0" HorizontalOptions="Center" />
-        </StackLayout>
+        <Grid Grid.Row="0" ColumnDefinitions="*, Auto">
+            <Label Text="Client Database" 
+                   FontSize="24" 
+                   FontAttributes="Bold" 
+                   TextColor="{StaticResource TextPrimary}"
+                   VerticalOptions="Center"/>
 
-        <CollectionView Grid.Row="1"
-                        ItemsSource="{Binding Clients}"  
-                        SelectedItem="{Binding SelectedClient, Mode=TwoWay} "
-                        SelectionMode="Single" 
-                        x:Name="ClientsCollectionView">
+            <Button Grid.Column="1"
+                    Text="Refresh"
+                    Command="{Binding RefreshCommand}"
+                    BackgroundColor="White"
+                    TextColor="{StaticResource PrimaryColor}"
+                    BorderColor="#E0E0E0"
+                    BorderWidth="1"
+                    HeightRequest="40"
+                    CornerRadius="8"
+                    Padding="15,0"
+                    ToolTipProperties.Text="Refresh list"/>
+        </Grid>
 
-            <CollectionView.ItemTemplate>
-                <DataTemplate>
-                    <Border StrokeShape="RoundRectangle 10" BackgroundColor="White" Margin="5" Padding="10">
-                        <VerticalStackLayout>
+        <Border Grid.Row="1" 
+                StrokeShape="RoundRectangle 10" 
+                StrokeThickness="0" 
+                BackgroundColor="White" 
+                Padding="5">
+            <Border.Shadow>
+                <Shadow Brush="Black" Offset="0,2" Radius="5" Opacity="0.05"/>
+            </Border.Shadow>
 
-                            <Label Text="{Binding ., 
-                       Converter={StaticResource IndexConverter}, 
-                       ConverterParameter={x:Reference ClientsCollectionView}, 
-                       StringFormat='# {0}'}" 
-                       FontAttributes="Bold" 
-                       FontSize="22" 
-                       TextColor="Red"
-                       HorizontalOptions="End" />
+            <Grid ColumnDefinitions="*, Auto, Auto">
+                <SearchBar Grid.Column="0"
+                           Placeholder="Search client..."
+                           Text="{Binding SearchText}"
+                           FontSize="14"
+                           BackgroundColor="Transparent"/>
 
-                            <Label Text="{Binding Name, StringFormat='Name: {0}'}" FontAttributes="Bold" FontSize="20" TextColor="Black"/>
-                            <Label Text="{Binding Address, StringFormat='Address: {0}'}" TextColor="Black"/>
-                            <Label Text="{Binding City, StringFormat='City: {0}'}" TextColor="Black"/>
-                            <Label Text="{Binding PostalCode, StringFormat='Postal code: {0}'}" TextColor="Black" />
-                            <Label Text="{Binding Phone, StringFormat='Phone: {0}'}" TextColor="Black"/>
-                            <Label Text="{Binding Email, StringFormat='Email: {0}'}" TextColor="Black"/>
-                            <Label Text="{Binding ContainerCount, StringFormat='Container count: {0}'}" TextColor="Black"/>
-                            <Label Text="{Binding StartDate, StringFormat='Start Date: {0:yyyy-MM-dd}'}" TextColor="Black"/>
+                <Label Grid.Column="1" VerticalOptions="Center" Text="Sort by:" TextColor="Black" />
+                
+                <Picker Grid.Column="2"
+                       
+                        TitleColor="{StaticResource TextSecondary}"
+                        ItemsSource="{Binding SortOptions}"
+                        SelectedItem="{Binding SelectedSortOption}"
+                        WidthRequest="250"
+                        FontSize="14"
+                        TextColor="{StaticResource TextPrimary}"
+                        HorizontalTextAlignment="Center"/>
+            </Grid>
+        </Border>
 
-                        </VerticalStackLayout>
-                    </Border>
-                </DataTemplate>
-            </CollectionView.ItemTemplate>
-        </CollectionView>
-     
+        <RefreshView Grid.Row="2" 
+                     Command="{Binding RefreshCommand}"
+                     RefreshColor="{StaticResource PrimaryColor}">
+
+            <CollectionView x:Name="ClientsCollectionView"
+                            ItemsSource="{Binding Clients}"  
+                            SelectedItem="{Binding SelectedClient, Mode=TwoWay}"
+                            SelectionMode="Single">
+
+                <CollectionView.ItemsLayout>
+                    <LinearItemsLayout Orientation="Vertical" ItemSpacing="12"/>
+                </CollectionView.ItemsLayout>
+
+                <CollectionView.EmptyView>
+                    <VerticalStackLayout VerticalOptions="Center" HorizontalOptions="Center" Spacing="10">
+                        <Label Text="[No Clients]" FontSize="20" FontAttributes="Bold" HorizontalOptions="Center" TextColor="#CCC"/>
+                        <Label Text="No clients found" TextColor="{StaticResource TextPrimary}" FontSize="16"/>
+                    </VerticalStackLayout>
+                </CollectionView.EmptyView>
+
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Border StrokeShape="RoundRectangle 12" 
+                                StrokeThickness="0"
+                                BackgroundColor="White" 
+                                Margin="2">
+                            <Border.Shadow>
+                                <Shadow Brush="Black" Offset="0,2" Radius="4" Opacity="0.05"/>
+                            </Border.Shadow>
+
+                            <VisualStateManager.VisualStateGroups>
+                                <VisualStateGroup Name="CommonStates">
+                                    <VisualState Name="Normal" />
+                                    <VisualState Name="Selected">
+                                        <VisualState.Setters>
+                                            <Setter Property="BackgroundColor" Value="#F0F7FF" />
+                                            <Setter Property="Stroke" Value="{StaticResource PrimaryColor}" />
+                                            <Setter Property="StrokeThickness" Value="1" />
+                                        </VisualState.Setters>
+                                    </VisualState>
+                                </VisualStateGroup>
+                            </VisualStateManager.VisualStateGroups>
+
+                            <Grid RowDefinitions="Auto, Auto, Auto" RowSpacing="8" Padding="15">
+
+                                <Grid Grid.Row="0" ColumnDefinitions="Auto, *, Auto" ColumnSpacing="10">
+
+                                    <Border Grid.Column="0" 
+                                            BackgroundColor="#F0F0F0" 
+                                            StrokeShape="RoundRectangle 6" 
+                                            Padding="6,2"
+                                            VerticalOptions="Start">
+                                        <Label Text="{Binding ., 
+                                               Converter={StaticResource IndexConverter}, 
+                                               ConverterParameter={x:Reference ClientsCollectionView}, 
+                                               StringFormat='#{0}'}" 
+                                               TextColor="{StaticResource TextPrimary}" 
+                                               FontSize="12" 
+                                               FontAttributes="Bold"/>
+                                    </Border>
+
+                                    <Label Grid.Column="1" 
+                                           Text="{Binding Name}" 
+                                           FontSize="17" 
+                                           FontAttributes="Bold" 
+                                           TextColor="{StaticResource TextPrimary}"
+                                           LineBreakMode="TailTruncation"
+                                           VerticalOptions="Center"/>
+
+                                    <Label Grid.Column="2" 
+                                           Text="{Binding Id, StringFormat='ID: {0}'}" 
+                                           FontSize="11" 
+                                           TextColor="{StaticResource TextPrimary}"
+                                           VerticalOptions="Start"/>
+                                </Grid>
+
+                                <HorizontalStackLayout Grid.Row="1" Spacing="6">
+                                    <Label Text="Address:" 
+                                           FontSize="13" 
+                                           FontAttributes="Bold" 
+                                           TextColor="{StaticResource TextPrimary}"/>
+
+                                    <Label Text="{Binding Address}" 
+                                           FontSize="13" 
+                                           TextColor="{StaticResource TextPrimary}" 
+                                           LineBreakMode="TailTruncation"/>
+
+                                    <Label Text="•" TextColor="#CCC"/>
+
+                                    <Label Text="{Binding City}" 
+                                           FontSize="13" 
+                                           TextColor="{StaticResource TextPrimary}" 
+                                           FontAttributes="Italic"/>
+                                </HorizontalStackLayout>
+
+                                <BoxView Grid.Row="2" HeightRequest="1" Color="#F5F5F5" VerticalOptions="Start"/>
+
+                                <Grid Grid.Row="2" ColumnDefinitions="*, Auto" Margin="0,5,0,0">
+
+                                    <VerticalStackLayout Grid.Column="0" Spacing="2">
+                                        <HorizontalStackLayout Spacing="5">
+                                            <Label Text="Phone:" FontSize="12" FontAttributes="Bold" TextColor="{StaticResource TextPrimary}"/>
+                                            <Label Text="{Binding Phone}" FontSize="12" TextColor="{StaticResource TextPrimary}"/>
+                                        </HorizontalStackLayout>
+
+                                        <HorizontalStackLayout Spacing="5" IsVisible="{Binding Email, Converter={toolkit:IsStringNotNullOrEmptyConverter}}">
+                                            <Label Text="Email:" FontSize="12" FontAttributes="Bold" TextColor="{StaticResource TextPrimary}"/>
+                                            <Label Text="{Binding Email}" FontSize="12" TextColor="{StaticResource TextPrimary}"/>
+                                        </HorizontalStackLayout>
+                                    </VerticalStackLayout>
+
+                                    <Border Grid.Column="1" 
+                                            Stroke="{StaticResource AccentGreen}" 
+                                            StrokeThickness="1"
+                                            StrokeShape="RoundRectangle 8"
+                                            BackgroundColor="#F0FDF4"
+                                            Padding="8,4"
+                                            VerticalOptions="Center">
+                                        <HorizontalStackLayout Spacing="4">
+                                            <Label Text="Containers:" 
+                                                   FontSize="12" 
+                                                   TextColor="{StaticResource AccentGreen}"/>
+                                            <Label Text="{Binding ContainerCount}" 
+                                                   FontSize="14" 
+                                                   FontAttributes="Bold" 
+                                                   TextColor="{StaticResource AccentGreen}"/>
+                                        </HorizontalStackLayout>
+                                    </Border>
+                                </Grid>
+
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </RefreshView>
+
     </Grid>
 </ContentPage>

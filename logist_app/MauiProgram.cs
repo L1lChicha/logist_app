@@ -1,4 +1,5 @@
 ﻿using CommunityToolkit.Maui;
+using logist_app.ViewModels;
 using logist_app.Core.Interfaces;
 using logist_app.Infrastructure.Service;
 using logist_app.Models;
@@ -10,6 +11,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Maui.Maps;
 using Plugin.LocalNotification;
 using System.Reflection;
+using Microsoft.UI.Xaml.Automation;
 
 namespace logist_app
 {
@@ -22,7 +24,7 @@ namespace logist_app
             builder
                 .UseMauiApp<App>() 
                 .UseMauiCommunityToolkit()
-                //.UseLocalNotification()
+                .UseLocalNotification()
 #if ANDROID || IOS || MACCATALYST
                 .UseMauiMaps()
 #endif
@@ -58,32 +60,58 @@ namespace logist_app
                 http.BaseAddress = new Uri(apiSettings.BaseUrl);
             });
 
-            // ✅ Регистрируем ViewModels
+
             builder.Services.AddSingleton<SignalRService>();
             builder.Services.AddSingleton<IRouteService, RouteService>();
+            // ✅ Регистрируем ViewModels
+
             builder.Services.AddSingleton<ClientDataViewModel>();
-            builder.Services.AddTransient<ClientDataPageView>();
-            builder.Services.AddTransient<RouteCreationView>();
+            builder.Services.AddSingleton<ClientDataPageView>();
+
+            builder.Services.AddTransient<AddNewClientView>();
+
+            builder.Services.AddSingleton<RouteCreationView>();
+            builder.Services.AddSingleton<RouteCreationViewModel>();
+
             builder.Services.AddTransient<LoginViewModel>();
             builder.Services.AddTransient<LoginPageView>();
-            // builder.Services.AddSingleton<IEditClientVmFactory, EditClientVmFactory>();
+
             builder.Services.AddSingleton<RoutesListViewModel>();
-            builder.Services.AddTransient<ViewRoutesPage>();
-            builder.Services.AddTransient<DriverManagerView>();
+            builder.Services.AddSingleton<RoutesPageView>();
+
+            builder.Services.AddSingleton<DriverManagerView>();
+
+            builder.Services.AddSingleton<DriversDataView>();
+            builder.Services.AddSingleton<DriversViewModel>();
+
             builder.Services.AddTransient<AddNewDriverPage>();
-            builder.Services.AddTransient<DriversViewModel>();
+            
+
             builder.Services.AddTransient<EditClientViewModel>();
-            builder.Services.AddTransient<DriversDataView>();
             builder.Services.AddTransient<EditClientPage>();
 
-            builder.Services.AddTransient<RouteCreationViewModel>();
+
+            builder.Services.AddSingleton<VehiclesDataView>();
+            builder.Services.AddSingleton<VehiclesDataViewModel>();
+
+
+            builder.Services.AddTransient<AddVehicleView>();
+            builder.Services.AddTransient<AddVehicleViewModel>();
+
+            builder.Services.AddTransient<AcceptRouteView>();
+            builder.Services.AddTransient<AcceptRouteViewModel>();
+
+            builder.Services.AddTransient<AddNewClientView>();
+            builder.Services.AddTransient<AddNewClientViewModel>();
+
+
 
             builder.Services.AddTransient<IClientService, ClientService>();
-            // builder.Services.AddTransient<RouteCreationViewModel>;
 
-            //  builder.Services.AddTransient<AddClientViewModel>();
+            builder.Services.AddSingleton<NotificationsViewModel>();
+            builder.Services.AddTransient<NotificationsView>();
 
-            builder.UseLocalNotification();
+
 #if DEBUG
             builder.Logging.AddDebug();
 #endif

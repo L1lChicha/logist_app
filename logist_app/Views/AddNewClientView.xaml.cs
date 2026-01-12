@@ -1,93 +1,67 @@
-﻿
-using logist_app.Core.Entities;
-using logist_app.Models;
-using logist_app.Views;
-using Microsoft.Extensions.DependencyInjection; 
-using Microsoft.Maui.Controls;
-using Npgsql;
-using System;
+﻿using logist_app.ViewModels;
+using logist_app.Views; // For RecurrenceModalPage
 using System.Globalization;
-using System.Net.Http.Json;
-using System.Text;
 using System.Text.Json;
-using System.Text.Json;
-using System.Threading.Tasks;
-//using static JetBrains.Annotations.Async;
 
-namespace logist_app;
+namespace logist_app.Views;
 
 public partial class AddNewClientView : ContentPage
 {
-    public AddNewClientView()
+    private readonly AddNewClientViewModel _viewModel;
+
+    public AddNewClientView(AddNewClientViewModel viewModel)
     {
         InitializeComponent();
+        _viewModel = viewModel;
+        BindingContext = _viewModel;
         MapWebView.Source = "map.html";
     }
 
-
-    private (double lat, double lon)? point;
-    private string addressName;
-
-    private double lat;
-    private double lon;
-    //получение данных метки на карте
-    private async void GetLocationData(object sender, EventArgs e)
+    // WebView interaction usually stays in CodeBehind or requires a service
+    private async void GetLocationData_Clicked(object sender, EventArgs e)
     {
         try
         {
-            // Вызов JavaScript метода и получение JSON-результата
             var json = await MapWebView.EvaluateJavaScriptAsync("getSelectedLocation()");
             json = json.Trim('"').Replace("\\", "");
-
-            // Парсинг JSON в объект
             var data = JsonSerializer.Deserialize<MapData>(json);
 
             if (data != null)
             {
-                lat = data.lat;
-                lon = data.lon;
+                _viewModel.Lat = data.lat;
+                _viewModel.Lon = data.lon;
 
-                //установка данных в поля
-                string rawInputAddress = data.address;
-                // string inputAddress = rawInputAddress;
-                string[] addressDetails = rawInputAddress.Split(',');
+                string[] addressDetails = data.address.Split(',');
 
-                if (addressDetails[4] == " Брест")
+                // Simple address parsing logic from your original code
+                if (addressDetails.Length > 6 && addressDetails[4].Trim() == "Брест")
                 {
-                    AddressEntry.Text = addressDetails[1].Trim() + ", " + addressDetails[0];
-                    CityEntry.Text = addressDetails[4].Trim();
-                    PostalCodeEntry.Text = addressDetails[6].Trim();
+                    _viewModel.Address = addressDetails[1].Trim() + ", " + addressDetails[0];
+                    _viewModel.City = addressDetails[4].Trim();
+                    _viewModel.PostalCode = addressDetails[6].Trim();
                 }
-                // Используйте данные
-                //await DisplayAlert("Данные с карты", $"Адрес: {data.address}\nШирота: {data.lat}\nДолгота: {data.lon}", "OK");
+                else
+                {
+                    // Fallback or full address if format differs
+                    _viewModel.Address = data.address;
+                }
             }
         }
-        catch (Exception ex)
+        catch (Exception)
         {
-            await DisplayAlert("Error", "", "OK");
+            await DisplayAlert("Error", "Failed to get location from map.", "OK");
         }
     }
-    public class MapData
+
+    private async void FindButton_Clicked(object sender, EventArgs e)
     {
-        public double lat { get; set; } // Для числовых значений широты
-        public double lon { get; set; } // Для числовых значений долготы
-        public string address { get; set; } // Для строки с адресом
-    }
-
-
-
-
-    //нахождение адреса по строке 
-    private async void FindButton(object sender, EventArgs e)
-    {
-        string address = AddressEntry.Text;
-        if (address != null)
+        if (!string.IsNullOrWhiteSpace(_viewModel.Address))
         {
-            var result = await GeocodeAddress(address);
+            var result = await _viewModel.GeocodeAddressAsync(_viewModel.Address);
             if (result is (double lat, double lon, string displayName))
             {
-                point = (lat, lon);
-                addressName = displayName;
+                _viewModel.Lat = lat;
+                _viewModel.Lon = lon;
                 string jsCode = $"setMarker({lat.ToString(CultureInfo.InvariantCulture)}, {lon.ToString(CultureInfo.InvariantCulture)}, '{displayName.Replace("'", "\\'")}');";
                 await MapWebView.EvaluateJavaScriptAsync(jsCode);
             }
@@ -96,186 +70,29 @@ public partial class AddNewClientView : ContentPage
         {
             await DisplayAlert("Error", "The address field must be filled", "OK");
         }
-        
     }
-
-    public async Task<(double lat, double lon, string displayName)?> GeocodeAddress(string query)
-    {
-        var url = $"https://nominatim.openstreetmap.org/search?format=json&q={Uri.EscapeDataString(query)}&accept-language=ru";
-        using var httpClient = new HttpClient();
-        httpClient.DefaultRequestHeaders.Add("User-Agent", "MyTestApp");
-
-        var response = await httpClient.GetFromJsonAsync<List<NominatimResult>>(url);
-
-        if (response == null || response.Count == 0)
-        {
-            return null;
-        }
-
-        var brestResult = response.FirstOrDefault(r =>
-            r.display_name.Contains("Брест", StringComparison.OrdinalIgnoreCase) ||
-            r.display_name.Contains("Brest", StringComparison.OrdinalIgnoreCase)
-        );
-
-        if (brestResult == null)
-        {
-            return null;
-        }
-
-        try
-        {
-            var lat = double.Parse(brestResult.lat, CultureInfo.InvariantCulture);
-            var lon = double.Parse(brestResult.lon, CultureInfo.InvariantCulture);
-            if (lat < -90 || lat > 90 || lon < -180 || lon > 180)
-            {
-                return null;
-            }
-            return (lat, lon, brestResult.display_name);
-        }
-        catch (FormatException ex)
-        {
-
-            return null;
-        }
-    }
-
-    public class NominatimResult
-    {
-        public string lat { get; set; }
-        public string lon { get; set; }
-        public string display_name { get; set; }
-    }
-
-
-    //сохранение данных в базу данных
-
-    private async void OnSubmitClicked(object sender, EventArgs e)
-    {
-
-        // Собираем данные из формы
-        string name = NameEntry.Text;
-        string address = AddressEntry.Text;
-        string city = CityEntry.Text;
-        string postalCode = PostalCodeEntry.Text;
-        string phone = PhoneEntry.Text;
-        string email = EmailEntry.Text;
-        //string recurrence = RecurrencePicker.SelectedItem?.ToString();
-        string containerCountText = ContainerCountEntry.Text;
-        string loadingType = LoadingTypePicker.SelectedItem?.ToString().Trim().ToLower();
-        double volume = double.Parse(VolumeEntry.Text);
-        DateTime startDate = StartDatePicker.Date;
-        string coordinates = lat + ", " + lon;
-       
-
-        // Валидация данных
-        if (string.IsNullOrWhiteSpace(name) || string.IsNullOrWhiteSpace(address) ||
-            string.IsNullOrWhiteSpace(city) || string.IsNullOrWhiteSpace(postalCode) ||
-            string.IsNullOrWhiteSpace(phone) || string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(containerCountText) 
-            || string.IsNullOrWhiteSpace(loadingType) || string.IsNullOrWhiteSpace(volume.ToString()))
-        {
-            await DisplayAlert("Error", "Please fill in all form fields.", "OK");
-            return;
-        }
-
-        if (!int.TryParse(containerCountText, out int containerCount))
-        {
-            await DisplayAlert("Error", "The number of containers must be a number.", "OK");
-            return;
-        }
-
-
-        var newClient = new Client();
-        newClient.Name = name;
-        newClient.Address = address;
-        newClient.City = city;
-        newClient.PostalCode = postalCode;
-        newClient.Phone = phone;
-        newClient.Email = email;
-       // newClient.Recurrence = recurrence;
-        newClient.ContainerCount = containerCount;
-        newClient.StartDate = startDate.ToUniversalTime();
-        newClient.Coordinates = coordinates;
-        newClient.LoadingType = loadingType;
-        newClient.Volume = volume;
-        newClient.Lat = lat;
-        newClient.Lon = lon;
-        newClient.Schedule = _recurrenceSettings;
-
-        var success = await AddNewClientAsync(newClient);
-        if (success)
-        {
-
-            await DisplayAlert("Success", "Client added successfully.", "OK");
-            await Navigation.PopAsync();
-        }
-        else
-        {
-            await DisplayAlert("Error", "Failed to add client.", "OK");
-        }
-    }
-
-    private async Task<bool> AddNewClientAsync(Client newClient)
-    {
-        try
-        {
-           
-            var api = App.Services.GetRequiredService<ApiSettings>();
-            var httpFactory = App.Services.GetRequiredService<IHttpClientFactory>();
-            var http = httpFactory.CreateClient("Api"); 
-
-            var response = await http.PostAsJsonAsync(api.ClientsEndpoint, newClient);
-            return response.IsSuccessStatusCode;
-        }
-        catch (Exception ex)
-        {
-            await DisplayAlert("Error", $"Failed to add client {ex.Message}", "OK");
-
-            return false;
-        }
-    }
-
-
-    //просмотр данных из базы данных
 
     private async void OnViewDataClicked(object sender, EventArgs e)
     {
-        var page = App.Services.GetService<ClientDataPageView>();
-        await Navigation.PushAsync(page);
+        // Assuming ClientDataPageView is registered in DI
+        var page = Handler.MauiContext.Services.GetService<ClientDataPageView>();
+        if (page != null) await Navigation.PushAsync(page);
     }
 
-
-    private RecurrenceSettings _recurrenceSettings = new RecurrenceSettings();
     private async void OnRecurrenceConfigClicked(object sender, EventArgs e)
     {
-        // Открываем модальное окно и передаем текущие настройки + функцию обратного вызова
-        var modalPage = new RecurrenceModalPage(_recurrenceSettings, (newSettings) =>
+        var modalPage = new RecurrenceModalPage(_viewModel.RecurrenceSettings, (newSettings) =>
         {
-            _recurrenceSettings = newSettings;
-            UpdateRecurrenceLabel();
+            _viewModel.RecurrenceSettings = newSettings;
+            _viewModel.UpdateRecurrenceSummary();
         });
-
         await Navigation.PushModalAsync(modalPage);
-
-
     }
 
-    private void UpdateRecurrenceLabel()
+    public class MapData
     {
-        string summary = $"{_recurrenceSettings.Type}, Interval: {_recurrenceSettings.Interval}";
-
-        if (_recurrenceSettings.Type == "Weekly" && _recurrenceSettings.DaysOfWeek.Any())
-        {
-            summary += $"\nDays: {string.Join(", ", _recurrenceSettings.DaysOfWeek)}";
-        }
-
-        if (_recurrenceSettings.WeeksOfMonth.Any())
-        {
-            summary += $"\nWeeks: {string.Join(", ", _recurrenceSettings.WeeksOfMonth)}";
-        }
-
-        RecurrenceSummaryLabel.Text = summary;
+        public double lat { get; set; }
+        public double lon { get; set; }
+        public string address { get; set; }
     }
-
-   
-
 }

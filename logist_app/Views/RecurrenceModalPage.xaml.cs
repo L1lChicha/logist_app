@@ -15,36 +15,56 @@ namespace logist_app
             InitializeComponent();
             _onSave = onSave;
 
-            // Инициализация полей (если настройки уже были)
-            if (currentSettings != null)
+            // Защита от null: если настроек нет, создаем новые
+            currentSettings ??= new RecurrenceSettings { Type = "Weekly", Interval = 1 };
+
+            // 1. Установка Типа (Weekly/Monthly/Daily)
+            // Используем цикл для надежного сравнения строк без учета регистра
+            bool typeFound = false;
+            foreach (var item in TypePicker.ItemsSource)
             {
-                TypePicker.SelectedItem = currentSettings.Type;
-                IntervalEntry.Text = currentSettings.Interval.ToString();
-
-                // Восстановление чекбоксов дней недели
-                cbMon.IsChecked = currentSettings.DaysOfWeek.Contains(DayOfWeek.Monday);
-                cbTue.IsChecked = currentSettings.DaysOfWeek.Contains(DayOfWeek.Tuesday);
-                cbWed.IsChecked = currentSettings.DaysOfWeek.Contains(DayOfWeek.Wednesday);
-                cbThu.IsChecked = currentSettings.DaysOfWeek.Contains(DayOfWeek.Thursday);
-                cbFri.IsChecked = currentSettings.DaysOfWeek.Contains(DayOfWeek.Friday);
-                cbSat.IsChecked = currentSettings.DaysOfWeek.Contains(DayOfWeek.Saturday);
-                cbSun.IsChecked = currentSettings.DaysOfWeek.Contains(DayOfWeek.Sunday);
-
-                // Восстановление недель
-                cbW1.IsChecked = currentSettings.WeeksOfMonth.Contains(1);
-                cbW2.IsChecked = currentSettings.WeeksOfMonth.Contains(2);
-                cbW3.IsChecked = currentSettings.WeeksOfMonth.Contains(3);
-                cbW4.IsChecked = currentSettings.WeeksOfMonth.Contains(4);
-                cbW5.IsChecked = currentSettings.WeeksOfMonth.Contains(5);
-
-                // Восстановление дней месяца
-                DaysOfMonthEntry.Text = string.Join(", ", currentSettings.DaysOfMonth);
+                if (item.ToString().Equals(currentSettings.Type, StringComparison.OrdinalIgnoreCase))
+                {
+                    TypePicker.SelectedItem = item;
+                    typeFound = true;
+                    break;
+                }
             }
-            else
+            if (!typeFound) TypePicker.SelectedIndex = 1; // Default Weekly
+
+            // 2. Установка Интервала
+            IntervalEntry.Text = currentSettings.Interval.ToString();
+
+            // 3. Безопасное получение списка дней (защита от null)
+            var days = currentSettings.DaysOfWeek ?? new List<DayOfWeek>();
+
+            // 4. Проставляем галочки
+            // В C# DayOfWeek.Monday == 1, DayOfWeek.Wednesday == 3, DayOfWeek.Friday == 5
+            // Ваш JSON [1, 3, 5] корректно включит эти галочки.
+            cbMon.IsChecked = days.Contains(DayOfWeek.Monday);    // 1
+            cbTue.IsChecked = days.Contains(DayOfWeek.Tuesday);   // 2
+            cbWed.IsChecked = days.Contains(DayOfWeek.Wednesday); // 3
+            cbThu.IsChecked = days.Contains(DayOfWeek.Thursday);  // 4
+            cbFri.IsChecked = days.Contains(DayOfWeek.Friday);    // 5
+            cbSat.IsChecked = days.Contains(DayOfWeek.Saturday);  // 6
+            cbSun.IsChecked = days.Contains(DayOfWeek.Sunday);    // 0
+
+            // 5. Недели месяца (если есть)
+            var weeks = currentSettings.WeeksOfMonth ?? new List<int>();
+            cbW1.IsChecked = weeks.Contains(1);
+            cbW2.IsChecked = weeks.Contains(2);
+            cbW3.IsChecked = weeks.Contains(3);
+            cbW4.IsChecked = weeks.Contains(4);
+            cbW5.IsChecked = weeks.Contains(5);
+
+            // 6. Дни месяца (для Monthly)
+            var daysOfMonth = currentSettings.DaysOfMonth ?? new List<int>();
+            if (daysOfMonth.Any())
             {
-                TypePicker.SelectedIndex = 1; // Default Weekly
+                DaysOfMonthEntry.Text = string.Join(", ", daysOfMonth);
             }
 
+            // Обновляем видимость (чтобы показать WeeklySection сразу)
             UpdateVisibility();
         }
 

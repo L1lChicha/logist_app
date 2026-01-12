@@ -5,6 +5,8 @@
     <title>Карта</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css" />
+
+    <link rel="stylesheet" href="https://unpkg.com/@geoman-io/leaflet-geoman-free@latest/dist/leaflet-geoman.css" />
     <style>
         #map {
             height: 100vh;
@@ -23,6 +25,7 @@
 <body>
     <div id="map"></div>
     <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/@geoman-io/leaflet-geoman-free@latest/dist/leaflet-geoman.min.js"></script>
     <script>
         var map = L.map('map').setView([52.0976, 23.7341], 13);
 
@@ -30,6 +33,20 @@
             maxZoom: 19,
             attribution: '© OpenStreetMap contributors'
         }).addTo(map);
+
+        map.pm.addControls({
+            position: 'topleft',
+            drawCircle: false,
+            drawCircleMarker: false,
+            drawRectangle: false,
+            drawPolygon: false,
+            drawMarker: false,      // Если нужно добавлять новые точки - поставь true
+            drawPolyline: true,     // Разрешаем рисовать новые линии
+            editMode: true,         // Разрешаем редактировать
+            dragMode: false,
+            cutPolygon: false,
+            removalMode: true       // Разрешаем удалять
+        });
 
         var marker, routeLayer, startMarker, endMarker;
 
@@ -77,12 +94,22 @@
 
                 var data = JSON.parse(geoJson);
 
-                // Строим маршрут
                 routeLayer = L.geoJSON(data, {
                     style: {
                         color: '#3388ff',
                         weight: 5,
-                        opacity: 0.7
+                        opacity: 0.8
+                    },
+                    // ВАЖНО: Делаем слой редактируемым сразу
+                    onEachFeature: function (feature, layer) {
+                        // Разрешаем Geoman управлять этим слоем
+                        // Теперь линию можно таскать за точки
+                        if (layer.pm) {
+                            layer.pm.enable({
+                                allowSelfIntersection: true,
+                                draggable: false // Саму линию таскать нельзя, только точки
+                            });
+                        }
                     }
                 }).addTo(map);
 
@@ -113,7 +140,51 @@
                 console.error("Ошибка в displayRoute:", e.message);
                 window.location = "debug://error?message=" + encodeURIComponent(e.message);
             }
+
         }
+        window.getEditedRouteGeoJson = function () {
+            try {
+                var features = [];
+
+                // Проходим по всем слоям на карте
+                map.eachLayer(function (layer) {
+                    // Ищем только линии (Polyline) и Маркеры
+                    // Исключаем:
+                    // 1. Служебные слои Geoman (_pmTempLayer)
+                    // 2. Тайлы карты (L.TileLayer)
+                    // 3. Если слой не имеет метода toGeoJSON
+
+                    if (layer.toGeoJSON && !layer._pmTempLayer && !(layer instanceof L.TileLayer)) {
+
+                        // Дополнительная проверка: не сохраняем пустые слои
+                        var geo = layer.toGeoJSON();
+
+                        // Если это FeatureCollection (группа), распаковываем
+                        if (geo.type === 'FeatureCollection') {
+                            features = features.concat(geo.features);
+                        } else {
+                            features.push(geo);
+                        }
+                    }
+                });
+
+                var collection = {
+                    "type": "FeatureCollection",
+                    "features": features
+                };
+
+                console.log("Собрано фич: " + features.length); // Увидите в F12
+
+                // Возвращаем СТРОКУ, а не объект. WebView2 любит строки.
+                return JSON.stringify(collection);
+
+            } catch (e) {
+                console.error("Ошибка в getEditedRouteGeoJson:", e);
+                return JSON.stringify({ error: e.message });
+            }
+        };
+
+
     </script>
 </body>
 </html>

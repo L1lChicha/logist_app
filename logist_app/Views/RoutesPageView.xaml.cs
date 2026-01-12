@@ -1,10 +1,10 @@
 
 namespace logist_app.Views;
 
-public partial class ViewRoutesPage : ContentPage
+public partial class RoutesPageView : ContentPage
 {  
     private readonly RoutesListViewModel _vm;
-    public ViewRoutesPage(RoutesListViewModel vm)
+    public RoutesPageView(RoutesListViewModel vm)
     {
         InitializeComponent();
         _vm = vm;

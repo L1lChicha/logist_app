@@ -2,63 +2,194 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:viewmodels="clr-namespace:logist_app.ViewModels"
-             x:Class="logist_app.Views.ViewRoutesPage"
-             Title="ViewRoutesPage">
-    
+             x:Class="logist_app.Views.RoutesPageView"
+             Title="All routes"
+             BackgroundColor="#F5F5F5">
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <Color x:Key="PrimaryColor">#007ACC</Color>
+            <Color x:Key="CardBackground">White</Color>
+            <Color x:Key="TextPrimary">#1F1F1F</Color>
+            <Color x:Key="TextSecondary">#757575</Color>
+
+            <Style x:Key="StatusFrameStyle" TargetType="Frame">
+                <Setter Property="CornerRadius" Value="12"/>
+                <Setter Property="Padding" Value="10,4"/>
+                <Setter Property="HasShadow" Value="False"/>
+                <Setter Property="BackgroundColor" Value="#E0E0E0"/>
+                <Style.Triggers>
+                    <DataTrigger TargetType="Frame" Binding="{Binding Status}" Value="Confirmed">
+                        <Setter Property="BackgroundColor" Value="#E6F4EA"/>
+                    </DataTrigger>
+                    <DataTrigger TargetType="Frame" Binding="{Binding Status}" Value="Rejected">
+                        <Setter Property="BackgroundColor" Value="#FCE8E6"/>
+                    </DataTrigger>
+                    <DataTrigger TargetType="Frame" Binding="{Binding Status}" Value="Draft">
+                        <Setter Property="BackgroundColor" Value="#FFF7E0"/>
+                    </DataTrigger>
+                </Style.Triggers>
+            </Style>
+
+            <Style x:Key="StatusLabelStyle" TargetType="Label">
+                <Setter Property="FontSize" Value="12"/>
+                <Setter Property="FontAttributes" Value="Bold"/>
+                <Setter Property="TextColor" Value="#616161"/>
+                <Style.Triggers>
+                    <DataTrigger TargetType="Label" Binding="{Binding Status}" Value="Confirmed">
+                        <Setter Property="TextColor" Value="#1E8E3E"/>
+                    </DataTrigger>
+                    <DataTrigger TargetType="Label" Binding="{Binding Status}" Value="Rejected">
+                        <Setter Property="TextColor" Value="#D93025"/>
+                    </DataTrigger>
+                    <DataTrigger TargetType="Label" Binding="{Binding Status}" Value="Draft">
+                        <Setter Property="TextColor" Value="#F9AB00"/>
+                    </DataTrigger>
+                </Style.Triggers>
+            </Style>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <Grid RowDefinitions="Auto,*" ColumnDefinitions="*">
+
+        <Grid Grid.Row="0" ColumnDefinitions="*, Auto" Padding="15,10" BackgroundColor="White">
+
+          
+            <HorizontalStackLayout Grid.Column="0" 
+                                   Spacing="10" 
+                                   VerticalOptions="Center">
+
+                <Button Text="Refresh"
+                        Command="{Binding RefreshCommand}"
+                        BackgroundColor="{StaticResource PrimaryColor}"
+                        TextColor="White"
+                        CornerRadius="8"
+                        HeightRequest="36"
+                        Padding="15,0"
+                        FontSize="13"
+                        FontAttributes="Bold"
+                        VerticalOptions="Center"/>
 
 
-    <Grid Padding="10" RowDefinitions="Auto,Auto,*"
-          ColumnDefinitions="Auto,*">
-        
-            <Button Text="Refresh"
-                Command="{Binding RefreshCommand}"
-                BackgroundColor="#007ACC"
-                TextColor="White"
-                CornerRadius="10"
-                HeightRequest="45"
-                Margin="0,0,0,10"
-                Grid.Row="0"
-                Grid.Column="1"/>
+                <Label Text="Sort by:"
+                       VerticalOptions="Center"
+                       TextColor="{StaticResource TextPrimary}"
+                       FontSize="16"/>
 
+                <Border Stroke="#E0E0E0" 
+                        StrokeThickness="1" 
+                        StrokeShape="RoundRectangle 8"
+                        Padding="0"
+                        WidthRequest="120"
+                        VerticalOptions="Center">
 
+                    <Picker x:Name="sortPicker"
+                            TitleColor="{StaticResource PrimaryColor}"
+                            TextColor="{StaticResource TextPrimary}"
+                            FontSize="14"
+                            HorizontalTextAlignment="Center"
+                            SelectedItem="{Binding SelectedFilter, Mode=TwoWay}">
+                        <Picker.ItemsSource>
+                            <x:Array Type="{x:Type x:String}">
+                                <x:String>All</x:String>
+                                <x:String>Draft</x:String>
+                                <x:String>Confirmed</x:String>
+                                <x:String>Rejected</x:String>
+                            </x:Array>
+                        </Picker.ItemsSource>
+                    </Picker>
+                </Border>
 
-        <Picker x:Name="sortPicker"
-                Title="Sort by"
-                Grid.Row="1"
-                Grid.Column="1"
-                SelectedItem="{Binding SelectedFilter, Mode=TwoWay}">
-            <Picker.ItemsSource>
-                <x:Array Type="{x:Type x:String}">
-                    <x:String>All</x:String>
-                    <x:String>Draft</x:String>
-                    <x:String>Confirmed</x:String>
-                    <x:String>Rejected</x:String>
-                </x:Array>
-            </Picker.ItemsSource>
-        </Picker>
+            </HorizontalStackLayout>
+        </Grid>
 
-    
+        <RefreshView Grid.Row="1" 
+                     Command="{Binding RefreshCommand}"
+                     RefreshColor="{StaticResource PrimaryColor}">
 
-        <CollectionView Grid.Row="2"
-                        Grid.Column="1"
-                        ItemsSource="{Binding Routes}"
-                        SelectedItem="{Binding SelectedRoute, Mode=TwoWay}"
-                        SelectionMode="Single"
-                        Margin="0,0,0,100">
+            <CollectionView ItemsSource="{Binding Routes}"
+                            SelectedItem="{Binding SelectedRoute, Mode=TwoWay}"
+                            SelectionMode="Single"
+                            Margin="10">
+
+                <CollectionView.ItemsLayout>
+                    <LinearItemsLayout Orientation="Vertical" ItemSpacing="12"/>
+                </CollectionView.ItemsLayout>
+
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
-                        <Frame BorderColor="#CCC" CornerRadius="8" Padding="10" Margin="0,5" BackgroundColor="White">
-                            <StackLayout>
-                            <Label Text="{Binding Name, StringFormat='Name: {0}'}" FontSize="16" FontAttributes="Bold" TextColor="Black"/>
-                                <Label Text="{Binding CreatedAt, StringFormat='Created at: {0:dd.MM.yyyy HH:mm}'}" FontSize="13" TextColor="Black"/>
-                                <Label Text="{Binding Distance, StringFormat='Distance: {0:F2} км'}" FontSize="13" TextColor="Black"/>
-                                <Label Text="{Binding Duration, StringFormat='Duration: {0:F0} мин'}" FontSize="13" TextColor="Black"/>
-                                <Label Text= "{Binding Status, StringFormat='Status: {0}'}" FontSize="13" TextColor="Black"/>
-                            <Label Text= "{Binding CreatedBy, StringFormat='Created by: {0}'}" FontSize="13" TextColor="Black"/>
-                        </StackLayout>
-                        </Frame>
+                        <Border StrokeShape="RoundRectangle 15"
+                                StrokeThickness="0"
+                                BackgroundColor="{StaticResource CardBackground}"
+                                Padding="15">
+                            <Border.Shadow>
+                                <Shadow Brush="Black" Offset="0,2" Radius="5" Opacity="0.1"/>
+                            </Border.Shadow>
+
+                            <Grid RowDefinitions="Auto, Auto, Auto, Auto" ColumnDefinitions="*, Auto" RowSpacing="6">
+
+                                <Label Grid.Row="0" Grid.Column="0" 
+                                       Text="{Binding Name}" 
+                                       FontSize="17" 
+                                       FontAttributes="Bold" 
+                                       TextColor="{StaticResource TextPrimary}"
+                                       LineBreakMode="TailTruncation"/>
+
+                                <Frame Grid.Row="0" Grid.Column="1" 
+                                       Style="{StaticResource StatusFrameStyle}"
+                                       VerticalOptions="Start">
+                                    <Label Text="{Binding Status}" 
+                                           Style="{StaticResource StatusLabelStyle}"/>
+                                </Frame>
+
+                                <StackLayout Grid.Row="1" Grid.ColumnSpan="2" Orientation="Horizontal" Spacing="10">
+                                    <Label Text="{Binding Id, StringFormat='#{0}'}" 
+                                           FontSize="13" 
+                                           TextColor="{StaticResource TextSecondary}"
+                                           FontAttributes="Bold"/>
+                                    <Label Text="•" TextColor="{StaticResource TextSecondary}"/>
+                                    <Label Text="{Binding CreatedAt, StringFormat='{0:dd MMM yyyy, HH:mm}'}" 
+                                           FontSize="13" 
+                                           TextColor="{StaticResource TextSecondary}"/>
+                                </StackLayout>
+
+                                <BoxView Grid.Row="2" Grid.ColumnSpan="2" 
+                                         HeightRequest="1" 
+                                         Color="#F0F0F0" 
+                                         Margin="0,5"/>
+
+                                <Grid Grid.Row="3" Grid.ColumnSpan="2" ColumnDefinitions="Auto, Auto, *" ColumnSpacing="20">
+
+                                    <HorizontalStackLayout Grid.Column="0" Spacing="6" VerticalOptions="Center">
+                                        <Label Text="🚗" FontSize="16"/>
+                                        <Label Text="{Binding Distance, StringFormat='{0:F1} км'}" 
+                                               FontSize="14" 
+                                               TextColor="{StaticResource TextPrimary}"
+                                               FontAttributes="Bold"/>
+                                    </HorizontalStackLayout>
+
+                                    <HorizontalStackLayout Grid.Column="1" Spacing="6" VerticalOptions="Center">
+                                        <Label Text="⏱" FontSize="16"/>
+                                        <Label Text="{Binding Duration, StringFormat='{0:F0} мин'}" 
+                                               FontSize="14" 
+                                               TextColor="{StaticResource TextPrimary}"
+                                               FontAttributes="Bold"/>
+                                    </HorizontalStackLayout>
+
+                                    <Label Grid.Column="2" 
+                                           Text="{Binding CreatedBy}" 
+                                           FontSize="12" 
+                                           TextColor="{StaticResource TextSecondary}"
+                                           HorizontalOptions="End"
+                                           VerticalOptions="Center"
+                                           LineBreakMode="TailTruncation"/>
+                                </Grid>
+
+                            </Grid>
+                        </Border>
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
             </CollectionView>
-        </Grid>
+        </RefreshView>
+    </Grid>
 </ContentPage>

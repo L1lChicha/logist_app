@@ -7,6 +7,13 @@
     xmlns:views="clr-namespace:logist_app.Views"
     Title="logist_app">
 
+
+    <ShellContent
+        Title="Home"
+        ContentTemplate="{DataTemplate views:LoginPageView}"
+        Route="LoginPageView"
+        Shell.FlyoutItemIsVisible="False" />
+
     <TabBar Route="Main">
 
         <ShellContent
@@ -16,11 +23,15 @@
 
     </TabBar>
 
-    <ShellContent
-        Title="Home"
-        ContentTemplate="{DataTemplate views:LoginPageView}"
-        Route="LoginPageView"
-        Shell.FlyoutItemIsVisible="False" />
+    <Shell.ToolbarItems>
+        <ToolbarItem Text="🔔"
+                     Order="Primary"
+                     Priority="0"
+                     Clicked="OnNotificationsClicked" />
+    </Shell.ToolbarItems>
+
 </Shell>
+
+
 
 

@@ -3,6 +3,10 @@
     "Windows Machine": {
       "commandName": "Project",
       "nativeDebugging": false
+    },
+    "LogistApp MSIX": {
+      "commandName": "MsixPackage",
+      "msixPackageFamilyName": "LogistApp_abcdef12345"
     }
   }
 }

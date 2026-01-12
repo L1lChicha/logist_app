@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:logist_app.ViewModels"
+             xmlns:model="clr-namespace:logist_app.Core.Entities"
+             x:Class="logist_app.Views.NotificationsView"
+             Title="Уведомления">
+
+    <Grid RowDefinitions="Auto,*">
+
+        <Button Grid.Row="0" 
+                Text="Очистить все" 
+                Command="{Binding ClearAllCommand}" 
+                BackgroundColor="Red" 
+                TextColor="White"
+                Margin="10"
+                IsVisible="{Binding Notifications.Count, Converter={StaticResource IntToBoolConverter}}"/>
+        <CollectionView Grid.Row="1" 
+                        ItemsSource="{Binding Notifications}"
+                        EmptyView="Уведомлений нет">
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="model:AppNotification">
+
+                    <SwipeView>
+                        <SwipeView.RightItems>
+                            <SwipeItems>
+                                <SwipeItem Text="Удалить"
+                                           BackgroundColor="Red"
+                                           Command="{Binding Source={RelativeSource AncestorType={x:Type vm:NotificationsViewModel}}, Path=DeleteCommand}"
+                                           CommandParameter="{Binding .}" />
+                            </SwipeItems>
+                        </SwipeView.RightItems>
+
+                        <Frame Margin="10,5" Padding="10" CornerRadius="8" HasShadow="True">
+                            <VerticalStackLayout>
+                                <Label Text="{Binding Title}" FontAttributes="Bold" FontSize="16" />
+                                <Label Text="{Binding Message}" FontSize="14" TextColor="Gray" />
+                                <Label Text="{Binding Timestamp, StringFormat='{0:HH:mm dd.MM}'}" 
+                                       HorizontalOptions="End" 
+                                       FontSize="10" 
+                                       TextColor="LightGray"/>
+                            </VerticalStackLayout>
+                        </Frame>
+                    </SwipeView>
+
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+    </Grid>
+</ContentPage>
