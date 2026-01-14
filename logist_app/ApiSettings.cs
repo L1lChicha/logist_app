@@ -12,8 +12,9 @@
         public string RoutesRejectEndpoint { get; set; }
         public string DriversEndpoint { get; set; }
         public string DriverGetCodeEndpoint { get; set; }
-
         public string VehiclesEndpoint { get; set; }
+        public string RoutingSettingsEndpoint { get; set; }
+
 
         // --- Полные URL ---
         public string ClientsUrl => $"{BaseUrl}{ClientsEndpoint}";
@@ -23,7 +24,7 @@
         public string RoutesConfirmUrl => $"{BaseUrl}{RoutesConfirmEndpoint}";
         public string RoutesRejectUrl => $"{BaseUrl}{RoutesRejectEndpoint}";
         public string DriverGetCodeUrl => $"{BaseUrl}{DriverGetCodeEndpoint}";
-
         public string VehiclesUrl => $"{BaseUrl}{VehiclesEndpoint}";
+        public string RouteSettingsUrl => $"{BaseUrl}{RoutingSettingsEndpoint}";
     }
 }

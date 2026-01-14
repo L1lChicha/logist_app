@@ -48,4 +48,17 @@ public partial class ActionPageView : ContentPage
         var page = App.Services.GetService<VehiclesDataView>();
         await Navigation.PushAsync(page);
     }
+
+    private async void routeSettings_Clicked(object sender, EventArgs e)
+    {
+        var page = App.Services.GetService<RouteSettingsView>();
+        await Navigation.PushAsync(page);
+    }
+
+    private async void appSettings_Clicked(object sender, EventArgs e)
+    {
+        var page = App.Services.GetService<AppSettingsView>();
+        await Navigation.PushAsync(page);
+    }
+
 }

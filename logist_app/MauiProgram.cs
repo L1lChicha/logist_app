@@ -3,15 +3,11 @@ using logist_app.ViewModels;
 using logist_app.Core.Interfaces;
 using logist_app.Infrastructure.Service;
 using logist_app.Models;
-using logist_app.ViewModels;
 using logist_app.Views;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Microsoft.Maui.Maps;
 using Plugin.LocalNotification;
 using System.Reflection;
-using Microsoft.UI.Xaml.Automation;
 
 namespace logist_app
 {
@@ -104,20 +100,23 @@ namespace logist_app
             builder.Services.AddTransient<AddNewClientView>();
             builder.Services.AddTransient<AddNewClientViewModel>();
 
+            builder.Services.AddTransient<RouteSettingsView>();
+            builder.Services.AddTransient<AppSettingsView>();
 
 
             builder.Services.AddTransient<IClientService, ClientService>();
 
             builder.Services.AddSingleton<NotificationsViewModel>();
-            builder.Services.AddTransient<NotificationsView>();
+            builder.Services.AddSingleton<NotificationsView>();
 
+            builder.Services.AddSingleton<RouteSettingsViewModel>();
+            
 
 #if DEBUG
             builder.Logging.AddDebug();
 #endif
             var app = builder.Build();
 
-            // создаём App с контейнером
             return app;
         }
     }

@@ -5,6 +5,7 @@ using logist_app.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Reflection;
 using System.Text;
@@ -61,6 +62,16 @@ namespace logist_app.ViewModels
             try
             {
                 var http = _httpFactory.CreateClient("Api");
+
+                // --- ДОБАВЛЯЕМ ТОКЕН ---
+                var token = await SecureStorage.Default.GetAsync("auth_token");
+                if (!string.IsNullOrEmpty(token))
+                {
+                    http.DefaultRequestHeaders.Authorization =
+                        new AuthenticationHeaderValue("Bearer", token);
+                }
+                // -----------------------
+
                 var response = await http.PostAsJsonAsync($"{_api.VehiclesEndpoint}/add", newVehicle);
 
                 if (response.IsSuccessStatusCode)

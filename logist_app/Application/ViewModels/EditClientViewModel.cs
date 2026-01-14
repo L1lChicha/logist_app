@@ -2,6 +2,7 @@
 using CommunityToolkit.Mvvm.Input;
 using logist_app.Core.Entities; // Убедитесь, что RecurrenceSettings здесь
 using logist_app.Models;
+using System.Net.Http.Headers;
 using System.Net.Http.Json;
 
 namespace logist_app.ViewModels;
@@ -91,6 +92,16 @@ public partial class EditClientViewModel : ObservableObject
     private async Task SaveClientAsync()
     {
         var http = _httpFactory.CreateClient("Api");
+
+        // --- ДОБАВЛЯЕМ ТОКЕН ---
+        var token = await SecureStorage.Default.GetAsync("auth_token");
+        if (!string.IsNullOrEmpty(token))
+        {
+            http.DefaultRequestHeaders.Authorization =
+                new AuthenticationHeaderValue("Bearer", token);
+        }
+        // -----------------------
+
         var response = await http.PutAsJsonAsync($"{_api.ClientsEndpoint}/{client.Id}", Client);
 
         if (response.IsSuccessStatusCode)
@@ -112,6 +123,16 @@ public partial class EditClientViewModel : ObservableObject
         if (!confirm) return;
 
         var http = _httpFactory.CreateClient("Api");
+
+        // --- ДОБАВЛЯЕМ ТОКЕН ---
+        var token = await SecureStorage.Default.GetAsync("auth_token");
+        if (!string.IsNullOrEmpty(token))
+        {
+            http.DefaultRequestHeaders.Authorization =
+                new AuthenticationHeaderValue("Bearer", token);
+        }
+        // -----------------------
+
         var response = await http.DeleteAsync($"{_api.ClientsEndpoint}/{Client.Id}");
 
         if (response.IsSuccessStatusCode)

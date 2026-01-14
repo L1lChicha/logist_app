@@ -137,22 +137,28 @@
                             </Border>
                         </VerticalStackLayout>
                     </Grid>
-
-                    <VerticalStackLayout Spacing="0">
-                        <Label Text="Load Type"/>
+                    <VerticalStackLayout>
+                        <Label Text="Select loading type"></Label>
                         <Border Style="{StaticResource InputBorderStyle}">
-                            <Picker SelectedItem="{Binding LoadingType}" Title="Select type">
-                                <Picker.ItemsSource>
-                                    <x:Array Type="{x:Type x:String}">
-                                        <x:String>Side load</x:String>
-                                        <x:String>Rear load</x:String>
-                                        <x:String>Manipulator lift</x:String>
-                                    </x:Array>
-                                </Picker.ItemsSource>
-                            </Picker>
+                       
+                            <Picker SelectedItem="{Binding LoadingType}" 
+                            TextColor="Black"
+                            TitleColor="#999"
+                            BackgroundColor="Transparent"
+                            Margin="0"
+                            VerticalOptions="Center" 
+                            HorizontalOptions="Fill">           
+                            <Picker.ItemsSource>
+                                <x:Array Type="{x:Type x:String}">
+                                    <x:String>side loading</x:String>
+                                    <x:String>rear loading</x:String>
+                                    <x:String>lifting with a manipulator</x:String>
+                                </x:Array>
+                            </Picker.ItemsSource>
+                        </Picker>
                         </Border>
                     </VerticalStackLayout>
-
+                    
                     <VerticalStackLayout Spacing="0">
                         <Label Text="Start date"/>
                         <Grid ColumnDefinitions="*, *" ColumnSpacing="10">

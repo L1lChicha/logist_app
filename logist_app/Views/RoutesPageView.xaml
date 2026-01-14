@@ -13,6 +13,8 @@
             <Color x:Key="TextPrimary">#1F1F1F</Color>
             <Color x:Key="TextSecondary">#757575</Color>
 
+            
+
             <Style x:Key="StatusFrameStyle" TargetType="Frame">
                 <Setter Property="CornerRadius" Value="12"/>
                 <Setter Property="Padding" Value="10,4"/>
@@ -162,18 +164,20 @@
 
                                     <HorizontalStackLayout Grid.Column="0" Spacing="6" VerticalOptions="Center">
                                         <Label Text="🚗" FontSize="16"/>
-                                        <Label Text="{Binding Distance, StringFormat='{0:F1} км'}" 
-                                               FontSize="14" 
-                                               TextColor="{StaticResource TextPrimary}"
-                                               FontAttributes="Bold"/>
+
+                                        <Label Text="{Binding DisplayDistance}" 
+                                           FontSize="14" 
+                                           TextColor="{StaticResource TextPrimary}"
+                                           FontAttributes="Bold"/>
                                     </HorizontalStackLayout>
 
                                     <HorizontalStackLayout Grid.Column="1" Spacing="6" VerticalOptions="Center">
                                         <Label Text="⏱" FontSize="16"/>
-                                        <Label Text="{Binding Duration, StringFormat='{0:F0} мин'}" 
-                                               FontSize="14" 
-                                               TextColor="{StaticResource TextPrimary}"
-                                               FontAttributes="Bold"/>
+
+                                        <Label Text="{Binding DisplayDuration}" 
+                                           FontSize="14" 
+                                           TextColor="{StaticResource TextPrimary}"
+                                           FontAttributes="Bold"/>
                                     </HorizontalStackLayout>
 
                                     <Label Grid.Column="2" 

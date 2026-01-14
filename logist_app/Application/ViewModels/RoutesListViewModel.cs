@@ -8,6 +8,7 @@ using Microsoft.Maui.Controls;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Globalization;
+using System.Net.Http.Headers;
 using System.Net.Http.Json;
 
 public partial class RoutesListViewModel : ObservableObject
@@ -52,6 +53,16 @@ public partial class RoutesListViewModel : ObservableObject
             if (allRoutes.Count != 0)
                 return;
             var http = _httpFactory.CreateClient("Api");
+
+            // --- ДОБАВЛЯЕМ ТОКЕН ---
+            var token = await SecureStorage.Default.GetAsync("auth_token");
+            if (!string.IsNullOrEmpty(token))
+            {
+                http.DefaultRequestHeaders.Authorization =
+                    new AuthenticationHeaderValue("Bearer", token);
+            }
+            // -----------------------
+
             var routes = await http.GetFromJsonAsync<List<Route>>($"{_api.RoutesEndpoint}/all");
 
             allRoutes = routes ?? new List<Route>();
@@ -154,6 +165,16 @@ public partial class RoutesListViewModel : ObservableObject
         try
         {
             var http = _httpFactory.CreateClient("Api");
+
+            // --- ДОБАВЛЯЕМ ТОКЕН ---
+            var token = await SecureStorage.Default.GetAsync("auth_token");
+            if (!string.IsNullOrEmpty(token))
+            {
+                http.DefaultRequestHeaders.Authorization =
+                    new AuthenticationHeaderValue("Bearer", token);
+            }
+            // -----------------------
+
             var url = $"{_api.RoutesEndpoint}/{id}";
 
             var route = await http.GetFromJsonAsync<Route>(url, new System.Text.Json.JsonSerializerOptions
@@ -181,4 +202,10 @@ public partial class RoutesListViewModel : ObservableObject
 
     protected void OnPropertyChanged(string propertyName) =>
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+
+
+
+    
+
+
 }

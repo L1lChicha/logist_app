@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Text;
 using System.Text.Json;
@@ -30,6 +31,16 @@ namespace logist_app.Infrastructure.Service
             try
             {
                 var http = httpFactory.CreateClient("Api");
+
+                // --- ДОБАВЛЯЕМ ТОКЕН ---
+                var token = await SecureStorage.Default.GetAsync("auth_token");
+                if (!string.IsNullOrEmpty(token))
+                {
+                    http.DefaultRequestHeaders.Authorization =
+                        new AuthenticationHeaderValue("Bearer", token);
+                }
+                // -----------------------
+
                 var response = await http.PostAsJsonAsync(api.RoutesBuildEndpoint, clientsId);
 
                 if (response.IsSuccessStatusCode)

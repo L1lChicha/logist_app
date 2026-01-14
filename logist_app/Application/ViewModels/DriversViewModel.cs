@@ -8,6 +8,7 @@ using logist_app.Views;
 using Microsoft.Maui.Controls;
 using QRCoder;
 using System.Collections.ObjectModel;
+using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Xml.Linq;
 
@@ -50,9 +51,17 @@ namespace logist_app.ViewModels
                 return;
             try
             {
-
-
                 var http = _httpFactory.CreateClient("Api");
+
+                // --- ДОБАВЛЯЕМ ТОКЕН ---
+                var token = await SecureStorage.Default.GetAsync("auth_token");
+                if (!string.IsNullOrEmpty(token))
+                {
+                    http.DefaultRequestHeaders.Authorization =
+                        new AuthenticationHeaderValue("Bearer", token);
+                }
+                // -----------------------
+
                 var drivers = await http.GetFromJsonAsync<List<Driver>>($"{_api.DriversEndpoint}/all");
                 Drivers.Clear();
 
@@ -102,6 +111,16 @@ namespace logist_app.ViewModels
                 int codeHoursValid = 1;
 
                 var http = _httpFactory.CreateClient("Api");
+
+                // --- ДОБАВЛЯЕМ ТОКЕН ---
+                var token = await SecureStorage.Default.GetAsync("auth_token");
+                if (!string.IsNullOrEmpty(token))
+                {
+                    http.DefaultRequestHeaders.Authorization =
+                        new AuthenticationHeaderValue("Bearer", token);
+                }
+                // -----------------------
+
                 var url = $"{_api.DriverGetCodeUrl}/{id}";
 
                 // 1. Отправляем запрос

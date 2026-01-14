@@ -3,6 +3,7 @@ using logist_app.Core.Interfaces;
 using logist_app.Models;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Text.Json;
 
@@ -24,6 +25,15 @@ namespace logist_app.Infrastructure.Service
             try
             {
                 var http = httpFactory.CreateClient("Api");
+
+                // --- ДОБАВЛЯЕМ ТОКЕН ---
+                var token = await SecureStorage.Default.GetAsync("auth_token");
+                if (!string.IsNullOrEmpty(token))
+                {
+                    http.DefaultRequestHeaders.Authorization =
+                        new AuthenticationHeaderValue("Bearer", token);
+                }
+                // -----------------------
 
                 // Пробуем получить данные с сервера
                 var clients = await http.GetFromJsonAsync<ObservableCollection<Client>>(api.ClientsEndpoint);

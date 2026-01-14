@@ -55,7 +55,7 @@ namespace logist_app
             MainThread.BeginInvokeOnMainThread(async () =>
             {
                 // 3. МАГИЯ: Разворачиваем окно приложения
-                var window = Current.Windows.FirstOrDefault();
+                var window = Windows.FirstOrDefault();
                 if (window != null)
                 {
                     // Получаем нативное окно Windows
@@ -172,8 +172,8 @@ namespace logist_app
                 if (Application.Current?.MainPage != null)
                 {
                     await Shell.Current.DisplayAlert(
-                        "🔔 Новая проблема!",
-                        $"Клиент: {note.ClientId}\nЗаметка: {note.NotesAboutProblems}",
+                        "🔔 New problem!",
+                        $"Client: {note.ClientId}\n{note.ClientName}\nNote: {note.NotesAboutProblems}",
                         "ОК"
                     );
                 }
@@ -187,8 +187,8 @@ namespace logist_app
 #if WINDOWS
                 try
                 {
-                    var title = "🔔 Новая проблема!";
-                    var body = $"Клиент: {note.ClientId}\n{note.ClientName}\n{note.NotesAboutProblems ?? "Нет описания"}";
+                    var title = "🔔 New problem!";
+                    var body = $"Client: {note.ClientId}\n{note.ClientName}\n{note.NotesAboutProblems ?? "Нет описания"}";
 
                     // Строим toast
                     new ToastContentBuilder()

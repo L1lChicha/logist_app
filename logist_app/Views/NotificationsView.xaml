@@ -4,7 +4,7 @@
              xmlns:vm="clr-namespace:logist_app.ViewModels"
              xmlns:model="clr-namespace:logist_app.Core.Entities"
              x:Class="logist_app.Views.NotificationsView"
-             Title="Уведомления">
+             Title="Notifications">
 
     <Grid RowDefinitions="Auto,*">
 
@@ -17,7 +17,7 @@
                 IsVisible="{Binding Notifications.Count, Converter={StaticResource IntToBoolConverter}}"/>
         <CollectionView Grid.Row="1" 
                         ItemsSource="{Binding Notifications}"
-                        EmptyView="Уведомлений нет">
+                        EmptyView="No notifications">
             <CollectionView.ItemTemplate>
                 <DataTemplate x:DataType="model:AppNotification">
 

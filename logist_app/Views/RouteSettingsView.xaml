@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:logist_app.ViewModels"
+             x:Class="logist_app.Views.RouteSettingsView"
+            Title="Настройки алгоритма">
+
+   
+
+    <ScrollView>
+        <VerticalStackLayout Spacing="20" Padding="20">
+
+            <ActivityIndicator IsRunning="{Binding IsLoading}" 
+                               IsVisible="{Binding IsLoading}" 
+                               HorizontalOptions="Center"/>
+
+            <Frame BorderColor="Gray" CornerRadius="10" Padding="15">
+                <VerticalStackLayout Spacing="10">
+                    <Label Text="Логистика" FontSize="18" FontAttributes="Bold" TextColor="{StaticResource Primary}"/>
+
+                    <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto,Auto,Auto" ColumnSpacing="10" RowSpacing="10">
+                        <Label Grid.Row="0" Grid.Column="0" Text="Макс. точек на рейс:" VerticalOptions="Center"/>
+                        <Entry Grid.Row="0" Grid.Column="1" Text="{Binding MaxPointsQuantity}" Keyboard="Numeric"/>
+
+                        <Label Grid.Row="1" Grid.Column="0" Text="Мин. точек:" VerticalOptions="Center"/>
+                        <Entry Grid.Row="1" Grid.Column="1" Text="{Binding MinPointsQuantity}" Keyboard="Numeric"/>
+
+                        <Label Grid.Row="2" Grid.Column="0" Text="Макс. контейнеров:" VerticalOptions="Center"/>
+                        <Entry Grid.Row="2" Grid.Column="1" Text="{Binding MaxContainersQuantity}" Keyboard="Numeric"/>
+
+                        <Label Grid.Row="3" Grid.Column="0" Text="Ср. скорость (км/ч):" VerticalOptions="Center"/>
+                        <Entry Grid.Row="3" Grid.Column="1" Text="{Binding AverageSpeedKmh}" Keyboard="Numeric"/>
+                    </Grid>
+
+                    <Label Text="Координаты Депо (Lat / Lon):" FontAttributes="Bold" Margin="0,10,0,0"/>
+                    <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
+                        <Entry Grid.Column="0" Placeholder="Широта" Text="{Binding DepotLat}" Keyboard="Numeric"/>
+                        <Entry Grid.Column="1" Placeholder="Долгота" Text="{Binding DepotLon}" Keyboard="Numeric"/>
+                    </Grid>
+                </VerticalStackLayout>
+            </Frame>
+
+            <Frame BorderColor="Gray" CornerRadius="10" Padding="15">
+                <VerticalStackLayout Spacing="10">
+                    <Label Text="Параметры грузовика" FontSize="18" FontAttributes="Bold" TextColor="{StaticResource Primary}"/>
+
+                    <Grid ColumnDefinitions="2*,1*" RowDefinitions="Auto,Auto,Auto,Auto" ColumnSpacing="10" RowSpacing="10">
+                        <Label Grid.Row="0" Grid.Column="0" Text="Тип ТС:" VerticalOptions="Center"/>
+                        <Picker Grid.Row="0" Grid.Column="1" 
+                                ItemsSource="{Binding VehicleTypes}" 
+                                SelectedItem="{Binding SelectedVehicleType}" />
+
+                        <Label Grid.Row="1" Grid.Column="0" Text="Высота (м):" VerticalOptions="Center"/>
+                        <Entry Grid.Row="1" Grid.Column="1" Text="{Binding TruckHeightMeters}" Keyboard="Numeric"/>
+
+                        <Label Grid.Row="2" Grid.Column="0" Text="Ширина (м):" VerticalOptions="Center"/>
+                        <Entry Grid.Row="2" Grid.Column="1" Text="{Binding TruckWidthMeters}" Keyboard="Numeric"/>
+
+                        <Label Grid.Row="3" Grid.Column="0" Text="Мин. вес моста (т):" VerticalOptions="Center"/>
+                        <Entry Grid.Row="3" Grid.Column="1" Text="{Binding MinBridgeWeightTons}" Keyboard="Numeric"/>
+                    </Grid>
+
+                    <HorizontalStackLayout Spacing="10" Margin="0,5,0,0">
+                        <Label Text="Избегать шоссе:" VerticalOptions="Center"/>
+                        <Switch IsToggled="{Binding AvoidHighways}" />
+                    </HorizontalStackLayout>
+
+                    <HorizontalStackLayout Spacing="10">
+                        <Label Text="Учитывать знаки скорости:" VerticalOptions="Center"/>
+                        <Switch IsToggled="{Binding UseRealSpeed}" />
+                    </HorizontalStackLayout>
+                </VerticalStackLayout>
+            </Frame>
+
+            <Frame BorderColor="Gray" CornerRadius="10" Padding="15">
+                <VerticalStackLayout Spacing="10">
+                    <Label Text="Алгоритм (A* и 2-Opt)" FontSize="18" FontAttributes="Bold" TextColor="{StaticResource Primary}"/>
+
+                    <Grid ColumnDefinitions="3*,1*" RowDefinitions="Auto,Auto,Auto,Auto" ColumnSpacing="10" RowSpacing="10">
+                        <Label Grid.Row="0" Grid.Column="0" Text="Итерации 2-Opt (качество):" VerticalOptions="Center"/>
+                        <Entry Grid.Row="0" Grid.Column="1" Text="{Binding MaxIterations2Opt}" Keyboard="Numeric"/>
+
+                        <Label Grid.Row="1" Grid.Column="0" Text="Радиус поиска соседа (км):" VerticalOptions="Center"/>
+                        <Entry Grid.Row="1" Grid.Column="1" Text="{Binding NeighborSearchRadiusKm}" Keyboard="Numeric"/>
+
+                        <Label Grid.Row="2" Grid.Column="0" Text="Эвристика скорости (км/ч):" VerticalOptions="Center"/>
+                        <Entry Grid.Row="2" Grid.Column="1" Text="{Binding HeuristicMaxSpeedKmH}" Keyboard="Numeric"/>
+
+                        <Label Grid.Row="3" Grid.Column="0" Text="Макс. удаление от дороги (км):" VerticalOptions="Center"/>
+                        <Entry Grid.Row="3" Grid.Column="1" Text="{Binding MaxNearestNodeDistanceKm}" Keyboard="Numeric"/>
+                    </Grid>
+                </VerticalStackLayout>
+            </Frame>
+
+            <Button Text="Сохранить настройки" 
+                    Command="{Binding SaveSettingsCommand}"
+                    FontSize="18"
+                    FontAttributes="Bold"
+                    HeightRequest="50"
+                    Margin="0,10,0,30"
+                    IsEnabled="{Binding IsLoading, Converter={StaticResource InverseBoolConverter}}"/>
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

@@ -103,6 +103,22 @@
                             Clicked="vehicles_Clicked"
                             Style="{StaticResource MenuButtonStyle}"
                             Margin="0"/>
+
+                    <Label Text="Settings" 
+                           TextColor="#999" 
+                           FontSize="12" 
+                           FontAttributes="Bold" 
+                           Margin="5,10,0,10"/>
+                    <Button x:Name="routeSettings" 
+                            Text="Route creation settings" 
+                            Clicked="routeSettings_Clicked"
+                            Style="{StaticResource MenuButtonStyle}"
+                            Margin="0"/>
+                    <Button x:Name="appSettings" 
+                            Text="App settings" 
+                            Clicked="appSettings_Clicked"
+                            Style="{StaticResource MenuButtonStyle}"
+                            Margin="0"/>        
                 </VerticalStackLayout>
             </ScrollView>
         </Border>

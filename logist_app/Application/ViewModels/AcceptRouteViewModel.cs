@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using logist_app.Models;
+using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Text.Json;
 
@@ -88,6 +89,16 @@ public partial class AcceptRouteViewModel : ObservableObject
         try
         {
             var http = _httpFactory.CreateClient("Api");
+
+            // --- ДОБАВЛЯЕМ ТОКЕН ---
+            var token = await SecureStorage.Default.GetAsync("auth_token");
+            if (!string.IsNullOrEmpty(token))
+            {
+                http.DefaultRequestHeaders.Authorization =
+                    new AuthenticationHeaderValue("Bearer", token);
+            }
+            // -----------------------
+
             var url = $"{_api.RoutesConfirmEndpoint}/{_routeId}";
 
             // Если карта вернула null/пустоту (например, ничего не меняли), шлем исходный
@@ -131,6 +142,16 @@ public partial class AcceptRouteViewModel : ObservableObject
         try
         {
             var http = _httpFactory.CreateClient("Api");
+
+            // --- ДОБАВЛЯЕМ ТОКЕН ---
+            var token = await SecureStorage.Default.GetAsync("auth_token");
+            if (!string.IsNullOrEmpty(token))
+            {
+                http.DefaultRequestHeaders.Authorization =
+                    new AuthenticationHeaderValue("Bearer", token);
+            }
+            // -----------------------
+
             var url = $"{_api.RoutesRejectEndpoint}/{_routeId}";
             var response = await http.PostAsync(url, null);
 

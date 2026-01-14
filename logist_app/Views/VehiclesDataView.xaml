@@ -139,17 +139,17 @@
 
                                 <Grid Grid.Row="1" ColumnDefinitions="*, *, *" ColumnSpacing="5">
                                     <VerticalStackLayout Grid.Column="0">
-                                        <Label Text="📦 Capacity" FontSize="11" TextColor="{StaticResource TextSecondary}"/>
+                                        <Label Text="Capacity" FontSize="11" TextColor="{StaticResource TextSecondary}"/>
                                         <Label Text="{Binding Capacity}" FontSize="14" FontAttributes="Bold" TextColor="{StaticResource TextPrimary}"/>
                                     </VerticalStackLayout>
 
                                     <VerticalStackLayout Grid.Column="1">
-                                        <Label Text="⚖️ Tonnage" FontSize="11" TextColor="{StaticResource TextSecondary}"/>
+                                        <Label Text="Tonnage" FontSize="11" TextColor="{StaticResource TextSecondary}"/>
                                         <Label Text="{Binding Tonnage, StringFormat='{0} t'}" FontSize="14" FontAttributes="Bold" TextColor="{StaticResource TextPrimary}"/>
                                     </VerticalStackLayout>
 
                                     <VerticalStackLayout Grid.Column="2">
-                                        <Label Text="🏗️ Type" FontSize="11" TextColor="{StaticResource TextSecondary}"/>
+                                        <Label Text="Type" FontSize="11" TextColor="{StaticResource TextSecondary}"/>
                                         <Label Text="{Binding LoadingType}" FontSize="13" TextColor="{StaticResource TextPrimary}" LineBreakMode="TailTruncation"/>
                                     </VerticalStackLayout>
                                 </Grid>

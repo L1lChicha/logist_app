@@ -6,6 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Maui.Controls;
 using System.Globalization;
 using System.Net;
+using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Text.Json;
 using System.Xml.Linq;
@@ -104,6 +105,16 @@ public partial class AddNewClientViewModel : ObservableObject
         try
         {
             var clientHttp = _httpClientFactory.CreateClient("Api");
+
+            // --- ДОБАВЛЯЕМ ТОКЕН ---
+            var token = await SecureStorage.Default.GetAsync("auth_token");
+            if (!string.IsNullOrEmpty(token))
+            {
+                clientHttp.DefaultRequestHeaders.Authorization =
+                    new AuthenticationHeaderValue("Bearer", token);
+            }
+            // -----------------------
+
             var response = await clientHttp.PostAsJsonAsync(_apiSettings.ClientsEndpoint, client);
             return response.IsSuccessStatusCode;
         }

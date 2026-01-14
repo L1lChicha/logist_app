@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Text;
 using System.Threading.Tasks;
@@ -47,6 +48,16 @@ namespace logist_app.ViewModels
                 if (Vehicles.Count != 0)
                     return;
                 var http = _httpFactory.CreateClient("Api");
+
+                // --- ДОБАВЛЯЕМ ТОКЕН ---
+                var token = await SecureStorage.Default.GetAsync("auth_token");
+                if (!string.IsNullOrEmpty(token))
+                {
+                    http.DefaultRequestHeaders.Authorization =
+                        new AuthenticationHeaderValue("Bearer", token);
+                }
+                // -----------------------
+
                 var vehicles = await http.GetFromJsonAsync<List<Vehicle>>($"{_api.VehiclesEndpoint}");
                 Vehicles.Clear();
 
@@ -87,6 +98,16 @@ namespace logist_app.ViewModels
             if (!confirm) return;
 
             var http = _httpFactory.CreateClient("Api");
+
+            // --- ДОБАВЛЯЕМ ТОКЕН ---
+            var token = await SecureStorage.Default.GetAsync("auth_token");
+            if (!string.IsNullOrEmpty(token))
+            {
+                http.DefaultRequestHeaders.Authorization =
+                    new AuthenticationHeaderValue("Bearer", token);
+            }
+            // -----------------------
+
             var response = await http.DeleteAsync($"{_api.VehiclesEndpoint}/{_selectedVehicle.Id}");
 
             if (response.IsSuccessStatusCode)
