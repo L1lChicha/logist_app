@@ -5,15 +5,14 @@
              x:Class="logist_app.Views.RouteCreationView"
              xmlns:viewmodels="clr-namespace:logist_app.ViewModels"
              Title="Create Route"
-             BackgroundColor="#F5F5F5">
+             BackgroundColor="{AppThemeBinding Light=#F5F5F5, Dark=#1a1a1a}">
 
     <ContentPage.Resources>
         <ResourceDictionary>
             <Color x:Key="PrimaryColor">#007ACC</Color>
+            <Color x:Key="PrimaryColorDark">#5AAFFF</Color>
             <Color x:Key="SuccessColor">#1E8E3E</Color>
-            <Color x:Key="CardBackground">White</Color>
-            <Color x:Key="TextPrimary">#1F1F1F</Color>
-            <Color x:Key="TextSecondary">#757575</Color>
+            <Color x:Key="SuccessColorDark">#4ADE80</Color>
         </ResourceDictionary>
     </ContentPage.Resources>
 
@@ -27,15 +26,15 @@
             <Label Text="Select Clients" 
                    FontSize="22" 
                    FontAttributes="Bold" 
-                   TextColor="{StaticResource TextPrimary}"
+                   TextColor="{AppThemeBinding Light=#1F1F1F, Dark=#E0E0E0}"
                    VerticalOptions="Center"/>
 
             <Button Grid.Column="1"
                     Text="Refresh"
                     Command="{Binding RefreshCommand}"
-                    BackgroundColor="White"
-                    TextColor="{StaticResource PrimaryColor}"
-                    BorderColor="{StaticResource PrimaryColor}"
+                    BackgroundColor="{AppThemeBinding Light=White, Dark=#2d2d2d}"
+                    TextColor="{AppThemeBinding Light={StaticResource PrimaryColor}, Dark={StaticResource PrimaryColorDark}}"
+                    BorderColor="{AppThemeBinding Light={StaticResource PrimaryColor}, Dark={StaticResource PrimaryColorDark}}"
                     BorderWidth="1"
                     CornerRadius="8"
                     HeightRequest="40"
@@ -46,17 +45,17 @@
                     Text="Create Route"
                     Command="{Binding CreateRouteCommand}"
                     IsEnabled="{Binding IsCreateButtonEnabled}"
-                    TextColor="White"
+                    TextColor="{AppThemeBinding Light=White, Dark=#1a1a1a}"
                     CornerRadius="8"
                     HeightRequest="40"
                     Padding="20,0"
                     FontAttributes="Bold">
                 <Button.Triggers>
                     <DataTrigger TargetType="Button" Binding="{Binding IsCreateButtonEnabled}" Value="True">
-                        <Setter Property="BackgroundColor" Value="{StaticResource SuccessColor}" />
+                        <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource SuccessColor}, Dark={StaticResource SuccessColorDark}}" />
                     </DataTrigger>
                     <DataTrigger TargetType="Button" Binding="{Binding IsCreateButtonEnabled}" Value="False">
-                        <Setter Property="BackgroundColor" Value="#BDBDBD" />
+                        <Setter Property="BackgroundColor" Value="{AppThemeBinding Light=#BDBDBD, Dark=#505050}" />
                     </DataTrigger>
                 </Button.Triggers>
             </Button>
@@ -65,10 +64,10 @@
         <Border Grid.Row="1" 
                 StrokeShape="RoundRectangle 10" 
                 StrokeThickness="0" 
-                BackgroundColor="White" 
+                BackgroundColor="{AppThemeBinding Light=White, Dark=#2d2d2d}" 
                 Padding="5">
             <Border.Shadow>
-                <Shadow Brush="Black" Offset="0,2" Radius="5" Opacity="0.05"/>
+                <Shadow Brush="Black" Offset="0,2" Radius="5" Opacity="{AppThemeBinding Light=0.05, Dark=0.2}"/>
             </Border.Shadow>
 
             <Grid ColumnDefinitions="*, Auto, Auto">
@@ -76,14 +75,14 @@
                            Placeholder="Search clients..."
                            Text="{Binding FilterText, Mode=TwoWay}"
                            BackgroundColor="Transparent"
-                           TextColor="Black"/>
+                           TextColor="{AppThemeBinding Light=Black, Dark=#E0E0E0}"/>
 
 
                 <HorizontalStackLayout Grid.Column="2" Spacing="5" Padding="10,0" VerticalOptions="Center">
-                    <Label Text="Sort by:" TextColor="{StaticResource TextPrimary}" FontSize="16" VerticalOptions="Center"/>
+                    <Label Text="Sort by:" TextColor="{AppThemeBinding Light=#1F1F1F, Dark=#E0E0E0}" FontSize="16" VerticalOptions="Center"/>
                     <Picker Title=""
-                            TextColor="{StaticResource PrimaryColor}"
-                            TitleColor="{StaticResource TextSecondary}"
+                            TextColor="{AppThemeBinding Light={StaticResource PrimaryColor}, Dark={StaticResource PrimaryColorDark}}"
+                            TitleColor="{AppThemeBinding Light=#757575, Dark=#888888}"
                             ItemsSource="{Binding PickerOptions}"
                             SelectedIndex="{Binding SelectedOptionIndex, Mode=TwoWay}"
                             WidthRequest="200"/>
@@ -101,8 +100,8 @@
             <CollectionView.ItemTemplate>
                 <DataTemplate x:DataType="viewmodels:SelectableClient">
                     <Border StrokeShape="RoundRectangle 20"
-                            BackgroundColor="#E6F4EA"
-                            Stroke="{StaticResource SuccessColor}"
+                            BackgroundColor="{AppThemeBinding Light=#E6F4EA, Dark=#1a3d2e}"
+                            Stroke="{AppThemeBinding Light={StaticResource SuccessColor}, Dark={StaticResource SuccessColorDark}}"
                             StrokeThickness="1"
                             Padding="12,0"
                             HeightRequest="32">
@@ -112,8 +111,8 @@
                         </Border.GestureRecognizers>
 
                         <HorizontalStackLayout Spacing="6" VerticalOptions="Center">
-                            <Label Text="{Binding Name}" TextColor="{StaticResource SuccessColor}" FontSize="13" FontAttributes="Bold"/>
-                            <Label Text="✕" TextColor="{StaticResource SuccessColor}" FontSize="12" FontAttributes="Bold"/>
+                            <Label Text="{Binding Name}" TextColor="{AppThemeBinding Light={StaticResource SuccessColor}, Dark={StaticResource SuccessColorDark}}" FontSize="13" FontAttributes="Bold"/>
+                            <Label Text="✕" TextColor="{AppThemeBinding Light={StaticResource SuccessColor}, Dark={StaticResource SuccessColorDark}}" FontSize="12" FontAttributes="Bold"/>
                         </HorizontalStackLayout>
                     </Border>
                 </DataTemplate>
@@ -139,16 +138,16 @@
 
                             <Border.Style>
                                 <Style TargetType="Border">
-                                    <Setter Property="BackgroundColor" Value="White" />
+                                    <Setter Property="BackgroundColor" Value="{AppThemeBinding Light=White, Dark=#2d2d2d}" />
                                     <Setter Property="Stroke" Value="Transparent" />
                                     <Setter Property="Shadow">
                                         <Setter.Value>
-                                            <Shadow Brush="Black" Offset="0,2" Radius="3" Opacity="0.05"/>
+                                            <Shadow Brush="Black" Offset="0,2" Radius="3" Opacity="{AppThemeBinding Light=0.05, Dark=0.2}"/>
                                         </Setter.Value>
                                     </Setter>
                                     <Style.Triggers>
                                         <DataTrigger TargetType="Border" Binding="{Binding IsSelected}" Value="True">
-                                            <Setter Property="BackgroundColor" Value="#F0FDF4" />
+                                            <Setter Property="BackgroundColor" Value="{AppThemeBinding Light=#F0FDF4, Dark=#1a3d2e}" />
                                             <Setter Property="Stroke" Value="{StaticResource SuccessColor}" />
                                         </DataTrigger>
                                     </Style.Triggers>
@@ -161,28 +160,28 @@
                                        Text="{Binding Name}" 
                                        FontSize="16" 
                                        FontAttributes="Bold" 
-                                       TextColor="{StaticResource TextPrimary}"/>
+                                       TextColor="{AppThemeBinding Light=#1F1F1F, Dark=#E0E0E0}"/>
 
                                 <Label Grid.Row="0" Grid.Column="1" 
                                        Text="✓" 
-                                       TextColor="{StaticResource SuccessColor}" 
+                                       TextColor="{AppThemeBinding Light={StaticResource SuccessColor}, Dark={StaticResource SuccessColorDark}}" 
                                        FontSize="20" 
                                        FontAttributes="Bold"
                                        IsVisible="{Binding IsSelected}"/>
 
                                 <VerticalStackLayout Grid.Row="1" Grid.ColumnSpan="2" Spacing="2">
 
-                                    <Label Text="{Binding Address, StringFormat='Address: {0}'}" FontSize="13" TextColor="{StaticResource TextPrimary}"/>
+                                    <Label Text="{Binding Address, StringFormat='Address: {0}'}" FontSize="13" TextColor="{AppThemeBinding Light=#1F1F1F, Dark=#B0B0B0}"/>
 
                                     <HorizontalStackLayout Spacing="10">
-                                        <Label Text="{Binding City}" FontSize="15" TextColor="{StaticResource TextPrimary}"/>
-                                        <Label Text="•" TextColor="#DDD"/>
-                                        <Label Text="{Binding Phone, StringFormat='Phone: {0}'}" FontSize="13" TextColor="{StaticResource TextPrimary}"/>
+                                        <Label Text="{Binding City}" FontSize="15" TextColor="{AppThemeBinding Light=#1F1F1F, Dark=#E0E0E0}"/>
+                                        <Label Text="•" TextColor="{AppThemeBinding Light=#DDD, Dark=#555}"/>
+                                        <Label Text="{Binding Phone, StringFormat='Phone: {0}'}" FontSize="13" TextColor="{AppThemeBinding Light=#1F1F1F, Dark=#B0B0B0}"/>
                                     </HorizontalStackLayout>
 
                                     <Label Text="{Binding StartDate, StringFormat='Start date: {0:MMM dd, yyyy}'}" 
                                            FontSize="14"
-                                           TextColor="{StaticResource TextPrimary}"
+                                           TextColor="{AppThemeBinding Light=#1F1F1F, Dark=#B0B0B0}"
                                            Margin="0,5,0,0"/>
                                 </VerticalStackLayout>
 

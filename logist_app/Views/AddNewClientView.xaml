@@ -3,34 +3,34 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="logist_app.Views.AddNewClientView"
              Title="Add Client"
-             BackgroundColor="#F5F5F5">
+             BackgroundColor="{AppThemeBinding Light=#F5F5F5, Dark=#1a1a1a}">
 
     <ContentPage.Resources>
         <ResourceDictionary>
             <Color x:Key="PrimaryColor">#007ACC</Color>
+            <Color x:Key="PrimaryColorDark">#5AAFFF</Color>
             <Color x:Key="SuccessColor">#1E8E3E</Color>
-            <Color x:Key="TextPrimary">#1F1F1F</Color>
-            <Color x:Key="TextSecondary">#757575</Color>
+            <Color x:Key="SuccessColorDark">#4ADE80</Color>
 
             <Style x:Key="InputBorderStyle" TargetType="Border">
-                <Setter Property="Stroke" Value="#E0E0E0"/>
+                <Setter Property="Stroke" Value="{AppThemeBinding Light=#E0E0E0, Dark=#404040}"/>
                 <Setter Property="StrokeThickness" Value="1"/>
                 <Setter Property="StrokeShape" Value="RoundRectangle 8"/>
-                <Setter Property="BackgroundColor" Value="White"/>
+                <Setter Property="BackgroundColor" Value="{AppThemeBinding Light=White, Dark=#2d2d2d}"/>
                 <Setter Property="Padding" Value="10,0"/>
                 <Setter Property="HeightRequest" Value="45"/>
             </Style>
 
-            <Style TargetType="Label">
-                <Setter Property="TextColor" Value="{StaticResource TextPrimary}"/>
+            <Style x:Key="FormLabelStyle" TargetType="Label">
+                <Setter Property="TextColor" Value="{AppThemeBinding Light=#1F1F1F, Dark=#E0E0E0}"/>
                 <Setter Property="FontSize" Value="13"/>
                 <Setter Property="FontAttributes" Value="Bold"/>
                 <Setter Property="Margin" Value="0,0,0,5"/>
             </Style>
 
-            <Style TargetType="Entry">
-                <Setter Property="TextColor" Value="Black"/>
-                <Setter Property="PlaceholderColor" Value="#9CA3AF"/>
+            <Style x:Key="FormEntryStyle" TargetType="Entry">
+                <Setter Property="TextColor" Value="{AppThemeBinding Light=Black, Dark=#E0E0E0}"/>
+                <Setter Property="PlaceholderColor" Value="{AppThemeBinding Light=#9CA3AF, Dark=#666}"/>
                 <Setter Property="FontSize" Value="14"/>
                 <Setter Property="BackgroundColor" Value="Transparent"/>
                 <Setter Property="VerticalOptions" Value="Center"/>
@@ -41,10 +41,10 @@
     <Grid ColumnDefinitions="400, *" RowDefinitions="*">
 
         <Border Grid.Column="0" 
-                BackgroundColor="White" 
+                BackgroundColor="{AppThemeBinding Light=White, Dark=#2d2d2d}" 
                 StrokeThickness="0">
             <Border.Shadow>
-                <Shadow Brush="Black" Offset="2,0" Radius="10" Opacity="0.05"/>
+                <Shadow Brush="Black" Offset="2,0" Radius="10" Opacity="{AppThemeBinding Light=0.05, Dark=0.2}"/>
             </Border.Shadow>
 
             <ScrollView>
@@ -53,21 +53,21 @@
                     <Label Text="New Client" 
                            FontSize="22" 
                            FontAttributes="Bold" 
-                           TextColor="{StaticResource TextPrimary}"
+                           TextColor="{AppThemeBinding Light=#1F1F1F, Dark=#E0E0E0}"
                            Margin="0,0,0,10"/>
 
                     <VerticalStackLayout Spacing="0">
-                        <Label Text="Client Name"/>
+                        <Label Text="Client Name" Style="{StaticResource FormLabelStyle}"/>
                         <Border Style="{StaticResource InputBorderStyle}">
-                            <Entry Text="{Binding Name}" Placeholder="Enter client name" />
+                            <Entry Text="{Binding Name}" Placeholder="Enter client name" Style="{StaticResource FormEntryStyle}"/>
                         </Border>
                     </VerticalStackLayout>
 
                     <VerticalStackLayout Spacing="0">
-                        <Label Text="Address"/>
+                        <Label Text="Address" Style="{StaticResource FormLabelStyle}"/>
                         <Grid ColumnDefinitions="*, Auto, Auto" ColumnSpacing="5">
                             <Border Grid.Column="0" Style="{StaticResource InputBorderStyle}">
-                                <Entry Text="{Binding Address}" Placeholder="Street address" />
+                                <Entry Text="{Binding Address}" Placeholder="Street address" Style="{StaticResource FormEntryStyle}"/>
                             </Border>
 
                             <Button Grid.Column="1" 
@@ -92,90 +92,89 @@
 
                     <Grid ColumnDefinitions="*, 0.6*" ColumnSpacing="10">
                         <VerticalStackLayout Grid.Column="0" Spacing="0">
-                            <Label Text="City"/>
+                            <Label Text="City" Style="{StaticResource FormLabelStyle}"/>
                             <Border Style="{StaticResource InputBorderStyle}">
-                                <Entry Text="{Binding City}" Placeholder="City" />
+                                <Entry Text="{Binding City}" Placeholder="City" Style="{StaticResource FormEntryStyle}"/>
                             </Border>
                         </VerticalStackLayout>
 
                         <VerticalStackLayout Grid.Column="1" Spacing="0">
-                            <Label Text="Post Code"/>
+                            <Label Text="Post Code" Style="{StaticResource FormLabelStyle}"/>
                             <Border Style="{StaticResource InputBorderStyle}">
-                                <Entry Text="{Binding PostalCode}" Placeholder="Index" />
+                                <Entry Text="{Binding PostalCode}" Placeholder="Index" Style="{StaticResource FormEntryStyle}"/>
                             </Border>
                         </VerticalStackLayout>
                     </Grid>
 
                     <VerticalStackLayout Spacing="0">
-                        <Label Text="Contact Info"/>
+                        <Label Text="Contact Info" Style="{StaticResource FormLabelStyle}"/>
                         <Grid ColumnDefinitions="*, *" ColumnSpacing="10">
                             <Border Grid.Column="0" Style="{StaticResource InputBorderStyle}">
-                                <Entry Text="{Binding Phone}" Placeholder="Phone" Keyboard="Telephone"/>
+                                <Entry Text="{Binding Phone}" Placeholder="Phone" Keyboard="Telephone" Style="{StaticResource FormEntryStyle}"/>
                             </Border>
                             <Border Grid.Column="1" Style="{StaticResource InputBorderStyle}">
-                                <Entry Text="{Binding Email}" Placeholder="Email" Keyboard="Email"/>
+                                <Entry Text="{Binding Email}" Placeholder="Email" Keyboard="Email" Style="{StaticResource FormEntryStyle}"/>
                             </Border>
                         </Grid>
                     </VerticalStackLayout>
 
-                    <BoxView HeightRequest="1" Color="#F0F0F0" Margin="0,5"/>
+                    <BoxView HeightRequest="1" Color="{AppThemeBinding Light=#F0F0F0, Dark=#404040}" Margin="0,5"/>
 
-                    <Label Text="Logistics Details" FontSize="16" Margin="0,5"/>
+                    <Label Text="Logistics Details" FontSize="16" Style="{StaticResource FormLabelStyle}" Margin="0,5"/>
 
                     <Grid ColumnDefinitions="*, *" ColumnSpacing="10">
                         <VerticalStackLayout Grid.Column="0" Spacing="0">
-                            <Label Text="Containers"/>
+                            <Label Text="Containers" Style="{StaticResource FormLabelStyle}"/>
                             <Border Style="{StaticResource InputBorderStyle}">
-                                <Entry Text="{Binding ContainerCount}" Placeholder="Qty" Keyboard="Numeric"/>
+                                <Entry Text="{Binding ContainerCount}" Placeholder="Qty" Keyboard="Numeric" Style="{StaticResource FormEntryStyle}"/>
                             </Border>
                         </VerticalStackLayout>
 
                         <VerticalStackLayout Grid.Column="1" Spacing="0">
-                            <Label Text="Volume (m³)"/>
+                            <Label Text="Volume (m³)" Style="{StaticResource FormLabelStyle}"/>
                             <Border Style="{StaticResource InputBorderStyle}">
-                                <Entry Text="{Binding Volume}" Placeholder="Vol" Keyboard="Numeric"/>
+                                <Entry Text="{Binding Volume}" Placeholder="Vol" Keyboard="Numeric" Style="{StaticResource FormEntryStyle}"/>
                             </Border>
                         </VerticalStackLayout>
                     </Grid>
                     <VerticalStackLayout>
-                        <Label Text="Select loading type"></Label>
+                        <Label Text="Select loading type" Style="{StaticResource FormLabelStyle}"/>
                         <Border Style="{StaticResource InputBorderStyle}">
-                       
                             <Picker SelectedItem="{Binding LoadingType}" 
-                            TextColor="Black"
-                            TitleColor="#999"
-                            BackgroundColor="Transparent"
-                            Margin="0"
-                            VerticalOptions="Center" 
-                            HorizontalOptions="Fill">           
-                            <Picker.ItemsSource>
-                                <x:Array Type="{x:Type x:String}">
-                                    <x:String>side loading</x:String>
-                                    <x:String>rear loading</x:String>
-                                    <x:String>lifting with a manipulator</x:String>
-                                </x:Array>
-                            </Picker.ItemsSource>
-                        </Picker>
+                                    TextColor="{AppThemeBinding Light=Black, Dark=#E0E0E0}"
+                                    TitleColor="{AppThemeBinding Light=#999, Dark=#666}"
+                                    BackgroundColor="Transparent"
+                                    Margin="0"
+                                    VerticalOptions="Center" 
+                                    HorizontalOptions="Fill">           
+                                <Picker.ItemsSource>
+                                    <x:Array Type="{x:Type x:String}">
+                                        <x:String>side loading</x:String>
+                                        <x:String>rear loading</x:String>
+                                        <x:String>lifting with a manipulator</x:String>
+                                    </x:Array>
+                                </Picker.ItemsSource>
+                            </Picker>
                         </Border>
                     </VerticalStackLayout>
                     
                     <VerticalStackLayout Spacing="0">
-                        <Label Text="Start date"/>
+                        <Label Text="Start date" Style="{StaticResource FormLabelStyle}"/>
                         <Grid ColumnDefinitions="*, *" ColumnSpacing="10">
                             <Border Grid.Column="0" Style="{StaticResource InputBorderStyle}">
-                                <DatePicker Date="{Binding StartDate}" TextColor="Black"/>
+                                <DatePicker Date="{Binding StartDate}" TextColor="{AppThemeBinding Light=Black, Dark=#E0E0E0}"/>
                             </Border>
 
                             <Button Grid.Column="1"
                                     Text="Recurrence" 
                                     Clicked="OnRecurrenceConfigClicked" 
-                                    BackgroundColor="#646464" 
+                                    BackgroundColor="{AppThemeBinding Light=#646464, Dark=#505050}" 
                                     TextColor="White"
                                     CornerRadius="8"
                                     HeightRequest="45"/>
                         </Grid>
                         <Label Text="{Binding RecurrenceSummary}" 
-                               TextColor="{StaticResource TextSecondary}" 
+                               TextColor="{AppThemeBinding Light=#757575, Dark=#888888}" 
                                FontSize="11" 
                                Margin="2,2,0,0"/>
                     </VerticalStackLayout>
@@ -183,8 +182,8 @@
                     <VerticalStackLayout Spacing="10" Margin="0,20,0,20">
                         <Button Text="Add Point" 
                                 Command="{Binding SubmitCommand}" 
-                                BackgroundColor="{StaticResource SuccessColor}" 
-                                TextColor="White"
+                                BackgroundColor="{AppThemeBinding Light={StaticResource SuccessColor}, Dark={StaticResource SuccessColorDark}}" 
+                                TextColor="{AppThemeBinding Light=White, Dark=#1a1a1a}"
                                 HeightRequest="50"
                                 CornerRadius="10"
                                 FontAttributes="Bold"
@@ -192,9 +191,9 @@
 
                         <Button Text="View Data" 
                                 Clicked="OnViewDataClicked" 
-                                BackgroundColor="White" 
-                                TextColor="{StaticResource TextPrimary}"
-                                BorderColor="#E0E0E0"
+                                BackgroundColor="{AppThemeBinding Light=White, Dark=#2d2d2d}" 
+                                TextColor="{AppThemeBinding Light=#1F1F1F, Dark=#E0E0E0}"
+                                BorderColor="{AppThemeBinding Light=#E0E0E0, Dark=#404040}"
                                 BorderWidth="1"
                                 HeightRequest="45"
                                 CornerRadius="10"
@@ -209,9 +208,9 @@
                 Margin="20" 
                 StrokeShape="RoundRectangle 20" 
                 StrokeThickness="0"
-                BackgroundColor="White">
+                BackgroundColor="{AppThemeBinding Light=White, Dark=#2d2d2d}">
             <Border.Shadow>
-                <Shadow Brush="Black" Offset="0,4" Radius="15" Opacity="0.1"/>
+                <Shadow Brush="Black" Offset="0,4" Radius="15" Opacity="{AppThemeBinding Light=0.1, Dark=0.3}"/>
             </Border.Shadow>
 
             <WebView x:Name="MapWebView" 

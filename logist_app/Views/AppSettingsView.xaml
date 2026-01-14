@@ -1,12 +1,105 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:logist_app.ViewModels"
              x:Class="logist_app.Views.AppSettingsView"
-             Title="AppSettingsView">
-    <VerticalStackLayout>
-        <Label 
-            Text="Welcome to .NET MAUI!"
-            VerticalOptions="Center" 
-            HorizontalOptions="Center" />
-    </VerticalStackLayout>
+             x:DataType="vm:AppSettingsViewModel"
+             Title="Настройки">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="20" Spacing="20">
+
+            <!-- Заголовок -->
+            <Label Text="Настройки приложения"
+                   FontSize="24"
+                   FontAttributes="Bold"
+                   HorizontalOptions="Center"
+                   Margin="0,0,0,10"/>
+
+            <!-- Секция: Тема -->
+            <Frame Padding="15" CornerRadius="12">
+                <VerticalStackLayout Spacing="15">
+                    
+                    <Label Text="🎨 Тема оформления"
+                           FontSize="18"
+                           FontAttributes="Bold"/>
+
+                    <Label Text="Выберите цветовую схему приложения"
+                           FontSize="14"
+                           Opacity="0.7"/>
+
+                    <!-- Picker для выбора темы -->
+                    <Border StrokeShape="RoundRectangle 8" Padding="5">
+                        <Picker Title="Выберите тему"
+                                ItemsSource="{Binding ThemeOptions}"
+                                SelectedIndex="{Binding SelectedThemeIndex}"
+                                FontSize="16"/>
+                    </Border>
+
+                    <!-- Визуальное отображение темы -->
+                    <HorizontalStackLayout Spacing="15" HorizontalOptions="Center">
+                        
+                        <!-- Светлая тема -->
+                        <Border WidthRequest="80" HeightRequest="50" 
+                                StrokeShape="RoundRectangle 10"
+                                BackgroundColor="White"
+                                StrokeThickness="2"
+                                Stroke="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource Gray500}}">
+                            <Label Text="☀️ Light" 
+                                   TextColor="Black"
+                                   FontSize="12"
+                                   VerticalOptions="Center" 
+                                   HorizontalOptions="Center"/>
+                        </Border>
+                        
+                        <!-- Тёмная тема -->
+                        <Border WidthRequest="80" HeightRequest="50" 
+                                StrokeShape="RoundRectangle 10"
+                                BackgroundColor="#1f1f1f"
+                                StrokeThickness="2"
+                                Stroke="{AppThemeBinding Light={StaticResource Gray500}, Dark={StaticResource Primary}}">
+                            <Label Text="🌙 Dark" 
+                                   TextColor="White"
+                                   FontSize="12"
+                                   VerticalOptions="Center" 
+                                   HorizontalOptions="Center"/>
+                        </Border>
+                        
+                    </HorizontalStackLayout>
+
+                </VerticalStackLayout>
+            </Frame>
+
+            <!-- Секция: О приложении -->
+            <Frame Padding="15" CornerRadius="12">
+                <VerticalStackLayout Spacing="10">
+                    
+                    <Label Text="ℹ️ О приложении"
+                           FontSize="18"
+                           FontAttributes="Bold"/>
+
+                    <Label Text="Logist App - приложение для управления логистикой"
+                           FontSize="14"
+                           Opacity="0.7"/>
+
+                    <Label Text="Версия: 1.0.0"
+                           FontSize="12"
+                           Opacity="0.5"/>
+
+                </VerticalStackLayout>
+            </Frame>
+
+            <!-- Кнопка выхода -->
+            <Button Text="🚪 Выйти из аккаунта"
+                    Command="{Binding LogoutCommand}"
+                    BackgroundColor="#E74C3C"
+                    TextColor="White"
+                    FontSize="16"
+                    CornerRadius="10"
+                    HeightRequest="50"
+                    Margin="0,20,0,0"/>
+
+        </VerticalStackLayout>
+    </ScrollView>
+
 </ContentPage>

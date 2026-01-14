@@ -24,6 +24,10 @@
     </TabBar>
 
     <Shell.ToolbarItems>
+        <ToolbarItem Text="⚙️"
+                     Order="Primary"
+                     Priority="1"
+                     Clicked="OnSettingsClicked" />
         <ToolbarItem Text="🔔"
                      Order="Primary"
                      Priority="0"

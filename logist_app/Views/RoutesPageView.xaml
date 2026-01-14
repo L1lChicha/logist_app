@@ -4,31 +4,27 @@
              xmlns:viewmodels="clr-namespace:logist_app.ViewModels"
              x:Class="logist_app.Views.RoutesPageView"
              Title="All routes"
-             BackgroundColor="#F5F5F5">
+             BackgroundColor="{AppThemeBinding Light=#F5F5F5, Dark=#1a1a1a}">
 
     <ContentPage.Resources>
         <ResourceDictionary>
             <Color x:Key="PrimaryColor">#007ACC</Color>
-            <Color x:Key="CardBackground">White</Color>
-            <Color x:Key="TextPrimary">#1F1F1F</Color>
-            <Color x:Key="TextSecondary">#757575</Color>
-
-            
+            <Color x:Key="PrimaryColorDark">#5AAFFF</Color>
 
             <Style x:Key="StatusFrameStyle" TargetType="Frame">
                 <Setter Property="CornerRadius" Value="12"/>
                 <Setter Property="Padding" Value="10,4"/>
                 <Setter Property="HasShadow" Value="False"/>
-                <Setter Property="BackgroundColor" Value="#E0E0E0"/>
+                <Setter Property="BackgroundColor" Value="{AppThemeBinding Light=#E0E0E0, Dark=#404040}"/>
                 <Style.Triggers>
                     <DataTrigger TargetType="Frame" Binding="{Binding Status}" Value="Confirmed">
-                        <Setter Property="BackgroundColor" Value="#E6F4EA"/>
+                        <Setter Property="BackgroundColor" Value="{AppThemeBinding Light=#E6F4EA, Dark=#1a3d2e}"/>
                     </DataTrigger>
                     <DataTrigger TargetType="Frame" Binding="{Binding Status}" Value="Rejected">
-                        <Setter Property="BackgroundColor" Value="#FCE8E6"/>
+                        <Setter Property="BackgroundColor" Value="{AppThemeBinding Light=#FCE8E6, Dark=#4d2626}"/>
                     </DataTrigger>
                     <DataTrigger TargetType="Frame" Binding="{Binding Status}" Value="Draft">
-                        <Setter Property="BackgroundColor" Value="#FFF7E0"/>
+                        <Setter Property="BackgroundColor" Value="{AppThemeBinding Light=#FFF7E0, Dark=#4d4426}"/>
                     </DataTrigger>
                 </Style.Triggers>
             </Style>
@@ -36,16 +32,16 @@
             <Style x:Key="StatusLabelStyle" TargetType="Label">
                 <Setter Property="FontSize" Value="12"/>
                 <Setter Property="FontAttributes" Value="Bold"/>
-                <Setter Property="TextColor" Value="#616161"/>
+                <Setter Property="TextColor" Value="{AppThemeBinding Light=#616161, Dark=#B0B0B0}"/>
                 <Style.Triggers>
                     <DataTrigger TargetType="Label" Binding="{Binding Status}" Value="Confirmed">
-                        <Setter Property="TextColor" Value="#1E8E3E"/>
+                        <Setter Property="TextColor" Value="{AppThemeBinding Light=#1E8E3E, Dark=#4ADE80}"/>
                     </DataTrigger>
                     <DataTrigger TargetType="Label" Binding="{Binding Status}" Value="Rejected">
-                        <Setter Property="TextColor" Value="#D93025"/>
+                        <Setter Property="TextColor" Value="{AppThemeBinding Light=#D93025, Dark=#F87171}"/>
                     </DataTrigger>
                     <DataTrigger TargetType="Label" Binding="{Binding Status}" Value="Draft">
-                        <Setter Property="TextColor" Value="#F9AB00"/>
+                        <Setter Property="TextColor" Value="{AppThemeBinding Light=#F9AB00, Dark=#FBBF24}"/>
                     </DataTrigger>
                 </Style.Triggers>
             </Style>
@@ -54,17 +50,17 @@
 
     <Grid RowDefinitions="Auto,*" ColumnDefinitions="*">
 
-        <Grid Grid.Row="0" ColumnDefinitions="*, Auto" Padding="15,10" BackgroundColor="White">
+        <Grid Grid.Row="0" ColumnDefinitions="*, Auto" Padding="15,10" 
+              BackgroundColor="{AppThemeBinding Light=White, Dark=#242424}">
 
-          
             <HorizontalStackLayout Grid.Column="0" 
                                    Spacing="10" 
                                    VerticalOptions="Center">
 
                 <Button Text="Refresh"
                         Command="{Binding RefreshCommand}"
-                        BackgroundColor="{StaticResource PrimaryColor}"
-                        TextColor="White"
+                        BackgroundColor="{AppThemeBinding Light={StaticResource PrimaryColor}, Dark={StaticResource PrimaryColorDark}}"
+                        TextColor="{AppThemeBinding Light=White, Dark=#1a1a1a}"
                         CornerRadius="8"
                         HeightRequest="36"
                         Padding="15,0"
@@ -72,13 +68,12 @@
                         FontAttributes="Bold"
                         VerticalOptions="Center"/>
 
-
                 <Label Text="Sort by:"
                        VerticalOptions="Center"
-                       TextColor="{StaticResource TextPrimary}"
+                       TextColor="{AppThemeBinding Light=#1F1F1F, Dark=#E0E0E0}"
                        FontSize="16"/>
 
-                <Border Stroke="#E0E0E0" 
+                <Border Stroke="{AppThemeBinding Light=#E0E0E0, Dark=#404040}" 
                         StrokeThickness="1" 
                         StrokeShape="RoundRectangle 8"
                         Padding="0"
@@ -86,8 +81,8 @@
                         VerticalOptions="Center">
 
                     <Picker x:Name="sortPicker"
-                            TitleColor="{StaticResource PrimaryColor}"
-                            TextColor="{StaticResource TextPrimary}"
+                            TitleColor="{AppThemeBinding Light={StaticResource PrimaryColor}, Dark={StaticResource PrimaryColorDark}}"
+                            TextColor="{AppThemeBinding Light=#1F1F1F, Dark=#E0E0E0}"
                             FontSize="14"
                             HorizontalTextAlignment="Center"
                             SelectedItem="{Binding SelectedFilter, Mode=TwoWay}">
@@ -107,7 +102,7 @@
 
         <RefreshView Grid.Row="1" 
                      Command="{Binding RefreshCommand}"
-                     RefreshColor="{StaticResource PrimaryColor}">
+                     RefreshColor="{AppThemeBinding Light={StaticResource PrimaryColor}, Dark={StaticResource PrimaryColorDark}}">
 
             <CollectionView ItemsSource="{Binding Routes}"
                             SelectedItem="{Binding SelectedRoute, Mode=TwoWay}"
@@ -122,10 +117,10 @@
                     <DataTemplate>
                         <Border StrokeShape="RoundRectangle 15"
                                 StrokeThickness="0"
-                                BackgroundColor="{StaticResource CardBackground}"
+                                BackgroundColor="{AppThemeBinding Light=White, Dark=#2d2d2d}"
                                 Padding="15">
                             <Border.Shadow>
-                                <Shadow Brush="Black" Offset="0,2" Radius="5" Opacity="0.1"/>
+                                <Shadow Brush="Black" Offset="0,2" Radius="5" Opacity="{AppThemeBinding Light=0.1, Dark=0.3}"/>
                             </Border.Shadow>
 
                             <Grid RowDefinitions="Auto, Auto, Auto, Auto" ColumnDefinitions="*, Auto" RowSpacing="6">
@@ -134,7 +129,7 @@
                                        Text="{Binding Name}" 
                                        FontSize="17" 
                                        FontAttributes="Bold" 
-                                       TextColor="{StaticResource TextPrimary}"
+                                       TextColor="{AppThemeBinding Light=#1F1F1F, Dark=#E0E0E0}"
                                        LineBreakMode="TailTruncation"/>
 
                                 <Frame Grid.Row="0" Grid.Column="1" 
@@ -147,43 +142,41 @@
                                 <StackLayout Grid.Row="1" Grid.ColumnSpan="2" Orientation="Horizontal" Spacing="10">
                                     <Label Text="{Binding Id, StringFormat='#{0}'}" 
                                            FontSize="13" 
-                                           TextColor="{StaticResource TextSecondary}"
+                                           TextColor="{AppThemeBinding Light=#757575, Dark=#888888}"
                                            FontAttributes="Bold"/>
-                                    <Label Text="•" TextColor="{StaticResource TextSecondary}"/>
+                                    <Label Text="•" TextColor="{AppThemeBinding Light=#757575, Dark=#888888}"/>
                                     <Label Text="{Binding CreatedAt, StringFormat='{0:dd MMM yyyy, HH:mm}'}" 
                                            FontSize="13" 
-                                           TextColor="{StaticResource TextSecondary}"/>
+                                           TextColor="{AppThemeBinding Light=#757575, Dark=#888888}"/>
                                 </StackLayout>
 
                                 <BoxView Grid.Row="2" Grid.ColumnSpan="2" 
                                          HeightRequest="1" 
-                                         Color="#F0F0F0" 
+                                         Color="{AppThemeBinding Light=#F0F0F0, Dark=#404040}" 
                                          Margin="0,5"/>
 
                                 <Grid Grid.Row="3" Grid.ColumnSpan="2" ColumnDefinitions="Auto, Auto, *" ColumnSpacing="20">
 
                                     <HorizontalStackLayout Grid.Column="0" Spacing="6" VerticalOptions="Center">
                                         <Label Text="🚗" FontSize="16"/>
-
                                         <Label Text="{Binding DisplayDistance}" 
-                                           FontSize="14" 
-                                           TextColor="{StaticResource TextPrimary}"
-                                           FontAttributes="Bold"/>
+                                               FontSize="14" 
+                                               TextColor="{AppThemeBinding Light=#1F1F1F, Dark=#E0E0E0}"
+                                               FontAttributes="Bold"/>
                                     </HorizontalStackLayout>
 
                                     <HorizontalStackLayout Grid.Column="1" Spacing="6" VerticalOptions="Center">
                                         <Label Text="⏱" FontSize="16"/>
-
                                         <Label Text="{Binding DisplayDuration}" 
-                                           FontSize="14" 
-                                           TextColor="{StaticResource TextPrimary}"
-                                           FontAttributes="Bold"/>
+                                               FontSize="14" 
+                                               TextColor="{AppThemeBinding Light=#1F1F1F, Dark=#E0E0E0}"
+                                               FontAttributes="Bold"/>
                                     </HorizontalStackLayout>
 
                                     <Label Grid.Column="2" 
                                            Text="{Binding CreatedBy}" 
                                            FontSize="12" 
-                                           TextColor="{StaticResource TextSecondary}"
+                                           TextColor="{AppThemeBinding Light=#757575, Dark=#888888}"
                                            HorizontalOptions="End"
                                            VerticalOptions="Center"
                                            LineBreakMode="TailTruncation"/>

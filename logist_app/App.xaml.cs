@@ -1,5 +1,6 @@
 ﻿using logist_app.Core.Entities;
 using logist_app.Infrastructure.Service;
+using logist_app.ViewModels;
 using logist_app.Views;
 using Microsoft.Toolkit.Uwp.Notifications;
 using Plugin.LocalNotification;
@@ -21,11 +22,20 @@ namespace logist_app
             Services = serviceProvider;
             _signalRService = signalRService;
 
+            // Загружаем сохранённую тему при старте
+            LoadSavedTheme();
+
             _signalRService.OnNoteReceived += HandleNotification;
             _signalRService.OnNoteReceived += HandleGlobalNotification;
 
             ToastNotificationManagerCompat.OnActivated += OnWindowsToastActivated;
 
+        }
+
+        private void LoadSavedTheme()
+        {
+            var savedTheme = Preferences.Default.Get("app_theme", "Light");
+            AppSettingsViewModel.ApplyTheme(savedTheme);
         }
         private void OnNotificationClicked(NotificationActionEventArgs e)
         {

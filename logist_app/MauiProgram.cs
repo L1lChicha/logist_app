@@ -101,7 +101,9 @@ namespace logist_app
             builder.Services.AddTransient<AddNewClientViewModel>();
 
             builder.Services.AddTransient<RouteSettingsView>();
+            
             builder.Services.AddTransient<AppSettingsView>();
+            builder.Services.AddTransient<AppSettingsViewModel>();
 
 
             builder.Services.AddTransient<IClientService, ClientService>();

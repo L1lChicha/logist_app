@@ -4,27 +4,27 @@
              xmlns:viewmodels="clr-namespace:logist_app.ViewModels"
              x:Class="logist_app.Views.DriversDataView"
              Title="Drivers Management"
-             BackgroundColor="#F5F5F5">
+             BackgroundColor="{AppThemeBinding Light=#F5F5F5, Dark=#1a1a1a}">
 
     <ContentPage.Resources>
         <ResourceDictionary>
             <Color x:Key="PrimaryColor">#007ACC</Color>
-            <Color x:Key="TextPrimary">#1F1F1F</Color>
-            <Color x:Key="TextSecondary">#757575</Color>
+            <Color x:Key="PrimaryColorDark">#5AAFFF</Color>
             <Color x:Key="SuccessColor">#1E8E3E</Color>
+            <Color x:Key="SuccessColorDark">#4ADE80</Color>
             <Color x:Key="InactiveColor">#9E9E9E</Color>
 
             <Style x:Key="FormEntryStyle" TargetType="Entry">
                 <Setter Property="FontSize" Value="14"/>
-                <Setter Property="TextColor" Value="{StaticResource TextPrimary}"/>
-                <Setter Property="PlaceholderColor" Value="#999"/>
+                <Setter Property="TextColor" Value="{AppThemeBinding Light=#1F1F1F, Dark=#E0E0E0}"/>
+                <Setter Property="PlaceholderColor" Value="{AppThemeBinding Light=#999, Dark=#666}"/>
                 <Setter Property="BackgroundColor" Value="Transparent"/>
                 <Setter Property="HeightRequest" Value="40"/>
             </Style>
 
             <Style x:Key="FormLabelStyle" TargetType="Label">
                 <Setter Property="FontSize" Value="12"/>
-                <Setter Property="TextColor" Value="{StaticResource TextPrimary}"/>
+                <Setter Property="TextColor" Value="{AppThemeBinding Light=#1F1F1F, Dark=#E0E0E0}"/>
                 <Setter Property="FontAttributes" Value="Bold"/>
                 <Setter Property="Margin" Value="0,10,0,0"/>
             </Style>
@@ -39,7 +39,7 @@
                    Text="Drivers List" 
                    FontSize="22" 
                    FontAttributes="Bold" 
-                   TextColor="{StaticResource TextPrimary}"
+                   TextColor="{AppThemeBinding Light=#1F1F1F, Dark=#E0E0E0}"
                    Margin="0,0,0,15"/>
 
             <RefreshView Grid.Row="1">
@@ -56,10 +56,10 @@
                         <DataTemplate>
                             <Border StrokeShape="RoundRectangle 12" 
                                     StrokeThickness="0"
-                                    BackgroundColor="White" 
+                                    BackgroundColor="{AppThemeBinding Light=White, Dark=#2d2d2d}" 
                                     Padding="15">
                                 <Border.Shadow>
-                                    <Shadow Brush="Black" Offset="0,2" Radius="5" Opacity="0.05"/>
+                                    <Shadow Brush="Black" Offset="0,2" Radius="5" Opacity="{AppThemeBinding Light=0.05, Dark=0.2}"/>
                                 </Border.Shadow>
 
                                 <VisualStateManager.VisualStateGroups>
@@ -67,7 +67,7 @@
                                         <VisualState Name="Normal" />
                                         <VisualState Name="Selected">
                                             <VisualState.Setters>
-                                                <Setter Property="BackgroundColor" Value="#F0F7FF" />
+                                                <Setter Property="BackgroundColor" Value="{AppThemeBinding Light=#F0F7FF, Dark=#1a3a5c}" />
                                                 <Setter Property="Stroke" Value="{StaticResource PrimaryColor}" />
                                                 <Setter Property="StrokeThickness" Value="1" />
                                             </VisualState.Setters>
@@ -81,10 +81,10 @@
                                         <Label Text="{Binding Name}" 
                                                FontSize="18" 
                                                FontAttributes="Bold" 
-                                               TextColor="{StaticResource TextPrimary}"/>
+                                               TextColor="{AppThemeBinding Light=#1F1F1F, Dark=#E0E0E0}"/>
                                         <Label Text="{Binding Id, StringFormat='ID: {0}'}" 
                                                FontSize="12" 
-                                               TextColor="{StaticResource TextPrimary}"/>
+                                               TextColor="{AppThemeBinding Light=#1F1F1F, Dark=#B0B0B0}"/>
                                     </VerticalStackLayout>
 
                                     <Border Grid.Row="0" Grid.Column="1" 
@@ -94,17 +94,17 @@
                                             VerticalOptions="Start">
                                         <Border.Triggers>
                                             <DataTrigger TargetType="Border" Binding="{Binding IsActive}" Value="True">
-                                                <Setter Property="BackgroundColor" Value="#E6F4EA"/>
+                                                <Setter Property="BackgroundColor" Value="{AppThemeBinding Light=#E6F4EA, Dark=#1a3d2e}"/>
                                             </DataTrigger>
                                             <DataTrigger TargetType="Border" Binding="{Binding IsActive}" Value="False">
-                                                <Setter Property="BackgroundColor" Value="#F5F5F5"/>
+                                                <Setter Property="BackgroundColor" Value="{AppThemeBinding Light=#F5F5F5, Dark=#404040}"/>
                                             </DataTrigger>
                                         </Border.Triggers>
                                         <Label FontSize="12" FontAttributes="Bold">
                                             <Label.Triggers>
                                                 <DataTrigger TargetType="Label" Binding="{Binding IsActive}" Value="True">
                                                     <Setter Property="Text" Value="Active"/>
-                                                    <Setter Property="TextColor" Value="{StaticResource SuccessColor}"/>
+                                                    <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource SuccessColor}, Dark={StaticResource SuccessColorDark}}"/>
                                                 </DataTrigger>
                                                 <DataTrigger TargetType="Label" Binding="{Binding IsActive}" Value="False">
                                                     <Setter Property="Text" Value="Inactive"/>
@@ -114,16 +114,16 @@
                                         </Label>
                                     </Border>
 
-                                    <BoxView Grid.Row="1" Grid.ColumnSpan="2" HeightRequest="1" Color="#F0F0F0" Margin="0,10"/>
+                                    <BoxView Grid.Row="1" Grid.ColumnSpan="2" HeightRequest="1" Color="{AppThemeBinding Light=#F0F0F0, Dark=#404040}" Margin="0,10"/>
 
                                     <VerticalStackLayout Grid.Row="2" Grid.ColumnSpan="2" Spacing="4">
                                         <HorizontalStackLayout Spacing="5">
-                                            <Label Text="Phone number: " TextColor="Black" FontSize="12"/>
-                                            <Label Text="{Binding PhoneNumber}" FontSize="13" TextColor="{StaticResource TextPrimary}"/>
+                                            <Label Text="Phone number: " TextColor="{AppThemeBinding Light=#1F1F1F, Dark=#E0E0E0}" FontSize="12"/>
+                                            <Label Text="{Binding PhoneNumber}" FontSize="13" TextColor="{AppThemeBinding Light=#1F1F1F, Dark=#B0B0B0}"/>
                                         </HorizontalStackLayout>
                                         <HorizontalStackLayout Spacing="5">
-                                            <Label Text="Joined:" FontSize="12" TextColor="Black"/>
-                                            <Label Text="{Binding CreatedAt, StringFormat=' {0:MMM dd, yyyy}'}" FontSize="12" TextColor="{StaticResource TextPrimary}"/>
+                                            <Label Text="Joined:" FontSize="12" TextColor="{AppThemeBinding Light=#1F1F1F, Dark=#E0E0E0}"/>
+                                            <Label Text="{Binding CreatedAt, StringFormat=' {0:MMM dd, yyyy}'}" FontSize="12" TextColor="{AppThemeBinding Light=#1F1F1F, Dark=#B0B0B0}"/>
                                         </HorizontalStackLayout>
                                     </VerticalStackLayout>
                                 </Grid>
@@ -135,12 +135,12 @@
         </Grid>
 
         <Border Grid.Column="1" 
-                BackgroundColor="White" 
+                BackgroundColor="{AppThemeBinding Light=White, Dark=#2d2d2d}" 
                 StrokeShape="RoundRectangle 15"
                 StrokeThickness="0"
                 Padding="0">
             <Border.Shadow>
-                <Shadow Brush="Black" Offset="0,4" Radius="10" Opacity="0.05"/>
+                <Shadow Brush="Black" Offset="0,4" Radius="10" Opacity="{AppThemeBinding Light=0.05, Dark=0.2}"/>
             </Border.Shadow>
 
             <Grid RowDefinitions="Auto, *, Auto">
@@ -149,52 +149,52 @@
                        Text="Driver Details" 
                        FontSize="20" 
                        FontAttributes="Bold" 
-                       TextColor="{StaticResource TextPrimary}"
+                       TextColor="{AppThemeBinding Light=#1F1F1F, Dark=#E0E0E0}"
                        Padding="20,20,20,10"/>
 
                 <ScrollView Grid.Row="1">
                     <VerticalStackLayout Padding="20" Spacing="5">
 
                         <Label Text="ID" Style="{StaticResource FormLabelStyle}"/>
-                        <Border Stroke="#E0E0E0" StrokeShape="RoundRectangle 8" BackgroundColor="#F9F9F9" Padding="10,0">
-                            <Entry Text="{Binding SelectedDriver.Id}" IsReadOnly="True" Style="{StaticResource FormEntryStyle}" TextColor="{StaticResource TextPrimary}"/>
+                        <Border Stroke="{AppThemeBinding Light=#E0E0E0, Dark=#404040}" StrokeShape="RoundRectangle 8" BackgroundColor="{AppThemeBinding Light=#F9F9F9, Dark=#1a1a1a}" Padding="10,0">
+                            <Entry Text="{Binding SelectedDriver.Id}" IsReadOnly="True" Style="{StaticResource FormEntryStyle}"/>
                         </Border>
 
                         <Label Text="FULL NAME" Style="{StaticResource FormLabelStyle}"/>
-                        <Border Stroke="#E0E0E0" StrokeShape="RoundRectangle 8" Padding="10,0">
+                        <Border Stroke="{AppThemeBinding Light=#E0E0E0, Dark=#404040}" StrokeShape="RoundRectangle 8" Padding="10,0">
                             <Entry Text="{Binding SelectedDriver.Name}" Placeholder="Enter full name" Style="{StaticResource FormEntryStyle}"/>
                         </Border>
 
                         <Grid ColumnDefinitions="*, *" ColumnSpacing="15">
                             <VerticalStackLayout Grid.Column="0">
                                 <Label Text="PHONE NUMBER" Style="{StaticResource FormLabelStyle}"/>
-                                <Border Stroke="#E0E0E0" StrokeShape="RoundRectangle 8" Padding="10,0">
+                                <Border Stroke="{AppThemeBinding Light=#E0E0E0, Dark=#404040}" StrokeShape="RoundRectangle 8" Padding="10,0">
                                     <Entry Text="{Binding SelectedDriver.PhoneNumber}" Keyboard="Telephone" Style="{StaticResource FormEntryStyle}"/>
                                 </Border>
                             </VerticalStackLayout>
 
                             <VerticalStackLayout Grid.Column="1">
                                 <Label Text="STATUS" Style="{StaticResource FormLabelStyle}"/>
-                                <Border Stroke="#E0E0E0" StrokeShape="RoundRectangle 8" Padding="0" HeightRequest="42">
+                                <Border Stroke="{AppThemeBinding Light=#E0E0E0, Dark=#404040}" StrokeShape="RoundRectangle 8" Padding="0" HeightRequest="42">
                                     <Grid ColumnDefinitions="*, Auto" Padding="10,0">
-                                        <Label Text="Is Active?" VerticalOptions="Center"/>
+                                        <Label Text="Is Active?" VerticalOptions="Center" TextColor="{AppThemeBinding Light=#1F1F1F, Dark=#E0E0E0}"/>
                                         <Switch Grid.Column="1" IsToggled="{Binding SelectedDriver.IsActive}" OnColor="{StaticResource SuccessColor}"/>
                                     </Grid>
                                 </Border>
                             </VerticalStackLayout>
                         </Grid>
 
-                        <Border Stroke="#E0E0E0" StrokeShape="RoundRectangle 12" StrokeThickness="1" Margin="0,20,0,0" Padding="15">
+                        <Border Stroke="{AppThemeBinding Light=#E0E0E0, Dark=#404040}" StrokeShape="RoundRectangle 12" StrokeThickness="1" Margin="0,20,0,0" Padding="15">
                             <Grid RowDefinitions="Auto, Auto, Auto" RowSpacing="10">
-                                <Label Grid.Row="0" Text="Authorization" FontAttributes="Bold" FontSize="16"/>
+                                <Label Grid.Row="0" Text="Authorization" FontAttributes="Bold" FontSize="16" TextColor="{AppThemeBinding Light=#1F1F1F, Dark=#E0E0E0}"/>
 
                                 <HorizontalStackLayout Grid.Row="1" Spacing="10">
                                     <Button Text="Generate Code" 
                                             x:Name="getCodeButton"
                                             Command="{Binding GetAuthorizationCodeCommand}"
                                             IsEnabled="{Binding IsButtonEnabled}"
-                                            BackgroundColor="{StaticResource PrimaryColor}" 
-                                            TextColor="White" 
+                                            BackgroundColor="{AppThemeBinding Light={StaticResource PrimaryColor}, Dark={StaticResource PrimaryColorDark}}" 
+                                            TextColor="{AppThemeBinding Light=White, Dark=#1a1a1a}" 
                                             HeightRequest="36" 
                                             CornerRadius="8" 
                                             FontSize="12"/>
@@ -203,15 +203,15 @@
                                            VerticalOptions="Center" 
                                            FontSize="16" 
                                            FontAttributes="Bold" 
-                                           TextColor="{StaticResource TextPrimary}"/>
+                                           TextColor="{AppThemeBinding Light=#1F1F1F, Dark=#E0E0E0}"/>
                                 </HorizontalStackLayout>
 
                                 <Border Grid.Row="2" 
                                         HorizontalOptions="Center" 
-                                        Stroke="#EEE" 
+                                        Stroke="{AppThemeBinding Light=#EEE, Dark=#404040}" 
                                         StrokeThickness="1" 
                                         Padding="10"
-                                        BackgroundColor="White">
+                                        BackgroundColor="{AppThemeBinding Light=White, Dark=#1a1a1a}">
                                     <Image Source="{Binding QrImage}" 
                                            WidthRequest="180" 
                                            HeightRequest="180" 
@@ -225,29 +225,29 @@
 
                 <Border Grid.Row="2" 
                         StrokeThickness="0" 
-                        BackgroundColor="#FAFAFA" 
+                        BackgroundColor="{AppThemeBinding Light=#FAFAFA, Dark=#242424}" 
                         Padding="20">
                     <Grid ColumnDefinitions="*, *, *" ColumnSpacing="10">
                         <Button Grid.Column="0" 
                                 Text="Add New" 
                                 x:Name="AddNewDriverButton" 
                                 Clicked="AddNewDriverButton_Clicked"
-                                BackgroundColor="White" 
-                                TextColor="{StaticResource PrimaryColor}" 
-                                BorderColor="{StaticResource PrimaryColor}" 
+                                BackgroundColor="{AppThemeBinding Light=White, Dark=#2d2d2d}" 
+                                TextColor="{AppThemeBinding Light={StaticResource PrimaryColor}, Dark={StaticResource PrimaryColorDark}}" 
+                                BorderColor="{AppThemeBinding Light={StaticResource PrimaryColor}, Dark={StaticResource PrimaryColorDark}}" 
                                 BorderWidth="1"
                                 CornerRadius="8"/>
 
                         <Button Grid.Column="1" 
                                 Text="Save Changes" 
-                                BackgroundColor="{StaticResource SuccessColor}" 
-                                TextColor="White" 
+                                BackgroundColor="{AppThemeBinding Light={StaticResource SuccessColor}, Dark={StaticResource SuccessColorDark}}" 
+                                TextColor="{AppThemeBinding Light=White, Dark=#1a1a1a}" 
                                 CornerRadius="8"/>
 
                         <Button Grid.Column="2" 
                                 Text="Delete" 
-                                BackgroundColor="#FCE8E6" 
-                                TextColor="#D93025" 
+                                BackgroundColor="{AppThemeBinding Light=#FCE8E6, Dark=#4d2626}" 
+                                TextColor="{AppThemeBinding Light=#D93025, Dark=#F87171}" 
                                 CornerRadius="8"/>
                     </Grid>
                 </Border>
