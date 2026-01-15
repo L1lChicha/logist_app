@@ -70,24 +70,24 @@ public partial class RoutesListViewModel : ObservableObject
 
             if (routes is not null)
             {
-                foreach (var route in allRoutes)
+                 foreach (var route in allRoutes)
                     Routes.Add(route);
-               
+
             }
             else
             {
-                WeakReferenceMessenger.Default.Send(new AlertMessage("Ошибка", "Не удалось загрузить маршруты: данные отсутствуют.", "OK"));
+               await Shell.Current.DisplayAlert("Ошибка", "Не удалось загрузить маршруты: данные отсутствуют.", "OK");
             }
         }
         catch (Exception ex)
         {
-            WeakReferenceMessenger.Default.Send(new AlertMessage("Ошибка", $"Не удалось загрузить маршруты: {ex.Message}", "OK"));
+            await Shell.Current.DisplayAlert("Ошибка", $"Не удалось загрузить маршруты: {ex.Message}", "OK");
         }
     }
 
 
 
-    //[RelayCommand]
+    [RelayCommand]
     private async Task OpenRouteAsync(Route route)
     {
         if (route == null) return;
@@ -156,7 +156,7 @@ public partial class RoutesListViewModel : ObservableObject
     private void RestoreAll()
     {
         Routes.Clear();
-        foreach (var r in _routes)
+        foreach (var r in allRoutes)
             Routes.Add(r);
     }
 
