@@ -1,58 +1,29 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿// NotificationsViewModel.cs
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using logist_app.Core.Entities;
-using logist_app.Infrastructure.Service;
 using logist_app.Models;
+using logist_app.Services;
 using System.Collections.ObjectModel;
 
-namespace logist_app.ViewModels
+namespace logist_app.ViewModels;
+
+public partial class NotificationsViewModel : ObservableObject
 {
-    public partial class NotificationsViewModel : ObservableObject
+    private readonly NotificationService _notificationService;
+
+    // Прямая ссылка на коллекцию в сервисе
+    public ObservableCollection<AppNotification> Notifications => _notificationService.Notifications;
+
+    public NotificationsViewModel(NotificationService notificationService)
     {
-        private readonly SignalRService _signalRService;
-
-        // Коллекция, которая автоматически обновляет UI при добавлении элементов
-        public ObservableCollection<AppNotification> Notifications { get; } = new();
-
-        public NotificationsViewModel(SignalRService signalRService)
-        {
-            _signalRService = signalRService;
-
-            // Подписываемся на событие получения сообщения
-            _signalRService.OnNoteReceived += OnNotificationReceived;
-        }
-
-        private void OnNotificationReceived(ClientNoteNotification data)
-        {
-            // SignalR вызывает событие в фоновом потоке, а UI можно обновлять только в главном
-            MainThread.BeginInvokeOnMainThread(() =>
-            {
-                var newNote = new AppNotification
-                {
-                    Title = $"Проблема: {data.ClientId},\n{data.ClientName}",
-                    Message = data.NotesAboutProblems ?? "Нет описания",
-                    Timestamp = DateTime.Now,
-                    IsRead = false
-                };
-
-                // Добавляем в начало списка (сверху самые новые)
-                Notifications.Insert(0, newNote);
-            });
-        }
-
-        [RelayCommand]
-        void ClearAll()
-        {
-            Notifications.Clear();
-        }
-
-        [RelayCommand]
-        void Delete(AppNotification item)
-        {
-            if (Notifications.Contains(item))
-            {
-                Notifications.Remove(item);
-            }
-        }
+        _notificationService = notificationService;
+        // Здесь больше ничего не нужно!
     }
+
+    [RelayCommand]
+    void ClearAll() => _notificationService.ClearAll();
+
+    [RelayCommand]
+    void Delete(AppNotification item) => _notificationService.Remove(item);
 }

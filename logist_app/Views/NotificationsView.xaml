@@ -3,46 +3,129 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:vm="clr-namespace:logist_app.ViewModels"
              xmlns:model="clr-namespace:logist_app.Core.Entities"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
              x:Class="logist_app.Views.NotificationsView"
-             Title="Notifications">
+             Title="Уведомления"
+             BackgroundColor="{AppThemeBinding Light=#F3F3F3, Dark=#121212}">
 
-    <Grid RowDefinitions="Auto,*">
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <toolkit:IntToBoolConverter x:Key="IntToBoolConverter"/>
 
-        <Button Grid.Row="0" 
-                Text="Очистить все" 
-                Command="{Binding ClearAllCommand}" 
-                BackgroundColor="Red" 
-                TextColor="White"
-                Margin="10"
-                IsVisible="{Binding Notifications.Count, Converter={StaticResource IntToBoolConverter}}"/>
-        <CollectionView Grid.Row="1" 
+            <Color x:Key="BrandColor">#2B0B98</Color>
+            <Color x:Key="DeleteColor">#FF3B30</Color>
+
+            <Style x:Key="NotifCard" TargetType="Border">
+                <Setter Property="BackgroundColor" Value="{AppThemeBinding Light=White, Dark=#1E1E1E}"/>
+                <Setter Property="StrokeShape" Value="RoundRectangle 12"/>
+                <Setter Property="StrokeThickness" Value="0"/>
+                <Setter Property="Padding" Value="15"/>
+                <Setter Property="Margin" Value="0,0,0,10"/>
+                <Setter Property="Shadow">
+                    <Setter.Value>
+                        <Shadow Brush="Black" Offset="0,2" Radius="5" Opacity="{AppThemeBinding Light=0.1, Dark=0.3}"/>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <Grid RowDefinitions="Auto, *">
+
+        <Grid Grid.Row="0" ColumnDefinitions="*, Auto" Padding="20,15">
+            <Label Text="Ваши сообщения" 
+                   FontSize="22" 
+                   FontAttributes="Bold"
+                   VerticalOptions="Center"
+                   TextColor="{AppThemeBinding Light=#333, Dark=White}"/>
+
+            <Button Grid.Column="1"
+                    Text="Очистить все"
+                    Command="{Binding ClearAllCommand}"
+                    BackgroundColor="Transparent"
+                    TextColor="{StaticResource DeleteColor}"
+                    FontSize="14"
+                    FontAttributes="Bold"
+                    Padding="10,0"
+                    HeightRequest="36"
+                    IsVisible="{Binding Notifications.Count, Converter={StaticResource IntToBoolConverter}}">
+                <VisualStateManager.VisualStateGroups>
+                    <VisualStateGroup x:Name="CommonStates">
+                        <VisualState x:Name="Normal" />
+                        <VisualState x:Name="PointerOver">
+                            <VisualState.Setters>
+                                <Setter Property="BackgroundColor" Value="{AppThemeBinding Light=#10FF3B30, Dark=#30FF3B30}" />
+                            </VisualState.Setters>
+                        </VisualState>
+                    </VisualStateGroup>
+                </VisualStateManager.VisualStateGroups>
+            </Button>
+        </Grid>
+
+        <CollectionView Grid.Row="1"
                         ItemsSource="{Binding Notifications}"
-                        EmptyView="No notifications">
+                        SelectionMode="None"
+                        Margin="15,0">
+
+            <CollectionView.EmptyView>
+                <VerticalStackLayout VerticalOptions="Center" HorizontalOptions="Center" Spacing="15" Margin="0,-50,0,0">
+                    <Label Text="🔕" FontSize="60" HorizontalOptions="Center"/>
+                    <Label Text="Нет новых уведомлений" 
+                           FontSize="18" FontAttributes="Bold" 
+                           TextColor="{AppThemeBinding Light=#999, Dark=#666}"
+                           HorizontalOptions="Center"/>
+                    <Label Text="Мы сообщим, когда что-то произойдет" 
+                           FontSize="14" TextColor="Gray" 
+                           HorizontalOptions="Center"/>
+                </VerticalStackLayout>
+            </CollectionView.EmptyView>
+
             <CollectionView.ItemTemplate>
                 <DataTemplate x:DataType="model:AppNotification">
-
                     <SwipeView>
                         <SwipeView.RightItems>
                             <SwipeItems>
                                 <SwipeItem Text="Удалить"
-                                           BackgroundColor="Red"
+                                           BackgroundColor="{StaticResource DeleteColor}"
                                            Command="{Binding Source={RelativeSource AncestorType={x:Type vm:NotificationsViewModel}}, Path=DeleteCommand}"
                                            CommandParameter="{Binding .}" />
                             </SwipeItems>
                         </SwipeView.RightItems>
 
-                        <Frame Margin="10,5" Padding="10" CornerRadius="8" HasShadow="True">
-                            <VerticalStackLayout>
-                                <Label Text="{Binding Title}" FontAttributes="Bold" FontSize="16" />
-                                <Label Text="{Binding Message}" FontSize="14" TextColor="Gray" />
-                                <Label Text="{Binding Timestamp, StringFormat='{0:HH:mm dd.MM}'}" 
-                                       HorizontalOptions="End" 
-                                       FontSize="10" 
-                                       TextColor="LightGray"/>
-                            </VerticalStackLayout>
-                        </Frame>
-                    </SwipeView>
+                        <Border Style="{StaticResource NotifCard}">
+                            <Grid ColumnDefinitions="Auto, *, Auto" RowDefinitions="Auto, Auto" ColumnSpacing="15">
 
+                                <Border Grid.Row="0" Grid.RowSpan="2" Grid.Column="0"
+                                        StrokeShape="RoundRectangle 20"
+                                        HeightRequest="40" WidthRequest="40"
+                                        BackgroundColor="{AppThemeBinding Light=#EEF2FF, Dark=#2D2D2D}"
+                                        StrokeThickness="0"
+                                        VerticalOptions="Start">
+                                    <Label Text="🔔" HorizontalOptions="Center" VerticalOptions="Center" FontSize="18"/>
+                                </Border>
+
+                                <Label Grid.Row="0" Grid.Column="1" 
+                                       Text="{Binding Title}" 
+                                       FontSize="16" 
+                                       FontAttributes="Bold"
+                                       TextColor="{AppThemeBinding Light=#333, Dark=White}"
+                                       LineBreakMode="TailTruncation"/>
+
+                                <Label Grid.Row="0" Grid.Column="2" 
+                                       Text="{Binding Timestamp, StringFormat='{0:HH:mm}'}" 
+                                       FontSize="12" 
+                                       TextColor="{AppThemeBinding Light=#999, Dark=#888}"
+                                       VerticalOptions="Center"/>
+
+                                <Label Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2"
+                                       Text="{Binding Message}" 
+                                       FontSize="14" 
+                                       TextColor="{AppThemeBinding Light=#555, Dark=#AAA}"
+                                       Margin="0,4,0,0"
+                                       LineBreakMode="WordWrap"/>
+                            </Grid>
+                        </Border>
+                    </SwipeView>
                 </DataTemplate>
             </CollectionView.ItemTemplate>
         </CollectionView>

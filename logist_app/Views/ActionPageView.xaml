@@ -2,14 +2,14 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="logist_app.Views.ActionPageView"
-             Title="Menu"
+             Shell.NavBarIsVisible="False"
              BackgroundColor="{AppThemeBinding Light=#F5F5F5, Dark=#1a1a1a}">
 
     <ContentPage.Resources>
         <ResourceDictionary>
             <Color x:Key="PrimaryColor">#007ACC</Color>
             <Color x:Key="PrimaryColorDark">#5AAFFF</Color>
-            
+
             <Style x:Key="MenuButtonStyle" TargetType="Button">
                 <Setter Property="BackgroundColor" Value="{AppThemeBinding Light=White, Dark=#2d2d2d}"/>
                 <Setter Property="TextColor" Value="{AppThemeBinding Light=#1F1F1F, Dark=#E0E0E0}"/>
@@ -21,9 +21,7 @@
                 <Setter Property="Shadow">
                     <Setter.Value>
                         <Shadow Brush="{AppThemeBinding Light=Black, Dark=#000000}" 
-                                Offset="0,2" 
-                                Radius="5" 
-                                Opacity="{AppThemeBinding Light=0.1, Dark=0.3}"/>
+                                Offset="0,2" Radius="5" Opacity="{AppThemeBinding Light=0.1, Dark=0.3}"/>
                     </Setter.Value>
                 </Setter>
             </Style>
@@ -42,31 +40,39 @@
                     </Setter.Value>
                 </Setter>
             </Style>
-            
+
             <Style x:Key="SectionLabelStyle" TargetType="Label">
                 <Setter Property="TextColor" Value="{AppThemeBinding Light=#999999, Dark=#888888}"/>
                 <Setter Property="FontSize" Value="12"/>
                 <Setter Property="FontAttributes" Value="Bold"/>
                 <Setter Property="Margin" Value="5,0,0,10"/>
             </Style>
+
+            <Style x:Key="HeaderIconButtonStyle" TargetType="Button">
+                <Setter Property="BackgroundColor" Value="Transparent"/>
+                <Setter Property="TextColor" Value="{AppThemeBinding Light=#1F1F1F, Dark=#E0E0E0}"/>
+                <Setter Property="FontSize" Value="24"/>
+                <Setter Property="WidthRequest" Value="45"/>
+                <Setter Property="HeightRequest" Value="45"/>
+                <Setter Property="CornerRadius" Value="22"/>
+                <Setter Property="Padding" Value="0"/>
+            </Style>
+
         </ResourceDictionary>
     </ContentPage.Resources>
 
-    <Grid ColumnDefinitions="320, *" RowDefinitions="*">
+    <Grid ColumnDefinitions="320, *" RowDefinitions="Auto, *">
 
         <Border Grid.Column="0" 
+                Grid.RowSpan="2" 
                 BackgroundColor="{AppThemeBinding Light=#FAFAFA, Dark=#242424}" 
                 StrokeThickness="0">
             <Border.Shadow>
-                <Shadow Brush="Black" 
-                        Offset="2,0" 
-                        Radius="10" 
-                        Opacity="{AppThemeBinding Light=0.05, Dark=0.2}"/>
+                <Shadow Brush="Black" Offset="2,0" Radius="10" Opacity="{AppThemeBinding Light=0.05, Dark=0.2}"/>
             </Border.Shadow>
 
             <ScrollView>
                 <VerticalStackLayout Padding="20" Spacing="5">
-
                     <Label Text="Logistic Dashboard"
                            FontSize="22"
                            FontAttributes="Bold"
@@ -74,72 +80,49 @@
                            Margin="0,20,0,30"
                            HorizontalOptions="Center"/>
 
-                    <Button x:Name="createRoute" 
-                            Text="Create Route" 
-                            Clicked="createRoute_Clicked"
-                            Style="{StaticResource PrimaryButtonStyle}"/>
+                    <Button x:Name="createRoute" Text="Create Route" Clicked="createRoute_Clicked" Style="{StaticResource PrimaryButtonStyle}"/>
 
-                    <Label Text="Management" 
-                           Style="{StaticResource SectionLabelStyle}"
-                           Margin="5,0,0,10"/>
+                    <Label Text="Management" Style="{StaticResource SectionLabelStyle}" Margin="5,0,0,10"/>
+                    <Button x:Name="viewRoutes" Text="View Routes" Clicked="viewRoutes_Clicked" Style="{StaticResource MenuButtonStyle}"/>
+                    <Button x:Name="showClientsData" Text="Show Clients Data" Clicked="showClientsData_Clicked" Style="{StaticResource MenuButtonStyle}"/>
+                    <Button x:Name="addNewClient" Text="Add New Client" Clicked="addNewClient_Clicked" Style="{StaticResource MenuButtonStyle}"/>
 
-                    <Button x:Name="viewRoutes" 
-                            Text="View Routes" 
-                            Clicked="viewRoutes_Clicked"
-                            Style="{StaticResource MenuButtonStyle}"/>
+                    <Label Text="Resources" Style="{StaticResource SectionLabelStyle}" Margin="5,10,0,10"/>
+                    <Button x:Name="drivers" Text="Drivers" Clicked="drivers_Clicked" Style="{StaticResource MenuButtonStyle}"/>
+                    <Button x:Name="vehicles" Text="Vehicles" Clicked="vehicles_Clicked" Style="{StaticResource MenuButtonStyle}" Margin="0"/>
 
-                    <Button x:Name="showClientsData" 
-                            Text="Show Clients Data" 
-                            Clicked="showClientsData_Clicked"
-                            Style="{StaticResource MenuButtonStyle}"/>
-
-                    <Button x:Name="addNewClient" 
-                            Text="Add New Client" 
-                            Clicked="addNewClient_Clicked"
-                            Style="{StaticResource MenuButtonStyle}"/>
-
-                    <Label Text="Resources" 
-                           Style="{StaticResource SectionLabelStyle}"
-                           Margin="5,10,0,10"/>
-
-                    <Button x:Name="drivers" 
-                            Text="Drivers" 
-                            Clicked="drivers_Clicked"
-                            Style="{StaticResource MenuButtonStyle}"/>
-
-                    <Button x:Name="vehicles" 
-                            Text="Vehicles" 
-                            Clicked="vehicles_Clicked"
-                            Style="{StaticResource MenuButtonStyle}"
-                            Margin="0"/>
-
-                    <Label Text="Settings" 
-                           Style="{StaticResource SectionLabelStyle}"
-                           Margin="5,10,0,10"/>
-                    <Button x:Name="routeSettings" 
-                            Text="Route creation settings" 
-                            Clicked="routeSettings_Clicked"
-                            Style="{StaticResource MenuButtonStyle}"
-                            Margin="0"/>
-                    <Button x:Name="appSettings" 
-                            Text="App settings" 
-                            Clicked="appSettings_Clicked"
-                            Style="{StaticResource MenuButtonStyle}"
-                            Margin="0"/>        
+                    <Label Text="Settings" Style="{StaticResource SectionLabelStyle}" Margin="5,10,0,10"/>
+                    <Button x:Name="routeSettings" Text="Route creation settings" Clicked="routeSettings_Clicked" Style="{StaticResource MenuButtonStyle}" Margin="5,10,0,10"/>
+                    <Button x:Name="appSettings" Text="App settings" Clicked="appSettings_Clicked" Style="{StaticResource MenuButtonStyle}" Margin="5,10,0,10"/>
                 </VerticalStackLayout>
             </ScrollView>
         </Border>
 
-        <Border Grid.Column="1" 
-                Margin="20" 
+        <Grid Grid.Row="0" Grid.Column="1" 
+              Padding="20,15,20,5"
+              BackgroundColor="{AppThemeBinding Light=#F5F5F5, Dark=#1a1a1a}">
+
+            <HorizontalStackLayout HorizontalOptions="End" Spacing="10">
+
+                <Button Text="🔔" 
+                        Clicked="OnNotificationsClicked" 
+                        Style="{StaticResource HeaderIconButtonStyle}">
+                    <Button.Triggers>
+                        <Trigger TargetType="Button" Property="IsPressed" Value="True">
+                            <Setter Property="Opacity" Value="0.6" />
+                        </Trigger>
+                    </Button.Triggers>
+                </Button>
+            </HorizontalStackLayout>
+        </Grid>
+
+        <Border Grid.Row="1" Grid.Column="1" 
+                Margin="20,0,20,20" 
                 StrokeShape="RoundRectangle 20" 
                 StrokeThickness="0"
                 BackgroundColor="{AppThemeBinding Light=White, Dark=#2d2d2d}">
             <Border.Shadow>
-                <Shadow Brush="Black" 
-                        Offset="0,4" 
-                        Radius="15" 
-                        Opacity="{AppThemeBinding Light=0.1, Dark=0.3}"/>
+                <Shadow Brush="Black" Offset="0,4" Radius="15" Opacity="{AppThemeBinding Light=0.1, Dark=0.3}"/>
             </Border.Shadow>
 
             <WebView x:Name="MapWebView" 

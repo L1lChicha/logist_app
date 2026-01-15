@@ -8,6 +8,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Plugin.LocalNotification;
 using System.Reflection;
+using logist_app.Services;
 
 namespace logist_app
 {
@@ -56,7 +57,9 @@ namespace logist_app
                 http.BaseAddress = new Uri(apiSettings.BaseUrl);
             });
 
-
+            builder.Services.AddSingleton<NotificationService>();
+            builder.Services.AddSingleton<NotificationsViewModel>();
+            builder.Services.AddSingleton<NotificationsView>();
             builder.Services.AddSingleton<SignalRService>();
             builder.Services.AddSingleton<IRouteService, RouteService>();
             // ✅ Регистрируем ViewModels
@@ -107,9 +110,6 @@ namespace logist_app
 
 
             builder.Services.AddTransient<IClientService, ClientService>();
-
-            builder.Services.AddSingleton<NotificationsViewModel>();
-            builder.Services.AddSingleton<NotificationsView>();
 
             builder.Services.AddSingleton<RouteSettingsViewModel>();
             

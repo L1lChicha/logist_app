@@ -5,7 +5,8 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:local="clr-namespace:logist_app.Views"
     xmlns:views="clr-namespace:logist_app.Views"
-    Title="logist_app">
+    Title="EcoLogistics"
+    Shell.NavBarIsVisible="False">
 
 
     <ShellContent
@@ -17,7 +18,6 @@
     <TabBar Route="Main">
 
         <ShellContent
-        Title="Заявки"
         Route="ActionPageView" 
         ContentTemplate="{DataTemplate views:ActionPageView}" />
 

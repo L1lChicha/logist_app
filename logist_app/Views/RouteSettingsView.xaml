@@ -2,103 +2,227 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:vm="clr-namespace:logist_app.ViewModels"
+             xmlns:converters="clr-namespace:logist_app.Infrastructure.Service"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
              x:Class="logist_app.Views.RouteSettingsView"
-            Title="Настройки алгоритма">
+             Title="Настройки алгоритма"
+             BackgroundColor="{AppThemeBinding Light=#F3F3F3, Dark=#121212}">
 
-   
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <converters:DoubleToStringConverter x:Key="DoubleToStringConverter"/>
+            <toolkit:InvertedBoolConverter x:Key="InverseBoolConverter"/>
 
-    <ScrollView>
-        <VerticalStackLayout Spacing="20" Padding="20">
+            <Color x:Key="BrandColor">#2B0B98</Color>
+            <Color x:Key="BrandColorHover">#4020B0</Color>
 
-            <ActivityIndicator IsRunning="{Binding IsLoading}" 
-                               IsVisible="{Binding IsLoading}" 
-                               HorizontalOptions="Center"/>
+            <Style x:Key="WinCard" TargetType="Border">
+                <Setter Property="Padding" Value="20"/>
+                <Setter Property="BackgroundColor" Value="{AppThemeBinding Light=White, Dark=#1F1F1F}"/>
+                <Setter Property="StrokeShape" Value="RoundRectangle 8"/>
+                <Setter Property="StrokeThickness" Value="1"/>
+                <Setter Property="Stroke" Value="{AppThemeBinding Light=#E5E5E5, Dark=#333}"/>
+                <Setter Property="Shadow">
+                    <Setter.Value>
+                        <Shadow Brush="Black" Offset="0,4" Radius="8" Opacity="0.1"/>
+                    </Setter.Value>
+                </Setter>
+            </Style>
 
-            <Frame BorderColor="Gray" CornerRadius="10" Padding="15">
-                <VerticalStackLayout Spacing="10">
-                    <Label Text="Логистика" FontSize="18" FontAttributes="Bold" TextColor="{StaticResource Primary}"/>
+            <Style x:Key="Header" TargetType="Label">
+                <Setter Property="FontSize" Value="16"/>
+                <Setter Property="FontAttributes" Value="Bold"/>
+                <Setter Property="TextColor" Value="{StaticResource BrandColor}"/>
+                <Setter Property="Margin" Value="0,0,0,15"/>
+            </Style>
 
-                    <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto,Auto,Auto" ColumnSpacing="10" RowSpacing="10">
-                        <Label Grid.Row="0" Grid.Column="0" Text="Макс. точек на рейс:" VerticalOptions="Center"/>
-                        <Entry Grid.Row="0" Grid.Column="1" Text="{Binding MaxPointsQuantity}" Keyboard="Numeric"/>
+            <Style x:Key="FieldText" TargetType="Label">
+                <Setter Property="FontSize" Value="13"/>
+                <Setter Property="TextColor" Value="{AppThemeBinding Light=#555, Dark=#CCC}"/>
+                <Setter Property="VerticalOptions" Value="Center"/>
+            </Style>
 
-                        <Label Grid.Row="1" Grid.Column="0" Text="Мин. точек:" VerticalOptions="Center"/>
-                        <Entry Grid.Row="1" Grid.Column="1" Text="{Binding MinPointsQuantity}" Keyboard="Numeric"/>
+            <Style x:Key="WinInput" TargetType="Border">
+                <Setter Property="BackgroundColor" Value="{AppThemeBinding Light=#FAFAFA, Dark=#2A2A2A}"/>
+                <Setter Property="Stroke" Value="{AppThemeBinding Light=#D0D0D0, Dark=#444}"/>
+                <Setter Property="StrokeThickness" Value="1"/>
+                <Setter Property="StrokeShape" Value="RoundRectangle 4"/>
+                <Setter Property="HeightRequest" Value="32"/>
+                <Setter Property="Padding" Value="8,0"/>
+                <Setter Property="VerticalOptions" Value="Center"/>
+            </Style>
+        </ResourceDictionary>
+    </ContentPage.Resources>
 
-                        <Label Grid.Row="2" Grid.Column="0" Text="Макс. контейнеров:" VerticalOptions="Center"/>
-                        <Entry Grid.Row="2" Grid.Column="1" Text="{Binding MaxContainersQuantity}" Keyboard="Numeric"/>
+    <Grid>
+        <ScrollView>
+            <Grid Padding="30" RowSpacing="20">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/> <RowDefinition Height="Auto"/> </Grid.RowDefinitions>
 
-                        <Label Grid.Row="3" Grid.Column="0" Text="Ср. скорость (км/ч):" VerticalOptions="Center"/>
-                        <Entry Grid.Row="3" Grid.Column="1" Text="{Binding AverageSpeedKmh}" Keyboard="Numeric"/>
-                    </Grid>
+                <Border Grid.Row="0" Grid.Column="0" Style="{StaticResource WinCard}" Margin="0,0,10,0">
+                    <VerticalStackLayout Spacing="10">
+                        <Label Text="📦 Логистика" Style="{StaticResource Header}"/>
+                        
+                        <Grid ColumnDefinitions="*, 80" RowDefinitions="Auto,Auto,Auto,Auto" RowSpacing="10">
+                            
+                            <Label Grid.Row="0" Text="Макс. точек:" Style="{StaticResource FieldText}"/>
+                            <Border Grid.Row="0" Grid.Column="1" Style="{StaticResource WinInput}">
+                                <Entry Text="{Binding MaxPointsQuantity}" Keyboard="Numeric" FontSize="13"/>
+                            </Border>
 
-                    <Label Text="Координаты Депо (Lat / Lon):" FontAttributes="Bold" Margin="0,10,0,0"/>
-                    <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
-                        <Entry Grid.Column="0" Placeholder="Широта" Text="{Binding DepotLat}" Keyboard="Numeric"/>
-                        <Entry Grid.Column="1" Placeholder="Долгота" Text="{Binding DepotLon}" Keyboard="Numeric"/>
-                    </Grid>
+                            <Label Grid.Row="1" Text="Мин. точек:" Style="{StaticResource FieldText}"/>
+                            <Border Grid.Row="1" Grid.Column="1" Style="{StaticResource WinInput}">
+                                <Entry Text="{Binding MinPointsQuantity}" Keyboard="Numeric" FontSize="13"/>
+                            </Border>
+
+                            <Label Grid.Row="2" Text="Контейнеры:" Style="{StaticResource FieldText}"/>
+                            <Border Grid.Row="2" Grid.Column="1" Style="{StaticResource WinInput}">
+                                <Entry Text="{Binding MaxContainersQuantity, Converter={StaticResource DoubleToStringConverter}}" Keyboard="Numeric" FontSize="13"/>
+                            </Border>
+
+                            <Label Grid.Row="3" Text="Ср. скорость:" Style="{StaticResource FieldText}"/>
+                            <Border Grid.Row="3" Grid.Column="1" Style="{StaticResource WinInput}">
+                                <Entry Text="{Binding AverageSpeedKmh, Converter={StaticResource DoubleToStringConverter}}" Keyboard="Numeric" FontSize="13"/>
+                            </Border>
+                        </Grid>
+
+                        <BoxView HeightRequest="1" Color="{AppThemeBinding Light=#EEE, Dark=#333}" Margin="0,5"/>
+
+                        <Label Text="📍 Координаты Депо" FontSize="12" FontAttributes="Bold" TextColor="{AppThemeBinding Light=#333, Dark=White}"/>
+                        <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
+                            <Border Grid.Column="0" Style="{StaticResource WinInput}">
+                                <Entry Placeholder="Lat" Text="{Binding DepotLat, Converter={StaticResource DoubleToStringConverter}}" FontSize="13"/>
+                            </Border>
+                            <Border Grid.Column="1" Style="{StaticResource WinInput}">
+                                <Entry Placeholder="Lon" Text="{Binding DepotLon, Converter={StaticResource DoubleToStringConverter}}" FontSize="13"/>
+                            </Border>
+                        </Grid>
+                    </VerticalStackLayout>
+                </Border>
+
+                <Border Grid.Row="0" Grid.Column="1" Style="{StaticResource WinCard}" Margin="5,0,5,0">
+                    <VerticalStackLayout Spacing="10">
+                        <Label Text="🚚 Грузовик" Style="{StaticResource Header}"/>
+
+                        <Grid ColumnDefinitions="*, 80" RowDefinitions="Auto,Auto,Auto,Auto" RowSpacing="10">
+                            
+                            <Label Grid.Row="0" Text="Тип ТС:" Style="{StaticResource FieldText}"/>
+                            <Border Grid.Row="0" Grid.Column="1" Style="{StaticResource WinInput}">
+                                <Picker ItemsSource="{Binding VehicleTypes}" 
+                                        SelectedItem="{Binding SelectedVehicleType}" 
+                                        FontSize="13"
+                                        TextColor="{AppThemeBinding Light=Black, Dark=White}"/>
+                            </Border>
+
+                            <Label Grid.Row="1" Text="Высота (м):" Style="{StaticResource FieldText}"/>
+                            <Border Grid.Row="1" Grid.Column="1" Style="{StaticResource WinInput}">
+                                <Entry Text="{Binding TruckHeightMeters, Converter={StaticResource DoubleToStringConverter}}" Keyboard="Numeric" FontSize="13"/>
+                            </Border>
+
+                            <Label Grid.Row="2" Text="Ширина (м):" Style="{StaticResource FieldText}"/>
+                            <Border Grid.Row="2" Grid.Column="1" Style="{StaticResource WinInput}">
+                                <Entry Text="{Binding TruckWidthMeters, Converter={StaticResource DoubleToStringConverter}}" Keyboard="Numeric" FontSize="13"/>
+                            </Border>
+
+                            <Label Grid.Row="3" Text="Мин. мост (т):" Style="{StaticResource FieldText}"/>
+                            <Border Grid.Row="3" Grid.Column="1" Style="{StaticResource WinInput}">
+                                <Entry Text="{Binding MinBridgeWeightTons, Converter={StaticResource DoubleToStringConverter}}" Keyboard="Numeric" FontSize="13"/>
+                            </Border>
+                        </Grid>
+
+                        <BoxView HeightRequest="1" Color="{AppThemeBinding Light=#EEE, Dark=#333}" Margin="0,5"/>
+
+                        <Grid RowDefinitions="Auto, Auto" ColumnDefinitions="*, Auto" RowSpacing="8">
+                            <Label Grid.Row="0" Grid.Column="0" Text="Избегать шоссе" VerticalOptions="Center" Style="{StaticResource FieldText}"/>
+                            <Switch Grid.Row="0" Grid.Column="1" IsToggled="{Binding AvoidHighways}" OnColor="{StaticResource BrandColor}"/>
+                            
+                            <Label Grid.Row="1" Grid.Column="0" Text="Учитывать знаки" VerticalOptions="Center" Style="{StaticResource FieldText}"/>
+                            <Switch Grid.Row="1" Grid.Column="1" IsToggled="{Binding UseRealSpeed}" OnColor="{StaticResource BrandColor}"/>
+                        </Grid>
+                    </VerticalStackLayout>
+                </Border>
+
+                <Border Grid.Row="0" Grid.Column="2" Style="{StaticResource WinCard}" Margin="10,0,0,0">
+                    <VerticalStackLayout Spacing="10">
+                        <Label Text="🧩 Алгоритм" Style="{StaticResource Header}"/>
+
+                        <Grid ColumnDefinitions="*, 80" RowDefinitions="Auto,Auto,Auto,Auto" RowSpacing="10">
+                            
+                            <Label Grid.Row="0" Text="2-Opt итерации:" Style="{StaticResource FieldText}"/>
+                            <Border Grid.Row="0" Grid.Column="1" Style="{StaticResource WinInput}">
+                                <Entry Text="{Binding MaxIterations2Opt}" Keyboard="Numeric" FontSize="13"/>
+                            </Border>
+
+                            <Label Grid.Row="1" Text="Радиус поиска:" Style="{StaticResource FieldText}"/>
+                            <Border Grid.Row="1" Grid.Column="1" Style="{StaticResource WinInput}">
+                                <Entry Text="{Binding NeighborSearchRadiusKm, Converter={StaticResource DoubleToStringConverter}}" Keyboard="Numeric" FontSize="13"/>
+                            </Border>
+
+                            <Label Grid.Row="2" Text="Эвристика:" Style="{StaticResource FieldText}"/>
+                            <Border Grid.Row="2" Grid.Column="1" Style="{StaticResource WinInput}">
+                                <Entry Text="{Binding HeuristicMaxSpeedKmH, Converter={StaticResource DoubleToStringConverter}}" Keyboard="Numeric" FontSize="13"/>
+                            </Border>
+
+                            <Label Grid.Row="3" Text="Макс. отступ:" Style="{StaticResource FieldText}"/>
+                            <Border Grid.Row="3" Grid.Column="1" Style="{StaticResource WinInput}">
+                                <Entry Text="{Binding MaxNearestNodeDistanceKm, Converter={StaticResource DoubleToStringConverter}}" Keyboard="Numeric" FontSize="13"/>
+                            </Border>
+                        </Grid>
+                        
+                        <Label Text="* Влияет на производительность сервера" 
+                               FontSize="11" TextColor="Gray" 
+                               HorizontalOptions="Center" Margin="0,15,0,0"/>
+                    </VerticalStackLayout>
+                </Border>
+
+                <Button Grid.Row="1" Grid.ColumnSpan="3"
+                        Text="Сохранить настройки"
+                        Command="{Binding SaveSettingsCommand}"
+                        IsEnabled="{Binding IsLoading, Converter={StaticResource InverseBoolConverter}}"
+                        BackgroundColor="{StaticResource BrandColor}"
+                        TextColor="White"
+                        FontSize="15"
+                        FontAttributes="Bold"
+                        CornerRadius="6"
+                        HeightRequest="40"
+                        WidthRequest="250"
+                        HorizontalOptions="Center"
+                        Margin="0,30,0,20">
+                    
+                    <VisualStateManager.VisualStateGroups>
+                        <VisualStateGroup x:Name="CommonStates">
+                            <VisualState x:Name="Normal" />
+                            <VisualState x:Name="PointerOver">
+                                <VisualState.Setters>
+                                    <Setter Property="BackgroundColor" Value="{StaticResource BrandColorHover}" />
+                                    <Setter Property="Scale" Value="1.02" />
+                                </VisualState.Setters>
+                            </VisualState>
+                        </VisualStateGroup>
+                    </VisualStateManager.VisualStateGroups>
+                </Button>
+
+            </Grid>
+        </ScrollView>
+
+        <Grid BackgroundColor="{AppThemeBinding Light=#99FFFFFF, Dark=#AA000000}" 
+              IsVisible="{Binding IsLoading}" InputTransparent="False">
+            <Border BackgroundColor="{AppThemeBinding Light=White, Dark=#2D2D2D}" 
+                    StrokeShape="RoundRectangle 8"
+                    StrokeThickness="1"
+                    Stroke="{AppThemeBinding Light=#DDD, Dark=#444}"
+                    HorizontalOptions="Center" VerticalOptions="Center" Padding="30">
+                <VerticalStackLayout Spacing="15">
+                    <ActivityIndicator IsRunning="True" Color="{StaticResource BrandColor}"/>
+                    <Label Text="Сохранение..." TextColor="{AppThemeBinding Light=Black, Dark=White}"/>
                 </VerticalStackLayout>
-            </Frame>
-
-            <Frame BorderColor="Gray" CornerRadius="10" Padding="15">
-                <VerticalStackLayout Spacing="10">
-                    <Label Text="Параметры грузовика" FontSize="18" FontAttributes="Bold" TextColor="{StaticResource Primary}"/>
-
-                    <Grid ColumnDefinitions="2*,1*" RowDefinitions="Auto,Auto,Auto,Auto" ColumnSpacing="10" RowSpacing="10">
-                        <Label Grid.Row="0" Grid.Column="0" Text="Тип ТС:" VerticalOptions="Center"/>
-                        <Picker Grid.Row="0" Grid.Column="1" 
-                                ItemsSource="{Binding VehicleTypes}" 
-                                SelectedItem="{Binding SelectedVehicleType}" />
-
-                        <Label Grid.Row="1" Grid.Column="0" Text="Высота (м):" VerticalOptions="Center"/>
-                        <Entry Grid.Row="1" Grid.Column="1" Text="{Binding TruckHeightMeters}" Keyboard="Numeric"/>
-
-                        <Label Grid.Row="2" Grid.Column="0" Text="Ширина (м):" VerticalOptions="Center"/>
-                        <Entry Grid.Row="2" Grid.Column="1" Text="{Binding TruckWidthMeters}" Keyboard="Numeric"/>
-
-                        <Label Grid.Row="3" Grid.Column="0" Text="Мин. вес моста (т):" VerticalOptions="Center"/>
-                        <Entry Grid.Row="3" Grid.Column="1" Text="{Binding MinBridgeWeightTons}" Keyboard="Numeric"/>
-                    </Grid>
-
-                    <HorizontalStackLayout Spacing="10" Margin="0,5,0,0">
-                        <Label Text="Избегать шоссе:" VerticalOptions="Center"/>
-                        <Switch IsToggled="{Binding AvoidHighways}" />
-                    </HorizontalStackLayout>
-
-                    <HorizontalStackLayout Spacing="10">
-                        <Label Text="Учитывать знаки скорости:" VerticalOptions="Center"/>
-                        <Switch IsToggled="{Binding UseRealSpeed}" />
-                    </HorizontalStackLayout>
-                </VerticalStackLayout>
-            </Frame>
-
-            <Frame BorderColor="Gray" CornerRadius="10" Padding="15">
-                <VerticalStackLayout Spacing="10">
-                    <Label Text="Алгоритм (A* и 2-Opt)" FontSize="18" FontAttributes="Bold" TextColor="{StaticResource Primary}"/>
-
-                    <Grid ColumnDefinitions="3*,1*" RowDefinitions="Auto,Auto,Auto,Auto" ColumnSpacing="10" RowSpacing="10">
-                        <Label Grid.Row="0" Grid.Column="0" Text="Итерации 2-Opt (качество):" VerticalOptions="Center"/>
-                        <Entry Grid.Row="0" Grid.Column="1" Text="{Binding MaxIterations2Opt}" Keyboard="Numeric"/>
-
-                        <Label Grid.Row="1" Grid.Column="0" Text="Радиус поиска соседа (км):" VerticalOptions="Center"/>
-                        <Entry Grid.Row="1" Grid.Column="1" Text="{Binding NeighborSearchRadiusKm}" Keyboard="Numeric"/>
-
-                        <Label Grid.Row="2" Grid.Column="0" Text="Эвристика скорости (км/ч):" VerticalOptions="Center"/>
-                        <Entry Grid.Row="2" Grid.Column="1" Text="{Binding HeuristicMaxSpeedKmH}" Keyboard="Numeric"/>
-
-                        <Label Grid.Row="3" Grid.Column="0" Text="Макс. удаление от дороги (км):" VerticalOptions="Center"/>
-                        <Entry Grid.Row="3" Grid.Column="1" Text="{Binding MaxNearestNodeDistanceKm}" Keyboard="Numeric"/>
-                    </Grid>
-                </VerticalStackLayout>
-            </Frame>
-
-            <Button Text="Сохранить настройки" 
-                    Command="{Binding SaveSettingsCommand}"
-                    FontSize="18"
-                    FontAttributes="Bold"
-                    HeightRequest="50"
-                    Margin="0,10,0,30"
-                    IsEnabled="{Binding IsLoading, Converter={StaticResource InverseBoolConverter}}"/>
-        </VerticalStackLayout>
-    </ScrollView>
+            </Border>
+        </Grid>
+    </Grid>
 </ContentPage>

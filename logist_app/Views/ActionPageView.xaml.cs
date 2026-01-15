@@ -5,10 +5,10 @@ namespace logist_app.Views;
 
 public partial class ActionPageView : ContentPage
 {
-	public ActionPageView()
-	{
-		InitializeComponent();
-	}
+    public ActionPageView()
+    {
+        InitializeComponent();
+    }
 
     private async void createRoute_Clicked(object sender, EventArgs e)
     {
@@ -36,7 +36,7 @@ public partial class ActionPageView : ContentPage
         await Navigation.PushAsync(page);
     }
 
-   
+
     private async void drivers_Clicked(object sender, EventArgs e)
     {
         var page = App.Services.GetService<DriversDataView>();
@@ -60,5 +60,15 @@ public partial class ActionPageView : ContentPage
         var page = App.Services.GetService<AppSettingsView>();
         await Navigation.PushAsync(page);
     }
+
+
+    private async void OnNotificationsClicked(object sender, EventArgs e)
+    {
+        var page = App.Services.GetService<NotificationsView>();
+        await Navigation.PushAsync(page);
+
+    }
+
+   
 
 }
