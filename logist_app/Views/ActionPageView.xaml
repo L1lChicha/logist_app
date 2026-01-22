@@ -86,6 +86,7 @@
                     <Button x:Name="viewRoutes" Text="View Routes" Clicked="viewRoutes_Clicked" Style="{StaticResource MenuButtonStyle}"/>
                     <Button x:Name="showClientsData" Text="Show Clients Data" Clicked="showClientsData_Clicked" Style="{StaticResource MenuButtonStyle}"/>
                     <Button x:Name="addNewClient" Text="Add New Client" Clicked="addNewClient_Clicked" Style="{StaticResource MenuButtonStyle}"/>
+                    <Button x:Name="ejectPoint" Text="Eject point" Clicked="ejectPoint_Clicked" Style="{StaticResource MenuButtonStyle}"/>
 
                     <Label Text="Resources" Style="{StaticResource SectionLabelStyle}" Margin="5,10,0,10"/>
                     <Button x:Name="drivers" Text="Drivers" Clicked="drivers_Clicked" Style="{StaticResource MenuButtonStyle}"/>

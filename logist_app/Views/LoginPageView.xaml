@@ -3,7 +3,8 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="logist_app.Views.LoginPageView"
              Title="Вход"
-             Shell.NavBarIsVisible="False">
+             Shell.NavBarIsVisible="False"
+             Shell.FlyoutBehavior="Disabled">
     <ContentPage.Resources>
         <Color x:Key="PrimaryColor">#512BD4</Color>
         <Color x:Key="PrimaryColorDark">#7C5CE7</Color>
@@ -53,7 +54,7 @@
                        HorizontalOptions="Center" 
                        Margin="0,0,0,10"/>
 
-                <Label Text="Добро пожаловать!" 
+                <Label Text="Welcome!" 
                        FontSize="16" 
                        TextColor="{AppThemeBinding Light=Gray, Dark=#888888}" 
                        HorizontalOptions="Center" 
@@ -68,7 +69,7 @@
                         <Label Text="👤" VerticalOptions="Center" FontSize="18"/>
                         <Entry Grid.Column="1" 
                                x:Name="usernameEntry"
-                               Placeholder="Логин"
+                               Placeholder="Login"
                                Text="{Binding Username}" 
                                Margin="5,0,0,0"/>
                     </Grid>
@@ -83,7 +84,8 @@
                         <Label Text="🔒" VerticalOptions="Center" FontSize="18"/>
                         <Entry Grid.Column="1" 
                                x:Name="passwordEntry"
-                               Placeholder="Пароль"
+                               Placeholder="Password"
+                               ReturnCommand="{Binding LoginCommand}"
                                IsPassword="True"
                                Text="{Binding Password}"
                                Margin="5,0,0,0"/>
@@ -91,7 +93,7 @@
                 </Border>
 
                 <Button x:Name="loginButton"
-                        Text="Войти"
+                        Text="Sing in"
                         Command="{Binding LoginCommand}"
                         BackgroundColor="{AppThemeBinding Light={StaticResource PrimaryColor}, Dark={StaticResource PrimaryColorDark}}"
                         TextColor="{AppThemeBinding Light=White, Dark=#1a1a1a}"

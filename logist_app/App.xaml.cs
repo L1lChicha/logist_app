@@ -165,5 +165,7 @@ namespace logist_app
             if (jwtToken.ValidTo < DateTime.UtcNow.AddSeconds(20)) return true;
             return false;
         }
+
+
     }
 }

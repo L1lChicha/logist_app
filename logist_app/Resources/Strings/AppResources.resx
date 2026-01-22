@@ -1,0 +1,83 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+	<resheader name="resmimetype">
+		<value>text/microsoft-resx</value>
+	</resheader>
+	<resheader name="version">
+		<value>2.0</value>
+	</resheader>
+	<resheader name="reader">
+		<value>System.Resources.ResXResourceReader, System.Windows.Forms</value>
+	</resheader>
+	<resheader name="writer">
+		<value>System.Resources.ResXResourceWriter, System.Windows.Forms</value>
+	</resheader>
+
+	<data name="AppTitle" xml:space="preserve">
+		<value>EcoLogistics</value>
+	</data>
+	
+	<data name="GreetingsLabel" xml:space="preserve">
+		<value>Welcome!</value>
+	</data>
+
+	<data name="LoginPlaceholder" xml:space="preserve">
+		<value>Login</value>
+	</data>
+
+	<data name="PasswordPlaceholder" xml:space="preserve">
+		<value>Password</value>
+	</data>
+	
+	<data name="LoginButton" xml:space="preserve">
+		<value>Sign in</value>
+	</data>
+
+	<data name="DashboardTitle" xml:space="preserve">
+        <value>Logistic Dashboard</value>
+    </data>
+
+	<data name="CreateRouteBtn" xml:space="preserve">
+        <value>Create Route</value>
+    </data>
+
+	<data name="SectionManagement" xml:space="preserve">
+        <value>Management</value>
+    </data>
+
+	<data name="ViewRoutesBtn" xml:space="preserve">
+        <value>View Routes</value>
+    </data>
+
+	<data name="ShowClientsBtn" xml:space="preserve">
+        <value>Show Clients Data</value>
+    </data>
+
+	<data name="AddClientBtn" xml:space="preserve">
+        <value>Add New Client</value>
+    </data>
+
+	<data name="SectionResources" xml:space="preserve">
+        <value>Resources</value>
+    </data>
+
+	<data name="DriversBtn" xml:space="preserve">
+        <value>Drivers</value>
+    </data>
+
+	<data name="VehiclesBtn" xml:space="preserve">
+        <value>Vehicles</value>
+    </data>
+
+	<data name="SectionSettings" xml:space="preserve">
+        <value>Settings</value>
+    </data>
+
+	<data name="RouteSettingsBtn" xml:space="preserve">
+        <value>Route creation settings</value>
+    </data>
+
+	<data name="AppSettingsBtn" xml:space="preserve">
+        <value>App settings</value>
+    </data>
+</root>

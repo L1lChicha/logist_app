@@ -5,7 +5,7 @@
              xmlns:converters="clr-namespace:logist_app.Infrastructure.Service"
              xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
              x:Class="logist_app.Views.RouteSettingsView"
-             Title="Настройки алгоритма"
+             Title="Algorithm Settings"
              BackgroundColor="{AppThemeBinding Light=#F3F3F3, Dark=#121212}">
 
     <ContentPage.Resources>
@@ -63,30 +63,32 @@
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/> <RowDefinition Height="Auto"/> </Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
 
                 <Border Grid.Row="0" Grid.Column="0" Style="{StaticResource WinCard}" Margin="0,0,10,0">
                     <VerticalStackLayout Spacing="10">
-                        <Label Text="📦 Логистика" Style="{StaticResource Header}"/>
-                        
+                        <Label Text="📦 Logistics" Style="{StaticResource Header}"/>
+
                         <Grid ColumnDefinitions="*, 80" RowDefinitions="Auto,Auto,Auto,Auto" RowSpacing="10">
-                            
-                            <Label Grid.Row="0" Text="Макс. точек:" Style="{StaticResource FieldText}"/>
+
+                            <Label Grid.Row="0" Text="Max Points:" Style="{StaticResource FieldText}"/>
                             <Border Grid.Row="0" Grid.Column="1" Style="{StaticResource WinInput}">
                                 <Entry Text="{Binding MaxPointsQuantity}" Keyboard="Numeric" FontSize="13"/>
                             </Border>
 
-                            <Label Grid.Row="1" Text="Мин. точек:" Style="{StaticResource FieldText}"/>
+                            <Label Grid.Row="1" Text="Min Points:" Style="{StaticResource FieldText}"/>
                             <Border Grid.Row="1" Grid.Column="1" Style="{StaticResource WinInput}">
                                 <Entry Text="{Binding MinPointsQuantity}" Keyboard="Numeric" FontSize="13"/>
                             </Border>
 
-                            <Label Grid.Row="2" Text="Контейнеры:" Style="{StaticResource FieldText}"/>
+                            <Label Grid.Row="2" Text="Containers:" Style="{StaticResource FieldText}"/>
                             <Border Grid.Row="2" Grid.Column="1" Style="{StaticResource WinInput}">
                                 <Entry Text="{Binding MaxContainersQuantity, Converter={StaticResource DoubleToStringConverter}}" Keyboard="Numeric" FontSize="13"/>
                             </Border>
 
-                            <Label Grid.Row="3" Text="Ср. скорость:" Style="{StaticResource FieldText}"/>
+                            <Label Grid.Row="3" Text="Avg. Speed:" Style="{StaticResource FieldText}"/>
                             <Border Grid.Row="3" Grid.Column="1" Style="{StaticResource WinInput}">
                                 <Entry Text="{Binding AverageSpeedKmh, Converter={StaticResource DoubleToStringConverter}}" Keyboard="Numeric" FontSize="13"/>
                             </Border>
@@ -94,7 +96,7 @@
 
                         <BoxView HeightRequest="1" Color="{AppThemeBinding Light=#EEE, Dark=#333}" Margin="0,5"/>
 
-                        <Label Text="📍 Координаты Депо" FontSize="12" FontAttributes="Bold" TextColor="{AppThemeBinding Light=#333, Dark=White}"/>
+                        <Label Text="📍 Depot Coordinates" FontSize="12" FontAttributes="Bold" TextColor="{AppThemeBinding Light=#333, Dark=White}"/>
                         <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
                             <Border Grid.Column="0" Style="{StaticResource WinInput}">
                                 <Entry Placeholder="Lat" Text="{Binding DepotLat, Converter={StaticResource DoubleToStringConverter}}" FontSize="13"/>
@@ -108,11 +110,11 @@
 
                 <Border Grid.Row="0" Grid.Column="1" Style="{StaticResource WinCard}" Margin="5,0,5,0">
                     <VerticalStackLayout Spacing="10">
-                        <Label Text="🚚 Грузовик" Style="{StaticResource Header}"/>
+                        <Label Text="🚚 Truck" Style="{StaticResource Header}"/>
 
-                        <Grid ColumnDefinitions="*, 80" RowDefinitions="Auto,Auto,Auto,Auto" RowSpacing="10">
-                            
-                            <Label Grid.Row="0" Text="Тип ТС:" Style="{StaticResource FieldText}"/>
+                        <Grid ColumnDefinitions="*, 100" RowDefinitions="Auto,Auto,Auto,Auto" RowSpacing="10">
+
+                            <Label Grid.Row="0" Text="Vehicle Type:" Style="{StaticResource FieldText}"/>
                             <Border Grid.Row="0" Grid.Column="1" Style="{StaticResource WinInput}">
                                 <Picker ItemsSource="{Binding VehicleTypes}" 
                                         SelectedItem="{Binding SelectedVehicleType}" 
@@ -120,17 +122,17 @@
                                         TextColor="{AppThemeBinding Light=Black, Dark=White}"/>
                             </Border>
 
-                            <Label Grid.Row="1" Text="Высота (м):" Style="{StaticResource FieldText}"/>
+                            <Label Grid.Row="1" Text="Height (m):" Style="{StaticResource FieldText}"/>
                             <Border Grid.Row="1" Grid.Column="1" Style="{StaticResource WinInput}">
                                 <Entry Text="{Binding TruckHeightMeters, Converter={StaticResource DoubleToStringConverter}}" Keyboard="Numeric" FontSize="13"/>
                             </Border>
 
-                            <Label Grid.Row="2" Text="Ширина (м):" Style="{StaticResource FieldText}"/>
+                            <Label Grid.Row="2" Text="Width (m):" Style="{StaticResource FieldText}"/>
                             <Border Grid.Row="2" Grid.Column="1" Style="{StaticResource WinInput}">
                                 <Entry Text="{Binding TruckWidthMeters, Converter={StaticResource DoubleToStringConverter}}" Keyboard="Numeric" FontSize="13"/>
                             </Border>
 
-                            <Label Grid.Row="3" Text="Мин. мост (т):" Style="{StaticResource FieldText}"/>
+                            <Label Grid.Row="3" Text="Min Bridge (t):" Style="{StaticResource FieldText}"/>
                             <Border Grid.Row="3" Grid.Column="1" Style="{StaticResource WinInput}">
                                 <Entry Text="{Binding MinBridgeWeightTons, Converter={StaticResource DoubleToStringConverter}}" Keyboard="Numeric" FontSize="13"/>
                             </Border>
@@ -139,10 +141,10 @@
                         <BoxView HeightRequest="1" Color="{AppThemeBinding Light=#EEE, Dark=#333}" Margin="0,5"/>
 
                         <Grid RowDefinitions="Auto, Auto" ColumnDefinitions="*, Auto" RowSpacing="8">
-                            <Label Grid.Row="0" Grid.Column="0" Text="Избегать шоссе" VerticalOptions="Center" Style="{StaticResource FieldText}"/>
+                            <Label Grid.Row="0" Grid.Column="0" Text="Avoid Highways" VerticalOptions="Center" Style="{StaticResource FieldText}"/>
                             <Switch Grid.Row="0" Grid.Column="1" IsToggled="{Binding AvoidHighways}" OnColor="{StaticResource BrandColor}"/>
-                            
-                            <Label Grid.Row="1" Grid.Column="0" Text="Учитывать знаки" VerticalOptions="Center" Style="{StaticResource FieldText}"/>
+
+                            <Label Grid.Row="1" Grid.Column="0" Text="Traffic Signs" VerticalOptions="Center" Style="{StaticResource FieldText}"/>
                             <Switch Grid.Row="1" Grid.Column="1" IsToggled="{Binding UseRealSpeed}" OnColor="{StaticResource BrandColor}"/>
                         </Grid>
                     </VerticalStackLayout>
@@ -150,39 +152,39 @@
 
                 <Border Grid.Row="0" Grid.Column="2" Style="{StaticResource WinCard}" Margin="10,0,0,0">
                     <VerticalStackLayout Spacing="10">
-                        <Label Text="🧩 Алгоритм" Style="{StaticResource Header}"/>
+                        <Label Text="🧩 Algorithm" Style="{StaticResource Header}"/>
 
                         <Grid ColumnDefinitions="*, 80" RowDefinitions="Auto,Auto,Auto,Auto" RowSpacing="10">
-                            
-                            <Label Grid.Row="0" Text="2-Opt итерации:" Style="{StaticResource FieldText}"/>
+
+                            <Label Grid.Row="0" Text="2-Opt Iterations:" Style="{StaticResource FieldText}"/>
                             <Border Grid.Row="0" Grid.Column="1" Style="{StaticResource WinInput}">
                                 <Entry Text="{Binding MaxIterations2Opt}" Keyboard="Numeric" FontSize="13"/>
                             </Border>
 
-                            <Label Grid.Row="1" Text="Радиус поиска:" Style="{StaticResource FieldText}"/>
+                            <Label Grid.Row="1" Text="Search Radius:" Style="{StaticResource FieldText}"/>
                             <Border Grid.Row="1" Grid.Column="1" Style="{StaticResource WinInput}">
                                 <Entry Text="{Binding NeighborSearchRadiusKm, Converter={StaticResource DoubleToStringConverter}}" Keyboard="Numeric" FontSize="13"/>
                             </Border>
 
-                            <Label Grid.Row="2" Text="Эвристика:" Style="{StaticResource FieldText}"/>
+                            <Label Grid.Row="2" Text="Heuristic:" Style="{StaticResource FieldText}"/>
                             <Border Grid.Row="2" Grid.Column="1" Style="{StaticResource WinInput}">
                                 <Entry Text="{Binding HeuristicMaxSpeedKmH, Converter={StaticResource DoubleToStringConverter}}" Keyboard="Numeric" FontSize="13"/>
                             </Border>
 
-                            <Label Grid.Row="3" Text="Макс. отступ:" Style="{StaticResource FieldText}"/>
+                            <Label Grid.Row="3" Text="Max Offset:" Style="{StaticResource FieldText}"/>
                             <Border Grid.Row="3" Grid.Column="1" Style="{StaticResource WinInput}">
                                 <Entry Text="{Binding MaxNearestNodeDistanceKm, Converter={StaticResource DoubleToStringConverter}}" Keyboard="Numeric" FontSize="13"/>
                             </Border>
                         </Grid>
-                        
-                        <Label Text="* Влияет на производительность сервера" 
+
+                        <Label Text="* Affects server performance" 
                                FontSize="11" TextColor="Gray" 
                                HorizontalOptions="Center" Margin="0,15,0,0"/>
                     </VerticalStackLayout>
                 </Border>
 
                 <Button Grid.Row="1" Grid.ColumnSpan="3"
-                        Text="Сохранить настройки"
+                        Text="Save Settings"
                         Command="{Binding SaveSettingsCommand}"
                         IsEnabled="{Binding IsLoading, Converter={StaticResource InverseBoolConverter}}"
                         BackgroundColor="{StaticResource BrandColor}"
@@ -194,7 +196,7 @@
                         WidthRequest="250"
                         HorizontalOptions="Center"
                         Margin="0,30,0,20">
-                    
+
                     <VisualStateManager.VisualStateGroups>
                         <VisualStateGroup x:Name="CommonStates">
                             <VisualState x:Name="Normal" />
@@ -220,7 +222,7 @@
                     HorizontalOptions="Center" VerticalOptions="Center" Padding="30">
                 <VerticalStackLayout Spacing="15">
                     <ActivityIndicator IsRunning="True" Color="{StaticResource BrandColor}"/>
-                    <Label Text="Сохранение..." TextColor="{AppThemeBinding Light=Black, Dark=White}"/>
+                    <Label Text="Saving..." TextColor="{AppThemeBinding Light=Black, Dark=White}"/>
                 </VerticalStackLayout>
             </Border>
         </Grid>

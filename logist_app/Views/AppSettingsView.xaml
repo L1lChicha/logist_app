@@ -4,102 +4,183 @@
              xmlns:vm="clr-namespace:logist_app.ViewModels"
              x:Class="logist_app.Views.AppSettingsView"
              x:DataType="vm:AppSettingsViewModel"
-             Title="Настройки">
+             Title="Settings"
+             BackgroundColor="{AppThemeBinding Light=#F2F5F9, Dark=#121212}">
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <Color x:Key="Primary">#2B0B98</Color>
+
+            <Color x:Key="TextPrimary">#1F1F1F</Color>
+            <Color x:Key="TextSecondary">#757575</Color>
+
+            <Style x:Key="SettingsCard" TargetType="Border">
+                <Setter Property="Padding" Value="20"/>
+                <Setter Property="StrokeShape" Value="RoundRectangle 16"/>
+                <Setter Property="StrokeThickness" Value="0"/>
+                <Setter Property="BackgroundColor" Value="{AppThemeBinding Light=White, Dark=#1E1E1E}"/>
+                <Setter Property="Margin" Value="0,0,0,20"/>
+                <Setter Property="Shadow">
+                    <Setter.Value>
+                        <Shadow Brush="Black" Offset="0,4" Radius="10" Opacity="{AppThemeBinding Light=0.05, Dark=0.3}"/>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
+            <Style x:Key="SectionHeader" TargetType="Label">
+                <Setter Property="FontSize" Value="18"/>
+                <Setter Property="FontAttributes" Value="Bold"/>
+                <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource TextPrimary}, Dark=White}"/>
+                <Setter Property="Margin" Value="0,0,0,10"/>
+            </Style>
+
+            <Style x:Key="ThemeTile" TargetType="Border">
+                <Setter Property="HeightRequest" Value="80"/>
+                <Setter Property="StrokeShape" Value="RoundRectangle 12"/>
+                <Setter Property="StrokeThickness" Value="2"/>
+                <Setter Property="Stroke" Value="Transparent"/>
+                <Setter Property="BackgroundColor" Value="{AppThemeBinding Light=#F5F7FA, Dark=#2A2A2A}"/>
+            </Style>
+        </ResourceDictionary>
+    </ContentPage.Resources>
 
     <ScrollView>
-        <VerticalStackLayout Padding="20" Spacing="20">
+        <VerticalStackLayout Padding="20" Spacing="0">
 
-            <!-- Заголовок -->
-            <Label Text="Настройки приложения"
-                   FontSize="24"
+            <Label Text="Settings"
+                   FontSize="32"
                    FontAttributes="Bold"
-                   HorizontalOptions="Center"
-                   Margin="0,0,0,10"/>
+                   TextColor="{AppThemeBinding Light={StaticResource TextPrimary}, Dark=White}"
+                   Margin="5,0,0,25"/>
 
-            <!-- Секция: Тема -->
-            <Frame Padding="15" CornerRadius="12">
-                <VerticalStackLayout Spacing="15">
-                    
-                    <Label Text="🎨 Тема оформления"
-                           FontSize="18"
-                           FontAttributes="Bold"/>
+            <Border Style="{StaticResource SettingsCard}">
+                <VerticalStackLayout>
+                    <Label Text="🎨 Appearance" Style="{StaticResource SectionHeader}"/>
+                    <Label Text="Choose your preferred theme" FontSize="13" TextColor="{StaticResource TextSecondary}" Margin="0,-8,0,15"/>
 
-                    <Label Text="Выберите цветовую схему приложения"
-                           FontSize="14"
-                           Opacity="0.7"/>
+                    <Grid ColumnDefinitions="*,*,*" ColumnSpacing="10">
 
-                    <!-- Picker для выбора темы -->
-                    <Border StrokeShape="RoundRectangle 8" Padding="5">
-                        <Picker Title="Выберите тему"
-                                ItemsSource="{Binding ThemeOptions}"
-                                SelectedIndex="{Binding SelectedThemeIndex}"
-                                FontSize="16"/>
+                        <Border Grid.Column="0" Style="{StaticResource ThemeTile}">
+                            <Border.Triggers>
+                                <DataTrigger TargetType="Border" Binding="{Binding SelectedThemeIndex}" Value="0">
+                                    <Setter Property="Stroke" Value="{StaticResource Primary}"/>
+                                    <Setter Property="BackgroundColor" Value="{AppThemeBinding Light=#EEF2FF, Dark=#2B2B40}"/>
+                                </DataTrigger>
+                            </Border.Triggers>
+                            <Border.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding SetThemeCommand}" CommandParameter="System"/>
+                            </Border.GestureRecognizers>
+
+                            <VerticalStackLayout VerticalOptions="Center" HorizontalOptions="Center" Spacing="5">
+                                <Label Text="⚙️" FontSize="22"/>
+                                <Label Text="Auto" FontSize="12" FontAttributes="Bold" TextColor="{AppThemeBinding Light={StaticResource TextPrimary}, Dark=White}"/>
+                            </VerticalStackLayout>
+                        </Border>
+
+                        <Border Grid.Column="1" Style="{StaticResource ThemeTile}">
+                            <Border.Triggers>
+                                <DataTrigger TargetType="Border" Binding="{Binding SelectedThemeIndex}" Value="1">
+                                    <Setter Property="Stroke" Value="{StaticResource Primary}"/>
+                                    <Setter Property="BackgroundColor" Value="{AppThemeBinding Light=#EEF2FF, Dark=#2B2B40}"/>
+                                </DataTrigger>
+                            </Border.Triggers>
+                            <Border.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding SetThemeCommand}" CommandParameter="Light"/>
+                            </Border.GestureRecognizers>
+
+                            <VerticalStackLayout VerticalOptions="Center" HorizontalOptions="Center" Spacing="5">
+                                <Label Text="☀️" FontSize="22"/>
+                                <Label Text="Light" FontSize="12" FontAttributes="Bold" TextColor="{AppThemeBinding Light={StaticResource TextPrimary}, Dark=White}"/>
+                            </VerticalStackLayout>
+                        </Border>
+
+                        <Border Grid.Column="2" Style="{StaticResource ThemeTile}">
+                            <Border.Triggers>
+                                <DataTrigger TargetType="Border" Binding="{Binding SelectedThemeIndex}" Value="2">
+                                    <Setter Property="Stroke" Value="{StaticResource Primary}"/>
+                                    <Setter Property="BackgroundColor" Value="{AppThemeBinding Light=#EEF2FF, Dark=#2B2B40}"/>
+                                </DataTrigger>
+                            </Border.Triggers>
+                            <Border.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding SetThemeCommand}" CommandParameter="Dark"/>
+                            </Border.GestureRecognizers>
+
+                            <VerticalStackLayout VerticalOptions="Center" HorizontalOptions="Center" Spacing="5">
+                                <Label Text="🌙" FontSize="22"/>
+                                <Label Text="Dark" FontSize="12" FontAttributes="Bold" TextColor="{AppThemeBinding Light={StaticResource TextPrimary}, Dark=White}"/>
+                            </VerticalStackLayout>
+                        </Border>
+                    </Grid>
+                </VerticalStackLayout>
+            </Border>
+
+            <Border Style="{StaticResource SettingsCard}">
+                <Grid ColumnDefinitions="*, Auto" RowDefinitions="Auto, Auto">
+                    <Label Grid.Row="0" Grid.Column="0" Text="🌐 Language" Style="{StaticResource SectionHeader}" Margin="0"/>
+                    <Label Grid.Row="1" Grid.Column="0" Text="App interface language" FontSize="13" TextColor="{StaticResource TextSecondary}"/>
+
+                    <Border Grid.Row="0" Grid.RowSpan="2" Grid.Column="1" 
+                            StrokeShape="RoundRectangle 8" 
+                            BackgroundColor="{AppThemeBinding Light=#F5F7FA, Dark=#2A2A2A}"
+                            StrokeThickness="0"
+                            Padding="10,0"
+                            WidthRequest="130"
+                            HeightRequest="40">
+                        <Picker Title="Language"
+                                ItemsSource="{Binding SupportedLanguages}"
+                                ItemDisplayBinding="{Binding Name}"
+                                SelectedItem="{Binding SelectedLanguage}"
+                                TextColor="{AppThemeBinding Light={StaticResource TextPrimary}, Dark=White}"
+                                HorizontalTextAlignment="Center"
+                                FontSize="14"/>
                     </Border>
+                </Grid>
+            </Border>
 
-                    <!-- Визуальное отображение темы -->
-                    <HorizontalStackLayout Spacing="15" HorizontalOptions="Center">
-                        
-                        <!-- Светлая тема -->
-                        <Border WidthRequest="80" HeightRequest="50" 
-                                StrokeShape="RoundRectangle 10"
-                                BackgroundColor="White"
-                                StrokeThickness="2"
-                                Stroke="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource Gray500}}">
-                            <Label Text="☀️ Light" 
-                                   TextColor="Black"
-                                   FontSize="12"
-                                   VerticalOptions="Center" 
-                                   HorizontalOptions="Center"/>
-                        </Border>
-                        
-                        <!-- Тёмная тема -->
-                        <Border WidthRequest="80" HeightRequest="50" 
-                                StrokeShape="RoundRectangle 10"
-                                BackgroundColor="#1f1f1f"
-                                StrokeThickness="2"
-                                Stroke="{AppThemeBinding Light={StaticResource Gray500}, Dark={StaticResource Primary}}">
-                            <Label Text="🌙 Dark" 
-                                   TextColor="White"
-                                   FontSize="12"
-                                   VerticalOptions="Center" 
-                                   HorizontalOptions="Center"/>
-                        </Border>
-                        
-                    </HorizontalStackLayout>
-
-                </VerticalStackLayout>
-            </Frame>
-
-            <!-- Секция: О приложении -->
-            <Frame Padding="15" CornerRadius="12">
+            <Border Style="{StaticResource SettingsCard}">
                 <VerticalStackLayout Spacing="10">
-                    
-                    <Label Text="ℹ️ О приложении"
-                           FontSize="18"
-                           FontAttributes="Bold"/>
+                    <Label Text="About" Style="{StaticResource SectionHeader}"/>
 
-                    <Label Text="Logist App - приложение для управления логистикой"
-                           FontSize="14"
-                           Opacity="0.7"/>
+                    <Grid ColumnDefinitions="Auto, *" ColumnSpacing="15">
+                        
+                            <Label Text="" FontSize="24" HorizontalOptions="Center" VerticalOptions="Center"/>
+                        
 
-                    <Label Text="Версия: 1.0.0"
-                           FontSize="12"
-                           Opacity="0.5"/>
+                        <VerticalStackLayout VerticalOptions="Center" Spacing="2">
+                            <Label Text="EcoLogistics App" FontSize="16" FontAttributes="Bold" TextColor="{AppThemeBinding Light={StaticResource TextPrimary}, Dark=White}"/>
+                            <Label Text="Version 1.0.0" FontSize="12" TextColor="{StaticResource TextSecondary}"/>
+                        </VerticalStackLayout>
+                    </Grid>
 
+                    <BoxView HeightRequest="1" Color="{AppThemeBinding Light=#EEE, Dark=#333}" Margin="0,5"/>
+
+                    <Label Text="© 2026 All Rights Reserved" FontSize="12" TextColor="{StaticResource TextSecondary}" HorizontalOptions="Center"/>
                 </VerticalStackLayout>
-            </Frame>
+            </Border>
 
-            <!-- Кнопка выхода -->
-            <Button Text="🚪 Выйти из аккаунта"
+            <Button Text="Log Out"
                     Command="{Binding LogoutCommand}"
-                    BackgroundColor="#E74C3C"
-                    TextColor="White"
+                    BackgroundColor="Transparent"
+                    TextColor="#FF3B30"
+                    BorderColor="#FF3B30"
+                    BorderWidth="1"
                     FontSize="16"
-                    CornerRadius="10"
+                    FontAttributes="Bold"
+                    CornerRadius="25"
                     HeightRequest="50"
-                    Margin="0,20,0,0"/>
+                    Margin="10,10,10,40">
+                <VisualStateManager.VisualStateGroups>
+                    <VisualStateGroup x:Name="CommonStates">
+                        <VisualState x:Name="Normal" />
+                        <VisualState x:Name="PointerOver">
+                            <VisualState.Setters>
+                                <Setter Property="BackgroundColor" Value="#15FF3B30" />
+                            </VisualState.Setters>
+                        </VisualState>
+                    </VisualStateGroup>
+                </VisualStateManager.VisualStateGroups>
+            </Button>
 
         </VerticalStackLayout>
     </ScrollView>
-
 </ContentPage>

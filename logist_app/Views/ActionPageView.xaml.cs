@@ -36,6 +36,12 @@ public partial class ActionPageView : ContentPage
         await Navigation.PushAsync(page);
     }
 
+    private async void ejectPoint_Clicked(object sender, EventArgs e)
+    {
+      //  var page = App.Services.GetService<>();
+        //await Navigation.PushAsync(page);
+    }
+
 
     private async void drivers_Clicked(object sender, EventArgs e)
     {
@@ -68,6 +74,9 @@ public partial class ActionPageView : ContentPage
         await Navigation.PushAsync(page);
 
     }
+
+
+
 
    
 

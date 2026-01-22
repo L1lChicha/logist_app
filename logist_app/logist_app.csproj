@@ -79,6 +79,11 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <Compile Update="Resources\Strings\AppResources.Designer.cs">
+	    <DesignTime>True</DesignTime>
+	    <AutoGen>True</AutoGen>
+	    <DependentUpon>AppResources.resx</DependentUpon>
+	  </Compile>
 	  <Compile Update="Views\ActionPageView.xaml.cs">
 	    <DependentUpon>ActionPageView.xaml</DependentUpon>
 	  </Compile>
@@ -159,6 +164,14 @@
 	<ItemGroup>
 	  <Folder Include="Application\Factories\" />
 	  <Folder Include="Infrastructure\Repositories\" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <EmbeddedResource Update="Resources\Strings\AppResources.resx">
+	    <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+	    <Generator>PublicResXFileCodeGenerator</Generator>
+	    <LastGenOutput>AppResources.Designer.cs</LastGenOutput>
+	  </EmbeddedResource>
 	</ItemGroup>
 
 </Project>
