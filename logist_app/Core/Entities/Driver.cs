@@ -16,10 +16,13 @@ namespace logist_app.Core.Entities
             [JsonPropertyName("phone_number")] public string PhoneNumber { get; set; } = "";
 
             [JsonPropertyName("created_at")] public DateTime CreatedAt { get; set; }
-            //[JsonIgnore] public string? PasswordHash { get; set; }  // хэш пароля (не сам пароль)
+         
+            [JsonPropertyName("is_distributed")] public bool IsDistributed { get; set; }
+            [JsonPropertyName("has_active_account")] public bool HasActiveAccount { get; set; }
 
-            // 🚦 Статус учетной записи
             [JsonPropertyName("is_active")] public bool IsActive { get; set; } = true;
+
+            //[JsonIgnore] public string? PasswordHash { get; set; }  // хэш пароля (не сам пароль)
 
             // 📱 Навигационное свойство к устройствам (1 -> N)
             //public ICollection<DriverDevice>? Devices { get; set; }

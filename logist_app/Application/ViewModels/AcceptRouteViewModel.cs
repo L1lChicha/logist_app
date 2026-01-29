@@ -1,5 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
+using logist_app.Infrastructure.Service;
 using logist_app.Models;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
@@ -31,11 +33,8 @@ public partial class AcceptRouteViewModel : ObservableObject
         _routeId = routeId;
     }
 
-    /// <summary>
-    /// Логика подготовки JSON для отображения на карте.
-    /// Перенесена из View, так как это обработка данных.
-    /// </summary>
-    public string PrepareJsonForDisplay()
+
+    public string? PrepareJsonForDisplay()
     {
         if (string.IsNullOrWhiteSpace(_rawGeoJson)) return null;
 
@@ -70,10 +69,9 @@ public partial class AcceptRouteViewModel : ObservableObject
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Ошибка парсинга: {ex.Message}");
+            Console.WriteLine($"Parsing error: {ex.Message}");
         }
 
-        // Возвращаем исходный, если не удалось упростить, или он уже в нужном формате
         return _rawGeoJson;
     }
 
@@ -121,6 +119,7 @@ public partial class AcceptRouteViewModel : ObservableObject
 
             if (response.IsSuccessStatusCode)
             {
+                WeakReferenceMessenger.Default.Send(new RouteUpdatedMessage(_routeId));
                 await Shell.Current.DisplayAlert("Готово", "Маршрут подтверждён!", "OK");
                 await Shell.Current.Navigation.PopToRootAsync();
             }
@@ -157,6 +156,7 @@ public partial class AcceptRouteViewModel : ObservableObject
 
             if (response.IsSuccessStatusCode)
             {
+                WeakReferenceMessenger.Default.Send(new RouteUpdatedMessage(_routeId));
                 await Shell.Current.DisplayAlert("Готово", "Маршрут отклонен!", "OK");
                 await Shell.Current.Navigation.PopToRootAsync();
             }

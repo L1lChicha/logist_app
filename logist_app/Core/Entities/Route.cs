@@ -1,4 +1,5 @@
-﻿using System;
+﻿using logist_app.Core.Entities;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -17,8 +18,10 @@ public class Route
     [JsonPropertyName("geometry_json")] public string? GeometryJson { get; set; }
     [JsonPropertyName("status")] public string? Status { get; set; }
     [JsonPropertyName("created_by")] public string? CreatedBy { get; set; }
-    [JsonPropertyName("points_id")] public List<int>? PointsId { get; set; }
-    [JsonPropertyName("distribution_status")] public string? DistributionStatus { get; set; }
+    [JsonPropertyName("is_distributed")] public bool IsDistributed { get; set; }
+    public List<RoutePoint> RoutePoints { get; set; } = new();
+
+
 
 
     public string DisplayDistance

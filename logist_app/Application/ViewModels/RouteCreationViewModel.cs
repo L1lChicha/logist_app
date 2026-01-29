@@ -189,26 +189,40 @@ namespace logist_app.ViewModels
         {
             if (string.IsNullOrWhiteSpace(address)) return null;
 
-            // Ищем «ул. Пушкина», «улица Кирова», «ул Жукова»
             var m = Regex.Match(address, @"\b(?:ул\.?|улица)\s+([^,]+)", RegexOptions.IgnoreCase);
             if (m.Success)
                 return m.Groups[1].Value.Trim();
 
-            // fallback: если адрес вида "Город, Улица Жукова, 12"
             var parts = address.Split(',', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
             var streetPart = parts.FirstOrDefault(p => p.Contains("улиц", StringComparison.OrdinalIgnoreCase) ||
                                                        p.Contains("ул", StringComparison.OrdinalIgnoreCase));
             if (!string.IsNullOrWhiteSpace(streetPart))
             {
-                // уберём префиксы "улица"/"ул."
                 streetPart = Regex.Replace(streetPart, @"\b(?:ул\.?|улица)\s*", "", RegexOptions.IgnoreCase).Trim();
                 return streetPart;
             }
 
-            // Ничего не нашли — можно попробовать взять вторую часть как улицу
             if (parts.Length >= 2) return parts[1].Trim();
 
             return null;
+        }
+
+        public void ApplyFilter(string query)
+        {
+            var q = (query ?? string.Empty).Trim().ToLowerInvariant();
+
+            Clients.Clear();
+            foreach (var c in allClients.Where(c =>
+                     string.IsNullOrEmpty(q) ||
+                     (c.Name?.ToLowerInvariant().Contains(q) ?? false) ||
+                     (c.Address?.ToLowerInvariant().Contains(q) ?? false) ||
+                     (c.City?.ToLowerInvariant().Contains(q) ?? false) ||
+                     (c.Email?.ToLowerInvariant().Contains(q) ?? false) ||
+                     (c.Phone?.ToLowerInvariant().Contains(q) ?? false)))
+            {
+                if (_selectableClientsCache.TryGetValue(c.Id, out var selectableClient))
+                    Clients.Add(selectableClient);
+            }
         }
 
 
@@ -261,23 +275,7 @@ namespace logist_app.ViewModels
         }
 
 
-        public void ApplyFilter(string query)
-        {
-            var q = (query ?? string.Empty).Trim().ToLowerInvariant();
-
-            Clients.Clear();
-            foreach (var c in allClients.Where(c =>
-                     string.IsNullOrEmpty(q) ||
-                     (c.Name?.ToLowerInvariant().Contains(q) ?? false) ||
-                     (c.Address?.ToLowerInvariant().Contains(q) ?? false) ||
-                     (c.City?.ToLowerInvariant().Contains(q) ?? false) ||
-                     (c.Email?.ToLowerInvariant().Contains(q) ?? false) ||
-                     (c.Phone?.ToLowerInvariant().Contains(q) ?? false)))
-            {
-                if (_selectableClientsCache.TryGetValue(c.Id, out var selectableClient))
-                    Clients.Add(selectableClient);
-            }
-        }
+        
 
 
         #endregion

@@ -28,21 +28,16 @@ namespace logist_app.Infrastructure.Service
             _hubConnection = new HubConnectionBuilder()
                 .WithUrl(HUB_URL, options =>
                 {
-                    // ИСПРАВЛЕНИЕ 1: Правильная передача токена
-                    // AccessTokenProvider ожидает функцию, возвращающую Task<string>.
-                    // Мы просто передаем ссылку на наш асинхронный метод.
+                    
                     options.AccessTokenProvider = GetJwtTokenAsync;
 
-                    // Заголовок для обхода защиты ngrok
                     options.Headers.Add("ngrok-skip-browser-warning", "true");
                 })
-                .WithAutomaticReconnect() // Авто-переподключение при обрыве
+                .WithAutomaticReconnect() 
                 .Build();
 
-            // Подписка на сообщения от сервера
             _hubConnection.On<ClientNoteNotification>("ClientNoteUpdated", (data) =>
             {
-                // Прокидываем данные подписчикам
                 OnNoteReceived?.Invoke(data);
             });
 
@@ -54,7 +49,7 @@ namespace logist_app.Infrastructure.Service
         }
 
         // Хелпер для получения токена (вызывается самим SignalR внутри)
-        private async Task<string> GetJwtTokenAsync()
+        private async Task<string?> GetJwtTokenAsync()
         {
             // Убедитесь, что ключ совпадает с тем, что вы сохраняете при Логине!
             // В вашем коде было то "auth_token", то "access_token". Я оставил один.

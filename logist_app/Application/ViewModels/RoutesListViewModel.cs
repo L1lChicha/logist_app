@@ -2,6 +2,7 @@
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using logist_app.Core.Entities;
+using logist_app.Infrastructure.Service;
 using logist_app.Models;
 using logist_app.Views;
 using Microsoft.Maui.Controls;
@@ -13,6 +14,8 @@ using System.Net.Http.Json;
 
 public partial class RoutesListViewModel : ObservableObject
 {
+
+
     private ObservableCollection<Route> _routes = new();
     public List<Route> allRoutes{ get; set; } = new();
     public record AlertMessage(string Title, string Message, string Cancel);
@@ -43,6 +46,15 @@ public partial class RoutesListViewModel : ObservableObject
     {
         _api = apiSettings;
         _httpFactory = httpClientFactory;
+
+        WeakReferenceMessenger.Default.Register<RoutesListViewModel, RouteUpdatedMessage>(this, (recipient, message) =>
+        {
+            // Теперь recipient — это точно RoutesListViewModel, и метод RefreshAsync доступен
+            MainThread.BeginInvokeOnMainThread(async () =>
+            {
+                await recipient.RefreshAsync();
+            });
+        });
     }
 
     public async Task LoadRoutesAsync()

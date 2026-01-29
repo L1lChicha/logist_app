@@ -93,6 +93,9 @@
 	  <Compile Update="Views\ClientDataPageView.xaml.cs">
 	    <DependentUpon>ClientDataPageView.xaml</DependentUpon>
 	  </Compile>
+	  <Compile Update="Views\InjectPointView.xaml.cs">
+	    <DependentUpon>InjectPointView.xaml</DependentUpon>
+	  </Compile>
 	  <Compile Update="Views\NotificationsView.xaml.cs">
 	    <DependentUpon>NotificationsView.xaml</DependentUpon>
 	  </Compile>
@@ -130,6 +133,9 @@
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Views\DriversDataView.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Views\InjectPointView.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Views\LoginPageView.xaml">

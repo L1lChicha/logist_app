@@ -33,19 +33,14 @@
                        HorizontalOptions="Center"
                        Margin="0,0,0,20"/>
 
-                <Border Stroke="{AppThemeBinding Light=#E0E0E0, Dark=#404040}" 
-                        StrokeThickness="1" 
-                        StrokeShape="RoundRectangle 10" 
-                        Padding="15,5"
-                        BackgroundColor="{AppThemeBinding Light=White, Dark=#1a1a1a}">
                     <Entry x:Name="RouteNameEntry" 
                            Placeholder="Enter route name"
                            FontSize="16"
                            TextColor="{AppThemeBinding Light=#333, Dark=#E0E0E0}"
-                           PlaceholderColor="{AppThemeBinding Light=#999, Dark=#666}"
+                           PlaceholderColor="{AppThemeBinding Light=#999, Dark=#919294}"
                            HorizontalTextAlignment="Center"
                            Text="{Binding RouteName}" />
-                </Border>
+              
 
                 <VerticalStackLayout Spacing="15">
 

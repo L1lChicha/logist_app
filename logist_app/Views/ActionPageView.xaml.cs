@@ -1,4 +1,5 @@
 
+using logist_app.ViewModels;
 using System.Threading.Tasks;
 
 namespace logist_app.Views;
@@ -36,10 +37,10 @@ public partial class ActionPageView : ContentPage
         await Navigation.PushAsync(page);
     }
 
-    private async void ejectPoint_Clicked(object sender, EventArgs e)
+    private async void injectPoint_Clicked(object sender, EventArgs e)
     {
-      //  var page = App.Services.GetService<>();
-        //await Navigation.PushAsync(page);
+        var page = App.Services.GetService<InjectPointView>();
+        await Navigation.PushAsync(page);
     }
 
 

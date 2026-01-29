@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:converters="clr-namespace:logist_app.Infrastructure.Service"
+             x:Class="logist_app.Views.InjectPointView"
+             Title="Inject point to route">
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <converters:BoolToColorConverter x:Key="BoolToColorConverter"/>
+            <converters:BoolToTextConverter x:Key="BoolToTextConverter"/>
+
+            <Style TargetType="Entry">
+                <Setter Property="HeightRequest" Value="40"/>
+                <Setter Property="FontSize" Value="14"/>
+                <Setter Property="BackgroundColor" Value="Transparent"/>
+            </Style>
+
+            <Style TargetType="Border" x:Key="InputBorder">
+                <Setter Property="Stroke" Value="#E0E0E0"/>
+                <Setter Property="StrokeShape" Value="RoundRectangle 8"/>
+                <Setter Property="StrokeThickness" Value="1"/>
+                <Setter Property="Padding" Value="10,0"/>
+                <Setter Property="BackgroundColor" Value="White"/>
+            </Style>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <Grid>
+        <ScrollView VerticalScrollBarVisibility="Always">
+            <VerticalStackLayout Spacing="0" VerticalOptions="Center" Padding="20">
+
+                <Border Stroke="Transparent"
+                        StrokeShape="RoundRectangle 12"
+                        BackgroundColor="White"
+                        MaximumWidthRequest="600"
+                        HorizontalOptions="Center">
+                    <Border.Shadow>
+                        <Shadow Brush="Black" Offset="0,4" Opacity="0.1" Radius="20"/>
+                    </Border.Shadow>
+
+                    <Grid RowDefinitions="Auto, Auto, Auto, Auto" Padding="40" RowSpacing="25">
+
+                        <VerticalStackLayout Grid.Row="0" Spacing="5">
+                            <Label Text="Добавление точки" 
+                                   FontSize="24" 
+                                   FontAttributes="Bold" 
+                                   TextColor="#333"/>
+                            <Label Text="Выберите существующего клиента или создайте срочный заказ вручную." 
+                                   FontSize="14" 
+                                   TextColor="Gray"/>
+                        </VerticalStackLayout>
+
+                        <Border Grid.Row="1" 
+                                Stroke="#E0E0E0" 
+                                StrokeShape="RoundRectangle 8" 
+                                BackgroundColor="#F9F9F9" 
+                                HeightRequest="45"
+                                Padding="2">
+                            <Grid ColumnDefinitions="*,*">
+                                <Button Grid.Column="0" Text="Выбрать из базы"
+                                        Command="{Binding SwitchModeCommand}"
+                                        CommandParameter="Existing"
+                                        BackgroundColor="{Binding IsExistingMode, Converter={StaticResource BoolToColorConverter}}"
+                                        TextColor="{Binding IsExistingMode, Converter={StaticResource BoolToTextConverter}}"
+                                        FontSize="14"
+                                        CornerRadius="6"
+                                        BorderWidth="0">
+                                    <VisualStateManager.VisualStateGroups>
+                                        <VisualStateGroup x:Name="CommonStates">
+                                            <VisualState x:Name="PointerOver">
+                                                <VisualState.Setters>
+                                                    <Setter Property="Opacity" Value="0.8"/>
+                                                </VisualState.Setters>
+                                            </VisualState>
+                                        </VisualStateGroup>
+                                    </VisualStateManager.VisualStateGroups>
+                                </Button>
+
+                                <Button Grid.Column="1" Text="Создать новую"
+                                        Command="{Binding SwitchModeCommand}"
+                                        CommandParameter="New"
+                                        BackgroundColor="{Binding IsNewMode, Converter={StaticResource BoolToColorConverter}}"
+                                        TextColor="{Binding IsNewMode, Converter={StaticResource BoolToTextConverter}}"
+                                        FontSize="14"
+                                        CornerRadius="6"
+                                        BorderWidth="0"/>
+                            </Grid>
+                        </Border>
+
+                        <VerticalStackLayout Grid.Row="2" 
+                                             IsVisible="{Binding IsExistingMode}" 
+                                             Spacing="15">
+                            <Label Text="Поиск клиента" FontAttributes="Bold" TextColor="#333"/>
+
+                            <Border Style="{StaticResource InputBorder}" HeightRequest="50">
+                                <Picker ItemsSource="{Binding Clients}"
+                                        ItemDisplayBinding="{Binding Name}"
+                                        SelectedItem="{Binding SelectedClient}"
+                                        Title="Выберите клиента из списка..."
+                                        TitleColor="Gray"/>
+                            </Border>
+
+                            <Border Stroke="#4CAF50" 
+                                    StrokeThickness="1" 
+                                    BackgroundColor="#F1F8E9" 
+                                    StrokeShape="RoundRectangle 8" 
+                                    Padding="15">
+                                <Border.Style>
+                                    <Style TargetType="Border">
+                                        <Style.Triggers>
+                                            <DataTrigger TargetType="Border" Binding="{Binding SelectedClient}" Value="{x:Null}">
+                                                <Setter Property="IsVisible" Value="False"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Border.Style>
+
+                                <Grid RowDefinitions="Auto, Auto, Auto" ColumnDefinitions="Auto, *" ColumnSpacing="15" RowSpacing="5">
+                                    <Label Grid.Row="0" Grid.Column="0" Text="ID:" TextColor="#555"/>
+                                    <Label Grid.Row="0" Grid.Column="1" Text="{Binding SelectedClient.Id}" FontAttributes="Bold" TextColor="#333"/>
+
+                                    <Label Grid.Row="1" Grid.Column="0" Text="Имя:" TextColor="#555"/>
+                                    <Label Grid.Row="1" Grid.Column="1" Text="{Binding SelectedClient.Name}" FontAttributes="Bold" TextColor="#333"/>
+
+                                    <Label Grid.Row="2" Grid.Column="0" Text="Адрес:" TextColor="#555"/>
+                                    <Label Grid.Row="2" Grid.Column="1" Text="{Binding SelectedClient.Address}" TextColor="#333" LineBreakMode="WordWrap"/>
+                                </Grid>
+                            </Border>
+                            <Frame BackgroundColor="#E3F2FD" BorderColor="#2196F3" Padding="15" CornerRadius="8">
+                                <HorizontalStackLayout Spacing="10" VerticalOptions="Center">
+                                    <Label Text="ℹ️" FontSize="20" VerticalOptions="Center"/>
+                                    <Label Text="Система автоматически рассчитает оптимальное место вставки." 
+                                           FontSize="13" TextColor="#0D47A1" VerticalOptions="Center"/>
+                                </HorizontalStackLayout>
+                            </Frame>
+                        </VerticalStackLayout>
+
+                        <Grid Grid.Row="2" 
+                              IsVisible="{Binding IsNewMode}" 
+                              RowDefinitions="Auto, Auto, Auto, Auto"
+                              ColumnDefinitions="*, *"
+                              RowSpacing="15" ColumnSpacing="20">
+
+                            <VerticalStackLayout Grid.Row="0" Grid.ColumnSpan="2" Spacing="5">
+                                <Label Text="Название" FontSize="13" TextColor="Gray"/>
+                                <Border Style="{StaticResource InputBorder}">
+                                    <Entry Placeholder="Например: Срочный вывоз" Text="{Binding NewName}"/>
+                                </Border>
+                            </VerticalStackLayout>
+
+                            <VerticalStackLayout Grid.Row="1" Grid.ColumnSpan="2" Spacing="5">
+                                <Label Text="Адрес" FontSize="13" TextColor="Gray"/>
+                                <Border Style="{StaticResource InputBorder}">
+                                    <Entry Placeholder="Улица, дом (для водителя)" Text="{Binding NewAddress}"/>
+                                </Border>
+                            </VerticalStackLayout>
+
+                            <VerticalStackLayout Grid.Row="2" Grid.Column="0" Spacing="5">
+                                <Label Text="Широта (Lat)" FontSize="13" TextColor="Gray"/>
+                                <Border Style="{StaticResource InputBorder}">
+                                    <Entry Placeholder="52.XXXX" Keyboard="Numeric" Text="{Binding NewLat}"/>
+                                </Border>
+                            </VerticalStackLayout>
+
+                            <VerticalStackLayout Grid.Row="2" Grid.Column="1" Spacing="5">
+                                <Label Text="Долгота (Lon)" FontSize="13" TextColor="Gray"/>
+                                <Border Style="{StaticResource InputBorder}">
+                                    <Entry Placeholder="23.XXXX" Keyboard="Numeric" Text="{Binding NewLon}"/>
+                                </Border>
+                            </VerticalStackLayout>
+
+                            <VerticalStackLayout Grid.Row="3" Grid.Column="0" Spacing="5">
+                                <Label Text="Контейнеры" FontSize="13" TextColor="Gray"/>
+                                <Border Style="{StaticResource InputBorder}">
+                                    <Entry Keyboard="Numeric" Text="{Binding ContainerCount}"/>
+                                </Border>
+                            </VerticalStackLayout>
+
+                        </Grid>
+
+                        <Button Grid.Row="3"
+                                Text="Интегрировать в маршрут"
+                                Command="{Binding InjectPointCommand}"
+                                BackgroundColor="#007BFF"
+                                TextColor="White"
+                                FontAttributes="Bold"
+                                FontSize="16"
+                                HeightRequest="50"
+                                CornerRadius="8">
+                            <VisualStateManager.VisualStateGroups>
+                                <VisualStateGroup x:Name="CommonStates">
+                                    <VisualState x:Name="Normal" />
+                                    <VisualState x:Name="PointerOver">
+                                        <VisualState.Setters>
+                                            <Setter Property="BackgroundColor" Value="#0056b3" />
+                                        </VisualState.Setters>
+                                    </VisualState>
+                                </VisualStateGroup>
+                            </VisualStateManager.VisualStateGroups>
+                        </Button>
+
+                    </Grid>
+                </Border>
+            </VerticalStackLayout>
+        </ScrollView>
+    </Grid>
+</ContentPage>

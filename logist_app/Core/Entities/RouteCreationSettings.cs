@@ -6,7 +6,6 @@ namespace logist_app.Core.Entities
     {
         public int Id { get; set; }
 
-        // --- Логистика ---
         [JsonPropertyName("max_points_quantity")]
         public int MaxPointsQuantity { get; set; }
 
@@ -22,7 +21,6 @@ namespace logist_app.Core.Entities
         [JsonPropertyName("average_speed_km_h")]
         public double AverageSpeedKmH { get; set; }
 
-        // --- Алгоритм ---
         [JsonPropertyName("max_iterations2opt")]
         public int MaxIterations2Opt { get; set; }
 
@@ -35,7 +33,6 @@ namespace logist_app.Core.Entities
         [JsonPropertyName("max_nearest_node_distance_km")]
         public double MaxNearestNodeDistanceKm { get; set; }
 
-        // --- Транспорт ---
         [JsonPropertyName("truck_width_meters")]
         public double TruckWidthMeters { get; set; }
 
@@ -45,7 +42,6 @@ namespace logist_app.Core.Entities
         [JsonPropertyName("min_bridge_weight_tons")]
         public double MinBridgeWeightTons { get; set; }
 
-        // --- Маршрутизация ---
         [JsonPropertyName("vehicle_type")]
         public string VehicleType { get; set; } = "truck";
 

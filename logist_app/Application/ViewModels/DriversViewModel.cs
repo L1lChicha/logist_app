@@ -6,11 +6,14 @@ using logist_app.Core.Entities;
 using logist_app.Models;
 using logist_app.Views;
 using Microsoft.Maui.Controls;
+using Microsoft.VisualBasic.FileIO;
 using QRCoder;
 using System.Collections.ObjectModel;
+using System.Data;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Xml.Linq;
+using static System.Net.WebRequestMethods;
 
 
 namespace logist_app.ViewModels
@@ -103,7 +106,6 @@ namespace logist_app.ViewModels
         [RelayCommand]
         public async Task GetAuthorizationCode()
         {
-
             try
             {
                 var id = _selectedDriver.Id;
@@ -112,24 +114,19 @@ namespace logist_app.ViewModels
 
                 var http = _httpFactory.CreateClient("Api");
 
-                // --- ДОБАВЛЯЕМ ТОКЕН ---
                 var token = await SecureStorage.Default.GetAsync("auth_token");
                 if (!string.IsNullOrEmpty(token))
                 {
                     http.DefaultRequestHeaders.Authorization =
                         new AuthenticationHeaderValue("Bearer", token);
                 }
-                // -----------------------
 
                 var url = $"{_api.DriverGetCodeUrl}/{id}";
 
-                // 1. Отправляем запрос
                 var response = await http.PostAsJsonAsync(url, new { codeLength, codeHoursValid });
 
-                // 2. Проверяем статус (200-299)
                 if (response.IsSuccessStatusCode)
                 {
-                    // Успех! Читаем код
                     var json = await response.Content.ReadFromJsonAsync<Dictionary<string, object>>();
 
                     if (json != null && json.ContainsKey("code"))
@@ -139,14 +136,13 @@ namespace logist_app.ViewModels
                         var data = generator.CreateQrCode(json["code"].ToString() ?? "No code", QRCodeGenerator.ECCLevel.Q);
 
                         var png = new PngByteQRCode(data);
-                        byte[] qrBytes = png.GetGraphic(20); // масштаб QR — 20
+                        byte[] qrBytes = png.GetGraphic(20); 
 
                         QrImage = ImageSource.FromStream(() => new MemoryStream(qrBytes));
                     }
                     else
                     {
-                        //await Application.Current.MainPage.DisplayAlert("Ошибка", "Сервер вернул пустой ответ", "OK");
-                        await Shell.Current.DisplayAlert("Ошибка", "Сервер вернул пустой ответ", "OK");
+                        await Shell.Current.DisplayAlert("Error", "The server returned an empty response.", "OK");
                     }
                 }
                 else
@@ -155,7 +151,6 @@ namespace logist_app.ViewModels
                     string errorMessage = "Неизвестная ошибка сервера";
                     try
                     {
-                        // Часто сервер шлет JSON вида { "message": "Текст ошибки" } или "title"
                         var errorJson = await response.Content.ReadFromJsonAsync<Dictionary<string, object>>();
                         if (errorJson != null && errorJson.ContainsKey("message"))
                         {
@@ -164,7 +159,6 @@ namespace logist_app.ViewModels
                     }
                     catch
                     {
-                        // Если сервер прислал не JSON, а просто текст или HTML (например, nginx 502 error)
                         errorMessage = await response.Content.ReadAsStringAsync();
                     }
                     await Shell.Current.DisplayAlert("Ошибка запроса",
@@ -179,11 +173,70 @@ namespace logist_app.ViewModels
               
             }
 
-
-           
         }
 
 
-       
+        [RelayCommand]
+        public async Task Delete()
+        {
+            // 0. Проверка на null (если водитель не выбран)
+            if (SelectedDriver == null)
+            {
+                await Shell.Current.DisplayAlert("Ошибка", "Выберите водителя для удаления", "OK");
+                return;
+            }
+
+            // 1. Спрашиваем подтверждение
+            bool confirm = await Shell.Current.DisplayAlert(
+                "Подтверждение",
+                $"Вы действительно хотите удалить водителя {SelectedDriver.Name}?\nЭто действие нельзя отменить.",
+                "Удалить",
+                "Отмена");
+
+            if (!confirm) return;
+
+            try
+            {
+                var id = SelectedDriver.Id;
+                var http = _httpFactory.CreateClient("Api");
+
+                var token = await SecureStorage.Default.GetAsync("auth_token");
+                if (!string.IsNullOrEmpty(token))
+                {
+                    http.DefaultRequestHeaders.Authorization =
+                        new AuthenticationHeaderValue("Bearer", token);
+                }
+
+                var url = $"{_api.DriversUrl}/{id}";
+
+                // 2. Отправляем запрос DELETE
+                var response = await http.DeleteAsync(url);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    // 3. Успех: Удаляем из локального списка (чтобы он исчез с экрана)
+                    // Предполагается, что у вас есть ObservableCollection<Drivers> Drivers
+                    if (Drivers.Contains(SelectedDriver))
+                    {
+                        Drivers.Remove(SelectedDriver);
+                    }
+
+                    SelectedDriver = null; // Сбрасываем выбор
+                    await Shell.Current.DisplayAlert("Успех", "Водитель успешно удален", "OK");
+                }
+                else
+                {
+                    // 4. Ошибка сервера (например, "Нельзя удалить, есть активный маршрут")
+                    var errorJson = await response.Content.ReadAsStringAsync();
+                    await Shell.Current.DisplayAlert("Ошибка удаления", errorJson, "OK");
+                }
+            }
+            catch (Exception ex)
+            {
+                await Shell.Current.DisplayAlert("Ошибка сети", ex.Message, "OK");
+            }
+        }
+
+
     }
 }

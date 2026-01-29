@@ -94,26 +94,19 @@ namespace logist_app
 
             MainThread.BeginInvokeOnMainThread(async () =>
             {
-                // --- ЛОГИКА РАЗВОРАЧИВАНИЯ ОКНА ---
                 var window = Application.Current?.Windows.FirstOrDefault();
                 if (window != null)
                 {
                     var nativeWindow = window.Handler?.PlatformView as Microsoft.UI.Xaml.Window;
                     if (nativeWindow != null)
                     {
-                        // 1. Получаем Handle (дескриптор) окна
                         var windowHandle = WinRT.Interop.WindowNative.GetWindowHandle(nativeWindow);
 
-                        // 2. Восстанавливаем окно (если свернуто) - команда SW_RESTORE (9)
                         ShowWindow(windowHandle, SW_MAXIMIZE);
 
-                        // 3. Ставим фокус на окно
                         SetForegroundWindow(windowHandle);
                     }
                 }
-                // ----------------------------------
-
-                // Логика навигации
                 if (args.TryGetValue("action", out string action) && action == "openClient")
                 {
                     if (args.TryGetValue("clientId", out string clientId))

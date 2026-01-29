@@ -25,10 +25,10 @@ public partial class ClientDataViewModel : ObservableObject
         // Инициализация вариантов сортировки
         SortOptions = new ObservableCollection<string>
         {
-            "По умолчанию (ID)",
-            "Имя (А-Я)",
-            "Город",
-            "Кол-во контейнеров"
+            "Default (ID)",
+            "Name (A-Z)",
+            "City",
+            "Num. of containers"
         };
         SelectedSortOption = SortOptions[0];
     }
@@ -92,9 +92,9 @@ public partial class ClientDataViewModel : ObservableObject
         // 2. Сортировка
         filtered = SelectedSortOption switch
         {
-            "Имя (А-Я)" => filtered.OrderBy(c => c.Name),
-            "Город" => filtered.OrderBy(c => c.City),
-            "Кол-во контейнеров" => filtered.OrderByDescending(c => c.ContainerCount),
+            "Name (A-Z)" => filtered.OrderBy(c => c.Name),
+            "City" => filtered.OrderBy(c => c.City),
+            "Num. of containers" => filtered.OrderByDescending(c => c.ContainerCount),
             _ => filtered.OrderBy(c => c.Id) // По умолчанию
         };
 
@@ -111,7 +111,7 @@ public partial class ClientDataViewModel : ObservableObject
     {
         if (client == null)
         {
-            WeakReferenceMessenger.Default.Send(new AlertMessage("Ошибка", "Клиент не найден.", "OK"));
+            await Shell.Current.DisplayAlert("Error", "Client not found.", "OK");
             return;
         }
 
@@ -145,7 +145,7 @@ public partial class ClientDataViewModel : ObservableObject
         }
         catch (Exception ex)
         {
-            WeakReferenceMessenger.Default.Send(new AlertMessage("Ошибка загрузки", ex.Message, "OK"));
+            await Shell.Current.DisplayAlert("Loading error", ex.Message, "OK");
         }
     }
 

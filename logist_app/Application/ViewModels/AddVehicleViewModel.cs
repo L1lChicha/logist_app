@@ -55,7 +55,7 @@ namespace logist_app.ViewModels
                 LoadingType = LoadingType,
                 Capacity = capacity,
                 Tonnage = tonnage,
-                DistributionStatus = "not distributed", 
+                IsDistributed = false, 
                 CreatedAt = DateTime.UtcNow
             };
 

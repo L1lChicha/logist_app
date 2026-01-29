@@ -28,20 +28,18 @@ public partial class AcceptRouteView : ContentPage
 
     private async void MapWebView_Navigated(object sender, WebNavigatedEventArgs e)
     {
-        // Получаем подготовленный JSON из ViewModel
         var jsonToDisplay = _viewModel.PrepareJsonForDisplay();
 
         if (!string.IsNullOrEmpty(jsonToDisplay))
         {
             try
             {
-                // Вызываем JS на карте
                 await MapWebView.EvaluateJavaScriptAsync(
                     $"displayRoute('{jsonToDisplay.Replace("'", "\\'")}')");
             }
             catch (Exception ex)
             {
-                await DisplayAlert("Ошибка", $"JS Error: {ex.Message}", "OK");
+                await DisplayAlert("Error", $"JS Error: {ex.Message}", "OK");
             }
         }
     }
@@ -56,7 +54,6 @@ public partial class AcceptRouteView : ContentPage
     {
         try
         {
-            // 1. Сначала UI получает данные из WebView
             string editedGeoJson = await MapWebView.EvaluateJavaScriptAsync("window.getEditedRouteGeoJson()");
 
             // 2. Передаем данные во ViewModel для обработки и отправки
@@ -64,7 +61,7 @@ public partial class AcceptRouteView : ContentPage
         }
         catch (Exception ex)
         {
-            await DisplayAlert("Ошибка", $"Не удалось получить данные с карты: {ex.Message}", "OK");
+            await DisplayAlert("Error", $"Failed to retrieve data from the card: {ex.Message}", "OK");
         }
     }
 }

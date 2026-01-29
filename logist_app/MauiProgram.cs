@@ -32,7 +32,6 @@ namespace logist_app
                     fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
                 });
 
-            // ✅ Подключаем appsettings.json
             var a = Assembly.GetExecutingAssembly();
             using var stream = a.GetManifestResourceStream("logist_app.appsettings.json");
 
@@ -42,12 +41,9 @@ namespace logist_app
 
             builder.Configuration.AddConfiguration(config);
 
-            // ✅ Регистрируем IConfiguration
             builder.Services.AddSingleton<IConfiguration>(builder.Configuration);
-            //builder.Services.AddSingleton<IEditClientVmFactory, EditClientVmFactory>();
 
 
-            // ✅ Регистрируем типизированные настройки
             var apiSettings = new ApiSettings();
             config.GetSection("ApiSettings").Bind(apiSettings);
 
@@ -62,7 +58,6 @@ namespace logist_app
             builder.Services.AddSingleton<NotificationsView>();
             builder.Services.AddSingleton<SignalRService>();
             builder.Services.AddSingleton<IRouteService, RouteService>();
-            // ✅ Регистрируем ViewModels
 
             builder.Services.AddSingleton<ClientDataViewModel>();
             builder.Services.AddSingleton<ClientDataPageView>();
@@ -113,6 +108,8 @@ namespace logist_app
 
             builder.Services.AddSingleton<RouteSettingsViewModel>();
             
+            builder.Services.AddTransient<InjectPointView>();
+            builder.Services.AddTransient<InjectPointViewModel>();
 
 #if DEBUG
             builder.Logging.AddDebug();

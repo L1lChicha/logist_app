@@ -16,6 +16,7 @@ namespace logist_app.Core.Entities
         [JsonPropertyName("created_at")] public DateTime CreatedAt { get; set; }
         [JsonPropertyName("loading_type")] public string LoadingType { get; set; } = "No data";
         [JsonPropertyName("tonnage")] public double Tonnage { get; set; }
-        [JsonPropertyName("distribution_status")] public string? DistributionStatus { get; set; }
+        [JsonPropertyName("is_distributed")] public bool IsDistributed { get; set; }
+
     }
 }

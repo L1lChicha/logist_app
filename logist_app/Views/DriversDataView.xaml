@@ -246,6 +246,7 @@
 
                         <Button Grid.Column="2" 
                                 Text="Delete" 
+                                Command="{Binding DeleteCommand}"
                                 BackgroundColor="{AppThemeBinding Light=#FCE8E6, Dark=#4d2626}" 
                                 TextColor="{AppThemeBinding Light=#D93025, Dark=#F87171}" 
                                 CornerRadius="8"/>
