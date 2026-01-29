@@ -57,16 +57,29 @@
                                    Spacing="10" 
                                    VerticalOptions="Center">
 
-                <Button Text="Refresh"
-                        Command="{Binding RefreshCommand}"
-                        BackgroundColor="{AppThemeBinding Light={StaticResource PrimaryColor}, Dark={StaticResource PrimaryColorDark}}"
-                        TextColor="{AppThemeBinding Light=White, Dark=#1a1a1a}"
-                        CornerRadius="8"
-                        HeightRequest="36"
-                        Padding="15,0"
-                        FontSize="13"
-                        FontAttributes="Bold"
-                        VerticalOptions="Center"/>
+                <Button Text="All / Refresh"
+                    Command="{Binding RefreshCommand}"
+                    BackgroundColor="{AppThemeBinding Light={StaticResource PrimaryColor}, Dark={StaticResource PrimaryColorDark}}"
+                    TextColor="{AppThemeBinding Light=White, Dark=#1a1a1a}"
+                    CornerRadius="8"
+                    HeightRequest="36"
+                    Padding="15,0"
+                    FontSize="13"
+                    FontAttributes="Bold"
+                    VerticalOptions="Center"/>
+
+                <Button Text="📅 Today"
+                    Command="{Binding LoadTodayRoutesCommand}"
+                    BackgroundColor="Transparent"
+                    BorderColor="{AppThemeBinding Light={StaticResource PrimaryColor}, Dark={StaticResource PrimaryColorDark}}"
+                    BorderWidth="1"
+                    TextColor="{AppThemeBinding Light={StaticResource PrimaryColor}, Dark={StaticResource PrimaryColorDark}}"
+                    CornerRadius="8"
+                    HeightRequest="36"
+                    Padding="15,0"
+                    FontSize="13"
+                    FontAttributes="Bold"
+                    VerticalOptions="Center"/>
 
                 <Label Text="Sort by:"
                        VerticalOptions="Center"

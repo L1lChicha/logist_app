@@ -109,6 +109,19 @@
                     </Button.Shadow>
                 </Button>
 
+
+                <Button Text="👆 Войти по отпечатку"
+                    Command="{Binding BiometricLoginCommand}"
+                    BackgroundColor="Transparent"
+                    TextColor="{AppThemeBinding Light={StaticResource PrimaryColor}, Dark=#E0E0E0}"
+                    FontAttributes="Bold"
+                    BorderWidth="1"
+                    BorderColor="{AppThemeBinding Light={StaticResource PrimaryColor}, Dark=#E0E0E0}"
+                    CornerRadius="10"
+                    HeightRequest="50"
+                    Margin="0,15,0,0">      
+                </Button>
+
             </VerticalStackLayout>
         </Border>
     </Grid>

@@ -12,4 +12,21 @@ public partial class LoginPageView : ContentPage
         // Устанавливаем контекст данных
         BindingContext = viewModel;
     }
+
+
+    protected override async void OnAppearing()
+    {
+        base.OnAppearing();
+
+        if (BindingContext is LoginViewModel vm)
+        {
+            // Небольшая задержка важна для Windows!
+            // Окну нужно время, чтобы отрисоваться и получить дескриптор (Handle),
+            // иначе UserConsentVerifier может выдать ошибку или не показаться.
+            await Task.Delay(200);
+
+            // Запускаем проверку токена и (если ок) биометрию
+            await vm.CheckAutoLoginAsync();
+        }
+    }
 }

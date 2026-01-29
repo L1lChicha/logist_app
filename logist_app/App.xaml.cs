@@ -127,23 +127,8 @@ namespace logist_app
             var shell = new AppShell();
             var window = new Window(shell);
 
-            MainThread.BeginInvokeOnMainThread(async () =>
-            {
-                var token = await SecureStorage.Default.GetAsync("auth_token");
-                if (!string.IsNullOrEmpty(token))
-                {
-                    if (!await IsTokenExpiredAsync())
-                    {
-                        await shell.GoToAsync("//ActionPageView");
-                        await _signalRService.ConnectAsync();
-                    }
-                    else
-                    {
-                        SecureStorage.Default.Remove("auth_token");
-                        await shell.GoToAsync("//LoginPageView");
-                    }
-                }
-            });
+            // УДАЛЯЕМ ОТСЮДА ЛОГИКУ АВТО-ВХОДА. 
+            // Мы перенесем её во ViewModel, чтобы безопасно вызвать Windows Hello.
 
             return window;
         }
@@ -152,10 +137,13 @@ namespace logist_app
         {
             var token = await SecureStorage.GetAsync("auth_token");
             if (string.IsNullOrEmpty(token)) return true;
+
             var handler = new JwtSecurityTokenHandler();
             if (!handler.CanReadToken(token)) return true;
+
             var jwtToken = handler.ReadJwtToken(token);
             if (jwtToken.ValidTo < DateTime.UtcNow.AddSeconds(20)) return true;
+
             return false;
         }
 

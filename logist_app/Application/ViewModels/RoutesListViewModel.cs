@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using logist_app.Core.Entities;
 using logist_app.Infrastructure.Service;
+using logist_app.Infrastructure.Service.Dtos;
 using logist_app.Models;
 using logist_app.Views;
 using Microsoft.Maui.Controls;
@@ -211,6 +212,69 @@ public partial class RoutesListViewModel : ObservableObject
             return null;
         }
     }
+
+
+    [RelayCommand]
+    public async Task LoadTodayRoutesAsync()
+    {
+        try
+        {
+            var http = _httpFactory.CreateClient("Api");
+
+            // --- Auth (тот же код получения токена) ---
+            var token = await SecureStorage.Default.GetAsync("auth_token");
+            if (!string.IsNullOrEmpty(token))
+            {
+                http.DefaultRequestHeaders.Authorization =
+                    new AuthenticationHeaderValue("Bearer", token);
+            }
+            // ------------------------------------------
+
+            // 2. Запрашиваем данные из нового эндпоинта
+            // Обратите внимание: путь должен совпадать с вашим контроллером (например: api/routes/today-routes)
+            var url = $"{_api.RoutesEndpoint}/today-routes";
+
+            var todayDtos = await http.GetFromJsonAsync<List<RouteMonitoringDto>>(url);
+
+            if (todayDtos != null)
+            {
+                // 3. Преобразуем DTO от сервера в вашу модель Route для отображения
+                // Так как RouteMonitoringDto имеет поле RouteName, а Route - Name
+                    var mappedRoutes = todayDtos.Select(dto => new Route
+                {
+                    Id = dto.Id,
+                    Name = dto.RouteName,       // Маппинг имени
+                    Status = dto.Status,
+                    CreatedAt = dto.StartTime,
+                    Distance = dto.Distance,
+                    Duration = dto.Duration
+                        
+                    }).ToList();
+
+                // 4. Обновляем список
+                allRoutes = mappedRoutes;
+                Routes.Clear();
+                foreach (var route in allRoutes)
+                {
+                    Routes.Add(route);
+                }
+
+                // Сбрасываем фильтр, чтобы показать всё, что пришло
+                SelectedFilter = "All";
+            }
+            else
+            {
+                await Shell.Current.DisplayAlert("Инфо", "На сегодня маршрутов нет.", "OK");
+            }
+        }
+        catch (Exception ex)
+        {
+            await Shell.Current.DisplayAlert("Ошибка", $"Не удалось загрузить маршруты за сегодня: {ex.Message}", "OK");
+        }
+    }
+
+
+
 
     protected void OnPropertyChanged(string propertyName) =>
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
