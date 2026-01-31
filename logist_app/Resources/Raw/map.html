@@ -2,10 +2,9 @@
 <html>
 <head>
     <meta charset="utf-8" />
-    <title>Карта</title>
+    <title>Карта Логиста</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css" />
-
     <link rel="stylesheet" href="https://unpkg.com/@geoman-io/leaflet-geoman-free@latest/dist/leaflet-geoman.css" />
     <style>
         #map {
@@ -20,13 +19,21 @@
             margin: 0;
             padding: 0;
         }
+        /* Стиль для попапов */
+        .driver-popup {
+            font-weight: bold;
+            color: #333;
+        }
     </style>
 </head>
 <body>
     <div id="map"></div>
+
     <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"></script>
     <script src="https://unpkg.com/@geoman-io/leaflet-geoman-free@latest/dist/leaflet-geoman.min.js"></script>
+
     <script>
+        // --- ИНИЦИАЛИЗАЦИЯ КАРТЫ ---
         var map = L.map('map').setView([52.0976, 23.7341], 13);
 
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -34,22 +41,94 @@
             attribution: '© OpenStreetMap contributors'
         }).addTo(map);
 
+        // --- ИНСТРУМЕНТЫ РИСОВАНИЯ (GEOMAN) ---
         map.pm.addControls({
             position: 'topleft',
             drawCircle: false,
             drawCircleMarker: false,
             drawRectangle: false,
             drawPolygon: false,
-            drawMarker: false,      // Если нужно добавлять новые точки - поставь true
-            drawPolyline: true,     // Разрешаем рисовать новые линии
-            editMode: true,         // Разрешаем редактировать
+            drawMarker: false,
+            drawPolyline: true,
+            editMode: true,
             dragMode: false,
             cutPolygon: false,
-            removalMode: true       // Разрешаем удалять
+            removalMode: true
         });
 
+        // --- ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ ---
         var marker, routeLayer, startMarker, endMarker;
 
+        // Хранилище маркеров водителей: { "guid-водителя": L.Marker }
+        var drivers = {};
+
+        // Иконка грузовика
+        var truckIcon = L.icon({
+            iconUrl: 'https://cdn-icons-png.flaticon.com/512/741/741407.png', // Или локальный путь
+            iconSize: [32, 32],
+            iconAnchor: [16, 16],
+            popupAnchor: [0, -16]
+        });
+
+
+        window.addDriver = function (deviceId, name, lat, lon, plate) {
+            try {
+                // Проверка: если такой водитель уже есть по ID, не создаем дубликат
+                if (drivers[deviceId]) {
+                    window.moveDriver(deviceId, lat, lon);
+                    return;
+                }
+
+                var popupContent = "<div class='driver-popup'>" +
+                    "<b>👤 " + (name || "Без имени") + "</b><br>" +
+                    "🚛 " + (plate || "Нет номера") +
+                    "</div>";
+
+                var newMarker = L.marker([lat, lon], { icon: truckIcon })
+                    .addTo(map)
+                    .bindPopup(popupContent);
+
+                // ВАЖНО: Сохраняем по ID, а не по имени!
+                drivers[deviceId] = newMarker;
+
+                console.log("Водитель добавлен: " + deviceId);
+            } catch (e) { console.error("Ошибка addDriver: " + e); }
+        };
+
+        // 2. Двигать водителя
+        // Теперь принимаем deviceId вместо name
+        window.moveDriver = function (deviceId, lat, lon) {
+            try {
+                // ВАЖНО: Ищем по ID
+                var m = drivers[deviceId];
+                if (m) {
+                    m.setLatLng([lat, lon]);
+                } else {
+                    // Если маркера нет (например, страница перезагрузилась), 
+                    // мы не можем вызвать addDriver, так как у нас тут нет 'name' и 'plate'.
+                    // Поэтому просто ничего не делаем или пишем в лог.
+                    console.warn("Маркер для движения не найден: " + deviceId);
+                }
+            } catch (e) { console.error("Ошибка moveDriver: " + e); }
+        };
+
+        // 3. Удалить водителя
+        window.removeDriver = function (deviceId) {
+            try {
+                // ВАЖНО: Ищем по ID (это у вас уже было правильно)
+                if (drivers[deviceId]) {
+                    map.removeLayer(drivers[deviceId]);
+                    delete drivers[deviceId];
+                    console.log("Водитель удален: " + deviceId);
+                } else {
+                    console.log("Нечего удалять, ID не найден: " + deviceId);
+                }
+            } catch (e) {
+                console.error("Ошибка при удалении водителя: " + e);
+            }
+        }
+
+        // --- ЛОГИКА КЛИКА ПО КАРТЕ (ПОЛУЧЕНИЕ АДРЕСА) ---
         function setMarker(lat, lon, displayName) {
             if (marker) {
                 map.removeLayer(marker);
@@ -62,6 +141,7 @@
             var lat = e.latlng.lat;
             var lon = e.latlng.lng;
 
+            // Используем Nominatim для обратного геокодинга
             fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`)
                 .then(response => response.json())
                 .then(data => {
@@ -85,14 +165,16 @@
             }
         }
 
-        function displayRoute(geoJson) {
+
+        // --- ЛОГИКА ОТОБРАЖЕНИЯ МАРШРУТА (ИЗ БД) ---
+        window.displayRoute = function (geoJson) {
             try {
-                // Удаляем предыдущий маршрут и маркеры
+                // Очистка старого маршрута
                 if (routeLayer) map.removeLayer(routeLayer);
                 if (startMarker) map.removeLayer(startMarker);
                 if (endMarker) map.removeLayer(endMarker);
 
-                var data = JSON.parse(geoJson);
+                var data = typeof geoJson === 'string' ? JSON.parse(geoJson) : geoJson;
 
                 routeLayer = L.geoJSON(data, {
                     style: {
@@ -100,66 +182,57 @@
                         weight: 5,
                         opacity: 0.8
                     },
-                    // ВАЖНО: Делаем слой редактируемым сразу
                     onEachFeature: function (feature, layer) {
-                        // Разрешаем Geoman управлять этим слоем
-                        // Теперь линию можно таскать за точки
                         if (layer.pm) {
                             layer.pm.enable({
                                 allowSelfIntersection: true,
-                                draggable: false // Саму линию таскать нельзя, только точки
+                                draggable: false
                             });
                         }
                     }
                 }).addTo(map);
 
-                // Получаем точки начала и конца
-                if (data.features.length > 0 && data.features[0].geometry.type === "LineString") {
+                // Ставим маркеры начала и конца
+                if (data.features && data.features.length > 0 && data.features[0].geometry.type === "LineString") {
                     var coords = data.features[0].geometry.coordinates;
-
                     if (coords.length > 1) {
-                        // Начальная точка
                         var start = coords[0];
-                        startMarker = L.marker([start[1], start[0]])
-                            .bindPopup("Начало маршрута")
-                            .addTo(map);
+                        startMarker = L.marker([start[1], start[0]]).bindPopup("Начало").addTo(map);
 
-                        // Конечная точка
                         var end = coords[coords.length - 1];
-                        endMarker = L.marker([end[1], end[0]])
-                            .bindPopup("Конец маршрута")
-                            .addTo(map);
+                        endMarker = L.marker([end[1], end[0]]).bindPopup("Конец").addTo(map);
                     }
                 }
 
-                // Устанавливаем границы карты
+                // Зум на маршрут
                 var bounds = routeLayer.getBounds();
-                map.fitBounds(bounds);
-                map.invalidateSize();
+                if (bounds.isValid()) {
+                    map.fitBounds(bounds);
+                }
             } catch (e) {
                 console.error("Ошибка в displayRoute:", e.message);
-                window.location = "debug://error?message=" + encodeURIComponent(e.message);
             }
+        };
 
-        }
+        // --- ЛОГИКА СОХРАНЕНИЯ ИЗМЕНЕННОГО МАРШРУТА ---
         window.getEditedRouteGeoJson = function () {
             try {
                 var features = [];
-
-                // Проходим по всем слоям на карте
                 map.eachLayer(function (layer) {
-                    // Ищем только линии (Polyline) и Маркеры
-                    // Исключаем:
-                    // 1. Служебные слои Geoman (_pmTempLayer)
-                    // 2. Тайлы карты (L.TileLayer)
-                    // 3. Если слой не имеет метода toGeoJSON
+                    // Фильтруем слои: берем только то, что можно сохранить в GeoJSON
+                    // Исключаем тайлы, временные слои Geoman и маркеры водителей (drivers)
+                    var isDriver = false;
 
-                    if (layer.toGeoJSON && !layer._pmTempLayer && !(layer instanceof L.TileLayer)) {
+                    // Проверяем, не является ли этот слой маркером водителя
+                    for (var key in drivers) {
+                        if (drivers[key] === layer) {
+                            isDriver = true;
+                            break;
+                        }
+                    }
 
-                        // Дополнительная проверка: не сохраняем пустые слои
+                    if (layer.toGeoJSON && !layer._pmTempLayer && !(layer instanceof L.TileLayer) && !isDriver && layer !== marker && layer !== startMarker && layer !== endMarker) {
                         var geo = layer.toGeoJSON();
-
-                        // Если это FeatureCollection (группа), распаковываем
                         if (geo.type === 'FeatureCollection') {
                             features = features.concat(geo.features);
                         } else {
@@ -173,18 +246,11 @@
                     "features": features
                 };
 
-                console.log("Собрано фич: " + features.length); // Увидите в F12
-
-                // Возвращаем СТРОКУ, а не объект. WebView2 любит строки.
                 return JSON.stringify(collection);
-
             } catch (e) {
-                console.error("Ошибка в getEditedRouteGeoJson:", e);
                 return JSON.stringify({ error: e.message });
             }
         };
-
-
     </script>
 </body>
 </html>

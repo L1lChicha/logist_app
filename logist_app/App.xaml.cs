@@ -19,7 +19,6 @@ namespace logist_app
         private readonly SignalRService _signalRService;
         private readonly NotificationService _notificationService;
 
-        // --- WIN32 API ДЛЯ УПРАВЛЕНИЯ ОКНОМ ---
 #if WINDOWS
         [DllImport("user32.dll")]
         private static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
@@ -29,7 +28,6 @@ namespace logist_app
 
         private const int SW_MAXIMIZE = 3;
 #endif
-        // ---------------------------------------
 
         public App(IServiceProvider serviceProvider, SignalRService signalRService, NotificationService notificationService)
         {
@@ -127,8 +125,7 @@ namespace logist_app
             var shell = new AppShell();
             var window = new Window(shell);
 
-            // УДАЛЯЕМ ОТСЮДА ЛОГИКУ АВТО-ВХОДА. 
-            // Мы перенесем её во ViewModel, чтобы безопасно вызвать Windows Hello.
+         
 
             return window;
         }
@@ -139,7 +136,7 @@ namespace logist_app
             if (string.IsNullOrEmpty(token)) return true;
 
             var handler = new JwtSecurityTokenHandler();
-            if (!handler.CanReadToken(token)) return true;
+            if (!handler.CanReadToken(token)) return true;  
 
             var jwtToken = handler.ReadJwtToken(token);
             if (jwtToken.ValidTo < DateTime.UtcNow.AddSeconds(20)) return true;

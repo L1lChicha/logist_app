@@ -19,5 +19,8 @@ namespace logist_app.Infrastructure.Service.Dtos
         public double Distance { get; set; }
         public double Duration { get; set; }
         [JsonPropertyName("progress_percent")] public int ProgressPercent => TotalPoints == 0 ? 0 : (int)((double)CompletedPoints / TotalPoints * 100);
+        [JsonPropertyName("vehicle_name")] public string VehicleName { get; set; }
+        [JsonPropertyName("loading_type")] public string LoadingType { get; set; }
+
     }
 }

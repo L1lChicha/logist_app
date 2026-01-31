@@ -2,6 +2,7 @@ using logist_app.Core.Entities;
 using logist_app.Models;
 using logist_app.ViewModels;
 using System.Net;
+using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
 
@@ -54,11 +55,17 @@ public partial class AddNewDriverPage : ContentPage
     {
         try
         {
-            // берём зависимости из контейнера
+
+
             var api = App.Services.GetRequiredService<ApiSettings>();
             var httpFactory = App.Services.GetRequiredService<IHttpClientFactory>();
             var http = httpFactory.CreateClient("Api"); // BaseAddress уже настроен в MauiProgram
-
+            var token = await SecureStorage.Default.GetAsync("auth_token");
+            if (!string.IsNullOrEmpty(token))
+            {
+                http.DefaultRequestHeaders.Authorization =
+                    new AuthenticationHeaderValue("Bearer", token);
+            }
             // отправляем на относительный endpoint из конфигурации
             var response = await http.PostAsJsonAsync(api.DriversEndpoint, newDriver);
             return response.IsSuccessStatusCode;

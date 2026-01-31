@@ -12,7 +12,9 @@ namespace logist_app.Infrastructure.Service
 
         // Событие для передачи данных во ViewModel/UI
         public event Action<ClientNoteNotification> OnNoteReceived;
+        public event Action<string> OnDriverDisconnected;
 
+        public event Action<LocationData> OnLocationReceived;
         // Поле для URL (лучше вынести в константы или настройки)
         private const string HUB_URL = "https://esme-aspiratory-september.ngrok-free.dev/hubs/notifications";
 
@@ -35,6 +37,25 @@ namespace logist_app.Infrastructure.Service
                 })
                 .WithAutomaticReconnect() 
                 .Build();
+
+
+
+            _hubConnection.On<LocationData>("ReceiveNewLocation", (data) =>
+            {
+                // Оборачиваем в MainThread, так как обновление карты — это работа с UI
+                MainThread.BeginInvokeOnMainThread(() =>
+                {
+                    OnLocationReceived?.Invoke(data);
+                });
+            });
+
+            _hubConnection.On<string>("DriverDisconnected", (deviceId) =>
+            {
+                MainThread.BeginInvokeOnMainThread(() =>
+                {
+                    OnDriverDisconnected?.Invoke(deviceId);
+                });
+            });
 
             _hubConnection.On<ClientNoteNotification>("ClientNoteUpdated", (data) =>
             {

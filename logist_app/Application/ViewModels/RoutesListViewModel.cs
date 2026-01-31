@@ -241,7 +241,7 @@ public partial class RoutesListViewModel : ObservableObject
                 // 3. Преобразуем DTO от сервера в вашу модель Route для отображения
                 // Так как RouteMonitoringDto имеет поле RouteName, а Route - Name
                     var mappedRoutes = todayDtos.Select(dto => new Route
-                {
+                    {
                     Id = dto.Id,
                     Name = dto.RouteName,       // Маппинг имени
                     Status = dto.Status,
