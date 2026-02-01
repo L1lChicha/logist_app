@@ -165,20 +165,20 @@
                                            VerticalOptions="Center"/>
 
                                     <Label Grid.Column="1" 
-                                           Text="{Binding DistributionStatus, StringFormat='● {0}'}" 
+                                           Text="{Binding IsDistributed, StringFormat='● {0}'}" 
                                            FontSize="13" 
                                            FontAttributes="Bold"
                                            VerticalOptions="Center">
                                         <Label.Triggers>
-                                            <DataTrigger TargetType="Label" Binding="{Binding DistributionStatus}" Value="not distributed">
+                                            <DataTrigger TargetType="Label" Binding="{Binding IsDistributed}" Value="false">
                                                 <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource SuccessColor}, Dark={StaticResource SuccessColorDark}}"/>
                                                 <Setter Property="Text" Value="● Available"/>
                                             </DataTrigger>
-                                            <DataTrigger TargetType="Label" Binding="{Binding DistributionStatus}" Value="distributed">
+                                            <DataTrigger TargetType="Label" Binding="{Binding IsDistributed}" Value="true">
                                                 <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource DestructiveColor}, Dark={StaticResource DestructiveColorDark}}"/>
                                                 <Setter Property="Text" Value="● Busy"/>
                                             </DataTrigger>
-                                            <DataTrigger TargetType="Label" Binding="{Binding DistributionStatus}" Value="{x:Null}">
+                                            <DataTrigger TargetType="Label" Binding="{Binding IsDistributed}" Value="{x:Null}">
                                                 <Setter Property="TextColor" Value="Gray"/>
                                             </DataTrigger>
                                         </Label.Triggers>

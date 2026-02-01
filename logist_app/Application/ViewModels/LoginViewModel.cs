@@ -10,8 +10,11 @@ public partial class LoginViewModel : ObservableObject
 {
     private readonly IHttpClientFactory _httpClientFactory;
     private readonly SignalRService _signalRService;
-    private bool _isAuthInProgress = false;
-    private bool _isLoginRunning = false;
+
+    // Убрал лишние поля, объединим логику в одно свойство IsLoading
+    // private bool _isAuthInProgress = false; 
+    // private bool _isLoginRunning = false;
+
     public LoginViewModel(IHttpClientFactory httpClientFactory, SignalRService signalRService)
     {
         _httpClientFactory = httpClientFactory;
@@ -24,9 +27,19 @@ public partial class LoginViewModel : ObservableObject
     [ObservableProperty]
     private string _password;
 
+    // ЭТО НОВОЕ СВОЙСТВО: Управляет видимостью загрузки
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(IsNotLoading))] // Чтобы отключать кнопки
+    private bool _isLoading;
+
+    // Вспомогательное свойство для блокировки кнопок (обратное от IsLoading)
+    public bool IsNotLoading => !IsLoading;
+
     [RelayCommand]
     private async Task LoginAsync()
     {
+        if (IsLoading) return; // Защита от двойного клика
+
         if (string.IsNullOrWhiteSpace(Username) || string.IsNullOrWhiteSpace(Password))
         {
             await Shell.Current.DisplayAlert("Ошибка", "Введите логин и пароль", "ОК");
@@ -35,13 +48,12 @@ public partial class LoginViewModel : ObservableObject
 
         try
         {
+            IsLoading = true; // Включаем спиннер
+
             var loginData = new { username = Username, password = Password };
             var client = _httpClientFactory.CreateClient("Api");
 
-         
             var response = await client.PostAsJsonAsync("https://esme-aspiratory-september.ngrok-free.dev/auth/login-logistician", loginData);
-
-            //var response = await client.PostAsJsonAsync("https://localhost:777/auth/login-logistician", loginData);
 
             if (response.IsSuccessStatusCode)
             {
@@ -50,52 +62,57 @@ public partial class LoginViewModel : ObservableObject
                 if (result.TryGetProperty("token", out var tokenProperty))
                 {
                     var token = tokenProperty.GetString();
-
                     await SecureStorage.Default.SetAsync("auth_token", token);
 
+                    // Передаем управление методу навигации (он сам выключит IsLoading в конце)
                     await ConnectAndNavigateAsync();
+                    return; // Важно выйти, чтобы finally внизу не сработал раньше времени, 
+                            // либо убрать IsLoading = false отсюда и оставить только в ConnectAndNavigateAsync
                 }
             }
             else
             {
                 await Shell.Current.DisplayAlert("Ошибка", "Неверный логин или пароль", "ОК");
+                IsLoading = false; // Выключаем, если ошибка
             }
         }
         catch (Exception ex)
         {
             await Shell.Current.DisplayAlert("Ошибка сети", ex.Message, "ОК");
+            IsLoading = false; // Выключаем при ошибке
         }
     }
 
-    
-      
-        [RelayCommand]
-        private async Task BiometricLoginAsync()
-        {
-           
-            if (_isLoginRunning) return;
+    [RelayCommand]
+    private async Task BiometricLoginAsync()
+    {
+        if (IsLoading) return;
 
-           
-            _isLoginRunning = true;
+        // ОБЯЗАТЕЛЬНО: Запускаем в главном потоке UI
+        await MainThread.InvokeOnMainThreadAsync(async () =>
+        {
+            IsLoading = true;
 
 #if WINDOWS
-            
             var token = await SecureStorage.Default.GetAsync("auth_token");
             if (string.IsNullOrEmpty(token))
             {
                 await Shell.Current.DisplayAlert("Внимание", "Для первого входа используйте логин и пароль.", "ОК");
-                _isLoginRunning = false; 
+                IsLoading = false;
                 return;
             }
 
             try
             {
+                // Дополнительная проверка: активно ли окно сейчас?
+                // Если приложение в фоне, UserConsentVerifier кинет исключение или вернет ошибку
                 var availability = await Windows.Security.Credentials.UI.UserConsentVerifier.CheckAvailabilityAsync();
 
                 if (availability != Windows.Security.Credentials.UI.UserConsentVerifierAvailability.Available)
                 {
-                    await Shell.Current.DisplayAlert("Ошибка", "Windows Hello не настроен.", "ОК");
-                    _isLoginRunning = false; 
+                    // Если недоступно (например, окно не в фокусе), просто выключаем загрузку
+                    // Не показываем ошибку пользователю, если это авто-запуск, чтобы не пугать его
+                    IsLoading = false;
                     return;
                 }
 
@@ -103,54 +120,60 @@ public partial class LoginViewModel : ObservableObject
 
                 if (result == Windows.Security.Credentials.UI.UserConsentVerificationResult.Verified)
                 {
-                   
                     await ConnectAndNavigateAsync();
                 }
                 else
                 {
-                 
-                    _isLoginRunning = false;
+                    IsLoading = false;
                 }
             }
             catch (Exception ex)
             {
-                await Shell.Current.DisplayAlert("Ошибка Windows Hello", ex.Message, "ОК");
-                _isLoginRunning = false; 
+                // Логируем ошибку, но не всегда показываем алерт, если это авто-вход
+                System.Diagnostics.Debug.WriteLine($"Windows Hello Error: {ex.Message}");
+                IsLoading = false;
             }
 #else
         await Shell.Current.DisplayAlert("Инфо", "Только для Windows", "ОК");
-        _isLoginRunning = false;
+        IsLoading = false;
 #endif
-        }
+        });
+    }
 
-        
-        public async Task CheckAutoLoginAsync()
+    public async Task CheckAutoLoginAsync()
+    {
+        bool isExpired = await App.IsTokenExpiredAsync();
+        if (!isExpired)
         {
-       
-            bool isExpired = await App.IsTokenExpiredAsync();
-
-            if (!isExpired)
-            {
-                await BiometricLoginAsync();
-            }
-            else
-            {
-                SecureStorage.Default.Remove("auth_token");
-            }
+            await BiometricLoginAsync();
         }
-    
+        else
+        {
+            SecureStorage.Default.Remove("auth_token");
+        }
+    }
 
     private async Task ConnectAndNavigateAsync()
     {
+        // Убеждаемся, что статус загрузки включен (на случай вызова из разных мест)
+        IsLoading = true;
+
         try
         {
+            // Здесь происходит основная задержка (подключение к сокетам)
             await _signalRService.ConnectAsync();
 
+            // Переход на новую страницу
             await Shell.Current.GoToAsync("//ActionPageView");
         }
         catch (Exception ex)
         {
             await Shell.Current.DisplayAlert("Ошибка подключения", $"Не удалось соединиться с сервером: {ex.Message}", "ОК");
+        }
+        finally
+        {
+            // Выключаем загрузку в самом конце, даже если произошла ошибка
+            IsLoading = false;
         }
     }
 }

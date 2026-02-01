@@ -5,6 +5,7 @@
              Title="Вход"
              Shell.NavBarIsVisible="False"
              Shell.FlyoutBehavior="Disabled">
+
     <ContentPage.Resources>
         <Color x:Key="PrimaryColor">#512BD4</Color>
         <Color x:Key="PrimaryColorDark">#7C5CE7</Color>
@@ -35,7 +36,8 @@
                 HorizontalOptions="Center"
                 WidthRequest="320"
                 Padding="30,40"
-                Margin="20">
+                Margin="20"
+                IsEnabled="{Binding IsNotLoading}">
 
             <Border.StrokeShape>
                 <RoundRectangle CornerRadius="25" />
@@ -93,7 +95,7 @@
                 </Border>
 
                 <Button x:Name="loginButton"
-                        Text="Sing in"
+                        Text="Sign in"
                         Command="{Binding LoginCommand}"
                         BackgroundColor="{AppThemeBinding Light={StaticResource PrimaryColor}, Dark={StaticResource PrimaryColorDark}}"
                         TextColor="{AppThemeBinding Light=White, Dark=#1a1a1a}"
@@ -109,20 +111,39 @@
                     </Button.Shadow>
                 </Button>
 
-
                 <Button Text="👆 Войти по отпечатку"
-                    Command="{Binding BiometricLoginCommand}"
-                    BackgroundColor="Transparent"
-                    TextColor="{AppThemeBinding Light={StaticResource PrimaryColor}, Dark=#E0E0E0}"
-                    FontAttributes="Bold"
-                    BorderWidth="1"
-                    BorderColor="{AppThemeBinding Light={StaticResource PrimaryColor}, Dark=#E0E0E0}"
-                    CornerRadius="10"
-                    HeightRequest="50"
-                    Margin="0,15,0,0">      
+                        Command="{Binding BiometricLoginCommand}"
+                        BackgroundColor="Transparent"
+                        TextColor="{AppThemeBinding Light={StaticResource PrimaryColor}, Dark=#E0E0E0}"
+                        FontAttributes="Bold"
+                        BorderWidth="1"
+                        BorderColor="{AppThemeBinding Light={StaticResource PrimaryColor}, Dark=#E0E0E0}"
+                        CornerRadius="10"
+                        HeightRequest="50"
+                        Margin="0,15,0,0">
                 </Button>
 
             </VerticalStackLayout>
         </Border>
+
+        <Grid IsVisible="{Binding IsLoading}"
+              BackgroundColor="#CC000000"
+              HorizontalOptions="Fill"
+              VerticalOptions="Fill"
+              ZIndex="999">
+
+            <VerticalStackLayout VerticalOptions="Center" HorizontalOptions="Center" Spacing="15">
+                <ActivityIndicator IsRunning="{Binding IsLoading}"
+                                   Color="{StaticResource PrimaryColorDark}"
+                                   HeightRequest="60"
+                                   WidthRequest="60"/>
+
+                <Label Text="Авторизация и подключение..."
+                       TextColor="White"
+                       FontSize="16"
+                       HorizontalOptions="Center"/>
+            </VerticalStackLayout>
+        </Grid>
+
     </Grid>
 </ContentPage>

@@ -164,10 +164,4 @@ public partial class ActionPageView : ContentPage
         await Navigation.PushAsync(page);
 
     }
-
-
-
-
-   
-
 }

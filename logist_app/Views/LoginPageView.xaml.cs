@@ -4,6 +4,7 @@ namespace logist_app.Views;
 
 public partial class LoginPageView : ContentPage
 {
+    private bool _isFirstLoad = true;
     // Внедряем ViewModel через конструктор
     public LoginPageView(LoginViewModel viewModel)
     {
@@ -13,20 +14,22 @@ public partial class LoginPageView : ContentPage
         BindingContext = viewModel;
     }
 
-
+#if WINDOWS
     protected override async void OnAppearing()
     {
         base.OnAppearing();
 
-        if (BindingContext is LoginViewModel vm)
+        if (_isFirstLoad)
         {
-            // Небольшая задержка важна для Windows!
-            // Окну нужно время, чтобы отрисоваться и получить дескриптор (Handle),
-            // иначе UserConsentVerifier может выдать ошибку или не показаться.
+            _isFirstLoad = false;
+
             await Task.Delay(200);
 
-            // Запускаем проверку токена и (если ок) биометрию
-            await vm.CheckAutoLoginAsync();
+            if (BindingContext is LoginViewModel vm)
+            {
+                await vm.CheckAutoLoginAsync();
+            }
         }
     }
+#endif
 }
