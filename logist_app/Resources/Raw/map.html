@@ -24,6 +24,19 @@
             font-weight: bold;
             color: #333;
         }
+
+        /* НОВЫЙ СТИЛЬ ДЛЯ МАРКЕРА С ЦИФРОЙ */
+        .custom-point-marker {
+            background-color: #ff0000; /* Красный фон */
+            color: white; /* Белый текст */
+            border: 2px solid #000; /* Черная обводка */
+            border-radius: 50%; /* Закругляем до идеального круга */
+            text-align: center; /* Текст по центру горизонтально */
+            line-height: 24px; /* Текст по центру вертикально */
+            font-size: 13px; /* Размер цифры */
+            font-weight: bold;
+            box-shadow: 2px 2px 5px rgba(0,0,0,0.5); /* Небольшая тень */
+        }
     </style>
 </head>
 <body>
@@ -217,40 +230,120 @@
         // --- ЛОГИКА СОХРАНЕНИЯ ИЗМЕНЕННОГО МАРШРУТА ---
         window.getEditedRouteGeoJson = function () {
             try {
-                var features = [];
+                var lineCoordinates = [];
+
                 map.eachLayer(function (layer) {
-                    // Фильтруем слои: берем только то, что можно сохранить в GeoJSON
-                    // Исключаем тайлы, временные слои Geoman и маркеры водителей (drivers)
-                    var isDriver = false;
+                    // Игнорируем маркеры, тайлы карты и служебные слои Geoman
+                    if (layer.toGeoJSON && !layer._pmTempLayer && !(layer instanceof L.TileLayer) && !(layer instanceof L.Marker) && !(layer instanceof L.CircleMarker)) {
 
-                    // Проверяем, не является ли этот слой маркером водителя
-                    for (var key in drivers) {
-                        if (drivers[key] === layer) {
-                            isDriver = true;
-                            break;
-                        }
-                    }
-
-                    if (layer.toGeoJSON && !layer._pmTempLayer && !(layer instanceof L.TileLayer) && !isDriver && layer !== marker && layer !== startMarker && layer !== endMarker) {
                         var geo = layer.toGeoJSON();
-                        if (geo.type === 'FeatureCollection') {
-                            features = features.concat(geo.features);
-                        } else {
-                            features.push(geo);
+
+                        // Если это чистый LineString
+                        if (geo.geometry && geo.geometry.type === 'LineString') {
+                            // Добавляем координаты в наш общий массив
+                            lineCoordinates = lineCoordinates.concat(geo.geometry.coordinates);
+                        }
+                        // Если линия пришла внутри FeatureCollection
+                        else if (geo.type === 'FeatureCollection') {
+                            geo.features.forEach(function (feature) {
+                                if (feature.geometry && feature.geometry.type === 'LineString') {
+                                    lineCoordinates = lineCoordinates.concat(feature.geometry.coordinates);
+                                }
+                            });
                         }
                     }
                 });
 
-                var collection = {
-                    "type": "FeatureCollection",
-                    "features": features
+                // Если линия не найдена, возвращаем пустую структуру
+                if (lineCoordinates.length === 0) {
+                    return JSON.stringify({ error: "Маршрут не найден на карте" });
+                }
+
+                // Формируем чистый объект LineString, как требует сервер
+                var cleanLineString = {
+                    "type": "LineString",
+                    "coordinates": lineCoordinates
                 };
 
-                return JSON.stringify(collection);
+                return JSON.stringify(cleanLineString);
             } catch (e) {
                 return JSON.stringify({ error: e.message });
             }
         };
+
+        var routePointsLayerGroup = L.layerGroup().addTo(map);
+
+        window.displayRoutePointsBase64 = function (base64Str) {
+            try {
+                // Декодируем Base64
+                var jsonString = decodeURIComponent(escape(window.atob(base64Str)));
+                var points = JSON.parse(jsonString);
+
+                routePointsLayerGroup.clearLayers();
+                if (!points || points.length === 0) return;
+
+                var validCount = 0;
+
+                points.forEach(function (p) {
+                    if (!p.coordinates || p.coordinates === "No data" || p.coordinates.trim() === "") return;
+
+                    var coordsArr = p.coordinates.split(',').map(function (c) {
+                        return parseFloat(c.trim());
+                    });
+
+                    if (coordsArr.length >= 2 && !isNaN(coordsArr[0]) && !isNaN(coordsArr[1])) {
+                        var latLng = [coordsArr[0], coordsArr[1]];
+                        var pointNumber = p.sequence_number || p.sequenceNumber || '?';
+
+                        // Извлекаем данные клиента
+                        var clientName = (p.client && p.client.name) ? p.client.name : "Неизвестный клиент";
+                        var clientAddress = (p.client && p.client.address) ? p.client.address : "Адрес не указан";
+
+                        // Формируем расширенное содержимое попапа (по клику)
+                        var popupContent = `
+                    <div style="text-align:left; min-width: 150px; font-family: sans-serif;">
+                        <div style="text-align:center; font-weight:bold; border-bottom: 1px solid #ccc; margin-bottom: 5px; padding-bottom: 5px;">
+                            Точка №${pointNumber}
+                        </div>
+                        <b>Клиент:</b> ${clientName}<br>
+                        <b>Адрес:</b> <span style="color: #2c3e50;">${clientAddress}</span><br>
+                        <b>Статус:</b> <i style="color: #7f8c8d;">${p.status}</i>
+                    </div>
+                `;
+
+                        var numberedIcon = L.divIcon({
+                            className: 'custom-point-marker',
+                            html: pointNumber,
+                            iconSize: [28, 28],
+                            iconAnchor: [14, 14],
+                            popupAnchor: [0, -14]
+                        });
+
+                        // Создаем маркер
+                        var marker = L.marker(latLng, { icon: numberedIcon })
+                            .bindPopup(popupContent);
+
+                        // ОПЦИОНАЛЬНО: Добавляем подсказку при наведении (Tooltip)
+                        marker.bindTooltip(clientAddress, {
+                            direction: 'top',
+                            offset: [0, -15]
+                        });
+
+                        routePointsLayerGroup.addLayer(marker);
+                        validCount++;
+                    }
+                });
+
+                if (validCount > 0) {
+                    var groupBounds = L.featureGroup(routePointsLayerGroup.getLayers()).getBounds();
+                    map.fitBounds(groupBounds, { padding: [50, 50] });
+                }
+
+            } catch (e) {
+                console.error("Ошибка JS:", e.message);
+            }
+        };
+
     </script>
 </body>
 </html>

@@ -53,7 +53,7 @@ public partial class LoginViewModel : ObservableObject
             var loginData = new { username = Username, password = Password };
             var client = _httpClientFactory.CreateClient("Api");
 
-            var response = await client.PostAsJsonAsync("https://esme-aspiratory-september.ngrok-free.dev/auth/login-logistician", loginData);
+            var response = await client.PostAsJsonAsync("http://localhost:777/auth/login-logistician", loginData);
 
             if (response.IsSuccessStatusCode)
             {

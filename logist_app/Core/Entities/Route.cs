@@ -19,7 +19,8 @@ public class Route
     [JsonPropertyName("status")] public string? Status { get; set; }
     [JsonPropertyName("created_by")] public string? CreatedBy { get; set; }
     [JsonPropertyName("is_distributed")] public bool IsDistributed { get; set; }
-    public List<RoutePoint> RoutePoints { get; set; } = new();
+    [JsonPropertyName("vehicle_loading_type")] public string? VehicleLoadingType { get; set; }
+    [JsonPropertyName("route_points")] public List<RoutePoint> RoutePoints { get; set; } = new();
 
 
 

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:entities="clr-namespace:logist_app.Core.Entities"
              x:Class="logist_app.Views.AcceptRouteView"
              Title="View Route"
              BackgroundColor="{AppThemeBinding Light=#F5F5F5, Dark=#1a1a1a}">
@@ -26,12 +27,59 @@
 
             <VerticalStackLayout Spacing="25" VerticalOptions="Center">
 
-                <Label Text="Route Actions" 
-                       FontSize="20" 
-                       FontAttributes="Bold" 
-                       TextColor="{AppThemeBinding Light=#333, Dark=#E0E0E0}"
-                       HorizontalOptions="Center"
-                       Margin="0,0,0,20"/>
+                <Label Text="{Binding RouteName}"></Label>
+
+                <Button Text="Показать точки маршрута" 
+        x:Name="showRoutePointsButton"
+        Command="{Binding ShowRoutePointsCommand}" 
+        BackgroundColor="{AppThemeBinding Light=#2196F3, Dark=#3B82F6}"
+        TextColor="White"
+        CornerRadius="8"
+        HeightRequest="45"
+        FontAttributes="Bold"/>
+
+                <CollectionView ItemsSource="{Binding DisplayRoutePoints}"
+                IsVisible="{Binding IsRoutePointsVisible}"
+                MaximumHeightRequest="700"
+                Margin="0,10,0,10">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate x:DataType="entities:RoutePoint">
+                            <Grid Padding="5,10" ColumnDefinitions="40, *" RowDefinitions="Auto">
+
+                                <Border Grid.Column="0" 
+                        BackgroundColor="{AppThemeBinding Light=#E0E0E0, Dark=#404040}"
+                        StrokeThickness="0"
+                        StrokeShape="RoundRectangle 20" 
+                        WidthRequest="30" 
+                        HeightRequest="30" 
+                        HorizontalOptions="Center" 
+                        VerticalOptions="Start">
+                                    <Label Text="{Binding SequenceNumber}" 
+                           HorizontalOptions="Center" 
+                           VerticalOptions="Center" 
+                           FontAttributes="Bold"
+                           TextColor="{AppThemeBinding Light=#333, Dark=#E0E0E0}"/>
+                                </Border>
+
+                                <VerticalStackLayout Grid.Column="1" Padding="10,0,0,0" Spacing="2">
+                                    <Label Text="{Binding Client.Name, TargetNullValue='Неизвестный клиент'}" 
+                           FontAttributes="Bold" 
+                           FontSize="14" 
+                           TextColor="{AppThemeBinding Light=#333, Dark=#E0E0E0}" />
+                                    <Label Text="{Binding Client.Address, TargetNullValue='Адрес не указан'}" 
+                           FontSize="12" 
+                           TextColor="{AppThemeBinding Light=#666, Dark=#A0A0A0}" />
+                                    <Label Text="{Binding Status}" 
+                           FontSize="11" 
+                           TextColor="Gray"
+                           TextTransform="Uppercase"/>
+                                </VerticalStackLayout>
+
+                            </Grid>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+
 
                     <Entry x:Name="RouteNameEntry" 
                            Placeholder="Enter route name"
@@ -39,7 +87,7 @@
                            TextColor="{AppThemeBinding Light=#333, Dark=#E0E0E0}"
                            PlaceholderColor="{AppThemeBinding Light=#999, Dark=#919294}"
                            HorizontalTextAlignment="Center"
-                           Text="{Binding RouteName}" />
+                           Text="{Binding NewRouteName}" />
               
 
                 <VerticalStackLayout Spacing="15">

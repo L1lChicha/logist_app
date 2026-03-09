@@ -80,12 +80,12 @@
                            Margin="0,20,0,30"
                            HorizontalOptions="Center"/>
 
-                    <Button x:Name="createRoute" Text="Create Route" Clicked="createRoute_Clicked" Style="{StaticResource PrimaryButtonStyle}"/>
+                    <Button x:Name="createRoute" AutomationId="BtnGoToCreateRoute" Text="Create Route" Clicked="createRoute_Clicked" Style="{StaticResource PrimaryButtonStyle}"/>
 
                     <Label Text="Management" Style="{StaticResource SectionLabelStyle}" Margin="5,0,0,10"/>
                     <Button x:Name="viewRoutes" Text="View Routes" Clicked="viewRoutes_Clicked" Style="{StaticResource MenuButtonStyle}"/>
                     <Button x:Name="showClientsData" Text="Show Clients Data" Clicked="showClientsData_Clicked" Style="{StaticResource MenuButtonStyle}"/>
-                    <Button x:Name="addNewClient" Text="Add New Client" Clicked="addNewClient_Clicked" Style="{StaticResource MenuButtonStyle}"/>
+                    <Button x:Name="addNewClient" Text="Add New Client" AutomationId="BtnGoToAddClient" Clicked="addNewClient_Clicked" Style="{StaticResource MenuButtonStyle}"/>
                     <Button x:Name="ejectPoint" Text="Inject point" Clicked="injectPoint_Clicked" Style="{StaticResource MenuButtonStyle}"/>
 
                     <Label Text="Resources" Style="{StaticResource SectionLabelStyle}" Margin="5,10,0,10"/>
@@ -94,7 +94,7 @@
 
                     <Label Text="Settings" Style="{StaticResource SectionLabelStyle}" Margin="5,10,0,10"/>
                     <Button x:Name="routeSettings" Text="Route creation settings" Clicked="routeSettings_Clicked" Style="{StaticResource MenuButtonStyle}" Margin="5,10,0,10"/>
-                    <Button x:Name="appSettings" Text="App settings" Clicked="appSettings_Clicked" Style="{StaticResource MenuButtonStyle}" Margin="5,10,0,10"/>
+                    <Button x:Name="appSettings" AutomationId="appSettings"  Text="App settings" Clicked="appSettings_Clicked" Style="{StaticResource MenuButtonStyle}" Margin="5,10,0,10"/>
                 </VerticalStackLayout>
             </ScrollView>
         </Border>

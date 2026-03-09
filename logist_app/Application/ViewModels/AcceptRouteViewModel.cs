@@ -1,11 +1,15 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
+using logist_app.Core.Entities;
 using logist_app.Infrastructure.Service;
 using logist_app.Models;
+using Microsoft.Maui.Platform;
+using System.Collections.ObjectModel;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace logist_app.ViewModels;
 
@@ -16,10 +20,23 @@ public partial class AcceptRouteViewModel : ObservableObject
 
     // Данные, которые пришли при инициализации
     private int _routeId;
-    private string _rawGeoJson;
 
     [ObservableProperty]
+
     private string routeName;
+    private string _rawGeoJson;
+    private List<RoutePoint> _routePoints;
+
+    [ObservableProperty]
+    private string newRouteName;
+
+
+    [ObservableProperty]
+    private ObservableCollection<RoutePoint> displayRoutePoints = new();
+
+    // Добавляем флаг видимости списка
+    [ObservableProperty]
+    private bool isRoutePointsVisible = false;
 
     public AcceptRouteViewModel(ApiSettings api, IHttpClientFactory httpFactory)
     {
@@ -27,10 +44,34 @@ public partial class AcceptRouteViewModel : ObservableObject
         _httpFactory = httpFactory;
     }
 
-    public void Initialize(string geoJson, int routeId)
+    public void Initialize(string geoJson, List<RoutePoint> routePoint, int routeId, string routeName)
     {
         _rawGeoJson = geoJson;
         _routeId = routeId;
+        _routePoints = routePoint;
+        RouteName = routeName;
+    }
+
+
+    [RelayCommand]
+    public void ShowRoutePoints()
+    {
+        // Переключаем видимость (чтобы кнопку можно было использовать как "Показать/Скрыть")
+        IsRoutePointsVisible = !IsRoutePointsVisible;
+
+        // Если список стал видимым, заполняем его отсортированными данными
+        if (IsRoutePointsVisible)
+        {
+            DisplayRoutePoints.Clear();
+
+            // Сортируем точки по SequenceNumber (правильный порядок)
+            var sortedPoints = _routePoints.OrderBy(p => p.SequenceNumber).ToList();
+
+            foreach (var point in sortedPoints)
+            {
+                DisplayRoutePoints.Add(point);
+            }
+        }
     }
 
 
@@ -75,10 +116,14 @@ public partial class AcceptRouteViewModel : ObservableObject
         return _rawGeoJson;
     }
 
+
+    
+
+
     [RelayCommand]
     public async Task ConfirmRouteAsync(string editedGeoJson)
     {
-        if (string.IsNullOrWhiteSpace(RouteName))
+        if (string.IsNullOrWhiteSpace(NewRouteName))
         {
             await Shell.Current.DisplayAlert("Ошибка", "Введите название маршрута.", "OK");
             return;
@@ -108,10 +153,10 @@ public partial class AcceptRouteViewModel : ObservableObject
             {
                 jsonToSend = JsonSerializer.Deserialize<string>(jsonToSend);
             }
-
+            jsonToSend = jsonToSend.Replace("\\", "");
             var payload = new
             {
-                Name = RouteName,
+                Name = NewRouteName,
                 geometry_json = jsonToSend
             };
 

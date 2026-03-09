@@ -59,7 +59,7 @@
                     <VerticalStackLayout Spacing="0">
                         <Label Text="Client Name" Style="{StaticResource FormLabelStyle}"/>
                         <Border Style="{StaticResource InputBorderStyle}">
-                            <Entry Text="{Binding Name}" Placeholder="Enter client name" Style="{StaticResource FormEntryStyle}"/>
+                            <Entry Text="{Binding Name}"  AutomationId="EntryClientName" Placeholder="Enter client name" Style="{StaticResource FormEntryStyle}"/>
                         </Border>
                     </VerticalStackLayout>
 
@@ -181,6 +181,7 @@
 
                     <VerticalStackLayout Spacing="10" Margin="0,20,0,20">
                         <Button Text="Add Point" 
+                                AutomationId="BtnSubmitClient"
                                 Command="{Binding SubmitCommand}" 
                                 BackgroundColor="{AppThemeBinding Light={StaticResource SuccessColor}, Dark={StaticResource SuccessColorDark}}" 
                                 TextColor="{AppThemeBinding Light=White, Dark=#1a1a1a}"

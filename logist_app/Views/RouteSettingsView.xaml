@@ -32,7 +32,7 @@
             <Style x:Key="Header" TargetType="Label">
                 <Setter Property="FontSize" Value="16"/>
                 <Setter Property="FontAttributes" Value="Bold"/>
-                <Setter Property="TextColor" Value="{StaticResource BrandColor}"/>
+                <Setter Property="TextColor" Value="{StaticResource White}"/>
                 <Setter Property="Margin" Value="0,0,0,15"/>
             </Style>
 
@@ -74,36 +74,24 @@
                         <Grid ColumnDefinitions="*, 80" RowDefinitions="Auto,Auto,Auto,Auto" RowSpacing="10">
 
                             <Label Grid.Row="0" Text="Max Points:" Style="{StaticResource FieldText}"/>
-                            <Border Grid.Row="0" Grid.Column="1" Style="{StaticResource WinInput}">
-                                <Entry Text="{Binding MaxPointsQuantity}" Keyboard="Numeric" FontSize="13"/>
-                            </Border>
+                                <Entry Grid.Row="0" Grid.Column="1"  Text="{Binding MaxPointsQuantity}" Keyboard="Numeric" FontSize="13"/>
 
                             <Label Grid.Row="1" Text="Min Points:" Style="{StaticResource FieldText}"/>
-                            <Border Grid.Row="1" Grid.Column="1" Style="{StaticResource WinInput}">
-                                <Entry Text="{Binding MinPointsQuantity}" Keyboard="Numeric" FontSize="13"/>
-                            </Border>
+                                <Entry Grid.Row="1" Grid.Column="1" Text="{Binding MinPointsQuantity}" Keyboard="Numeric" FontSize="13"/>
 
                             <Label Grid.Row="2" Text="Containers:" Style="{StaticResource FieldText}"/>
-                            <Border Grid.Row="2" Grid.Column="1" Style="{StaticResource WinInput}">
-                                <Entry Text="{Binding MaxContainersQuantity, Converter={StaticResource DoubleToStringConverter}}" Keyboard="Numeric" FontSize="13"/>
-                            </Border>
+                                <Entry Grid.Row="2" Grid.Column="1" Text="{Binding MaxContainersQuantity, Converter={StaticResource DoubleToStringConverter}}" Keyboard="Numeric" FontSize="13"/>
 
                             <Label Grid.Row="3" Text="Avg. Speed:" Style="{StaticResource FieldText}"/>
-                            <Border Grid.Row="3" Grid.Column="1" Style="{StaticResource WinInput}">
-                                <Entry Text="{Binding AverageSpeedKmh, Converter={StaticResource DoubleToStringConverter}}" Keyboard="Numeric" FontSize="13"/>
-                            </Border>
+                                <Entry Grid.Row="3" Grid.Column="1" Text="{Binding AverageSpeedKmh, Converter={StaticResource DoubleToStringConverter}}" Keyboard="Numeric" FontSize="13"/>
                         </Grid>
 
                         <BoxView HeightRequest="1" Color="{AppThemeBinding Light=#EEE, Dark=#333}" Margin="0,5"/>
 
                         <Label Text="📍 Depot Coordinates" FontSize="12" FontAttributes="Bold" TextColor="{AppThemeBinding Light=#333, Dark=White}"/>
                         <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
-                            <Border Grid.Column="0" Style="{StaticResource WinInput}">
-                                <Entry Placeholder="Lat" Text="{Binding DepotLat, Converter={StaticResource DoubleToStringConverter}}" FontSize="13"/>
-                            </Border>
-                            <Border Grid.Column="1" Style="{StaticResource WinInput}">
-                                <Entry Placeholder="Lon" Text="{Binding DepotLon, Converter={StaticResource DoubleToStringConverter}}" FontSize="13"/>
-                            </Border>
+                                <Entry Grid.Column="0" Placeholder="Lat" Text="{Binding DepotLat, Converter={StaticResource DoubleToStringConverter}}" FontSize="13"/>
+                                <Entry Grid.Column="1" Placeholder="Lon" Text="{Binding DepotLon, Converter={StaticResource DoubleToStringConverter}}" FontSize="13"/>
                         </Grid>
                     </VerticalStackLayout>
                 </Border>
@@ -115,27 +103,19 @@
                         <Grid ColumnDefinitions="*, 100" RowDefinitions="Auto,Auto,Auto,Auto" RowSpacing="10">
 
                             <Label Grid.Row="0" Text="Vehicle Type:" Style="{StaticResource FieldText}"/>
-                            <Border Grid.Row="0" Grid.Column="1" Style="{StaticResource WinInput}">
-                                <Picker ItemsSource="{Binding VehicleTypes}" 
+                                <Picker Grid.Row="0" Grid.Column="1"  ItemsSource="{Binding VehicleTypes}" 
                                         SelectedItem="{Binding SelectedVehicleType}" 
                                         FontSize="13"
                                         TextColor="{AppThemeBinding Light=Black, Dark=White}"/>
-                            </Border>
 
                             <Label Grid.Row="1" Text="Height (m):" Style="{StaticResource FieldText}"/>
-                            <Border Grid.Row="1" Grid.Column="1" Style="{StaticResource WinInput}">
-                                <Entry Text="{Binding TruckHeightMeters, Converter={StaticResource DoubleToStringConverter}}" Keyboard="Numeric" FontSize="13"/>
-                            </Border>
+                                <Entry Grid.Row="1" Grid.Column="1" Text="{Binding TruckHeightMeters, Converter={StaticResource DoubleToStringConverter}}" Keyboard="Numeric" FontSize="13"/>
 
                             <Label Grid.Row="2" Text="Width (m):" Style="{StaticResource FieldText}"/>
-                            <Border Grid.Row="2" Grid.Column="1" Style="{StaticResource WinInput}">
-                                <Entry Text="{Binding TruckWidthMeters, Converter={StaticResource DoubleToStringConverter}}" Keyboard="Numeric" FontSize="13"/>
-                            </Border>
-
+                                <Entry Grid.Row="2" Grid.Column="1"  Text="{Binding TruckWidthMeters, Converter={StaticResource DoubleToStringConverter}}" Keyboard="Numeric" FontSize="13"/>
+    
                             <Label Grid.Row="3" Text="Min Bridge (t):" Style="{StaticResource FieldText}"/>
-                            <Border Grid.Row="3" Grid.Column="1" Style="{StaticResource WinInput}">
-                                <Entry Text="{Binding MinBridgeWeightTons, Converter={StaticResource DoubleToStringConverter}}" Keyboard="Numeric" FontSize="13"/>
-                            </Border>
+                                <Entry Grid.Row="3" Grid.Column="1" Text="{Binding MinBridgeWeightTons, Converter={StaticResource DoubleToStringConverter}}" Keyboard="Numeric" FontSize="13"/>
                         </Grid>
 
                         <BoxView HeightRequest="1" Color="{AppThemeBinding Light=#EEE, Dark=#333}" Margin="0,5"/>
@@ -157,24 +137,16 @@
                         <Grid ColumnDefinitions="*, 80" RowDefinitions="Auto,Auto,Auto,Auto" RowSpacing="10">
 
                             <Label Grid.Row="0" Text="2-Opt Iterations:" Style="{StaticResource FieldText}"/>
-                            <Border Grid.Row="0" Grid.Column="1" Style="{StaticResource WinInput}">
-                                <Entry Text="{Binding MaxIterations2Opt}" Keyboard="Numeric" FontSize="13"/>
-                            </Border>
+                                <Entry Grid.Row="0" Grid.Column="1" Text="{Binding MaxIterations2Opt}" Keyboard="Numeric" FontSize="13"/>
 
                             <Label Grid.Row="1" Text="Search Radius:" Style="{StaticResource FieldText}"/>
-                            <Border Grid.Row="1" Grid.Column="1" Style="{StaticResource WinInput}">
-                                <Entry Text="{Binding NeighborSearchRadiusKm, Converter={StaticResource DoubleToStringConverter}}" Keyboard="Numeric" FontSize="13"/>
-                            </Border>
+                                <Entry Grid.Row="1" Grid.Column="1" Text="{Binding NeighborSearchRadiusKm, Converter={StaticResource DoubleToStringConverter}}" Keyboard="Numeric" FontSize="13"/>
 
                             <Label Grid.Row="2" Text="Heuristic:" Style="{StaticResource FieldText}"/>
-                            <Border Grid.Row="2" Grid.Column="1" Style="{StaticResource WinInput}">
-                                <Entry Text="{Binding HeuristicMaxSpeedKmH, Converter={StaticResource DoubleToStringConverter}}" Keyboard="Numeric" FontSize="13"/>
-                            </Border>
+                                <Entry Grid.Row="2" Grid.Column="1" Text="{Binding HeuristicMaxSpeedKmH, Converter={StaticResource DoubleToStringConverter}}" Keyboard="Numeric" FontSize="13"/>
 
                             <Label Grid.Row="3" Text="Max Offset:" Style="{StaticResource FieldText}"/>
-                            <Border Grid.Row="3" Grid.Column="1" Style="{StaticResource WinInput}">
-                                <Entry Text="{Binding MaxNearestNodeDistanceKm, Converter={StaticResource DoubleToStringConverter}}" Keyboard="Numeric" FontSize="13"/>
-                            </Border>
+                                <Entry Grid.Row="3" Grid.Column="1" Text="{Binding MaxNearestNodeDistanceKm, Converter={StaticResource DoubleToStringConverter}}" Keyboard="Numeric" FontSize="13"/>
                         </Grid>
 
                         <Label Text="* Affects server performance" 

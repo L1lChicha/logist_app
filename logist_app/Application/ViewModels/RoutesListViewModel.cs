@@ -106,27 +106,21 @@ public partial class RoutesListViewModel : ObservableObject
         if (route == null) return;
 
         Route routeToShow = route;
+        List<RoutePoint> routePoints = new List<RoutePoint>();
 
-        if (string.IsNullOrEmpty(route.GeometryJson))
-        {
-            var fullRoute = await GetRouteByIdAsync(route.Id);
+        var fullRoute = await GetRouteByIdAsync(route.Id);
             if (fullRoute == null)
             {
-                WeakReferenceMessenger.Default.Send(new AlertMessage("Ошибка", "Не удалось загрузить маршрут", "OK"));
+                await Shell.Current.DisplayAlert("Ошибка", "Не удалось загрузить маршрут", "OK");
 
                 SelectedRoute = null;
                 return;
             }
-            routeToShow = fullRoute;
-        }
 
-        if (string.IsNullOrEmpty(routeToShow.GeometryJson))
-        {
-            WeakReferenceMessenger.Default.Send(new AlertMessage("Ошибка", "Маршрут не содержит данных геометрии.", "OK"));
-            SelectedRoute = null;
-            return;
-        }
-        await Shell.Current.Navigation.PushAsync(new AcceptRouteView(routeToShow.GeometryJson, routeToShow.Id));   
+         routeToShow = fullRoute;
+         routePoints = fullRoute.RoutePoints;
+
+        await Shell.Current.Navigation.PushAsync(new AcceptRouteView(routeToShow.GeometryJson, routePoints,  routeToShow.Id, routeToShow.Name));   
         SelectedRoute = null;
     }
 

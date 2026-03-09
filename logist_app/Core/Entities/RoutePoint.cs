@@ -9,21 +9,29 @@ namespace logist_app.Core.Entities
 {
     public class RoutePoint
     {
+        [JsonPropertyName("id")]
         public int Id { get; set; }
 
-        // Внешний ключ на Маршрут
+        [JsonPropertyName("route_id")]
         public int RouteId { get; set; }
-        [JsonIgnore] // Чтобы не зацикливало при сериализации
+
+        [JsonIgnore]
         public Route? Route { get; set; }
 
-        // Внешний ключ на Клиента
+        [JsonPropertyName("client_id")]
         public int ClientId { get; set; }
+
+        [JsonPropertyName("client")]
         public Client? Client { get; set; }
 
-        // Порядковый номер точки в маршруте
+        [JsonPropertyName("coordinates")]
+        public string Coordinates { get; set; } = "No data";
+
+        [JsonPropertyName("sequence_number")]
         public int SequenceNumber { get; set; }
 
-        // Статус точки (pending, visited, skipped)
+        [JsonPropertyName("status")]
         public string Status { get; set; } = "pending";
+
     }
 }
