@@ -111,6 +111,9 @@ namespace logist_app
             builder.Services.AddTransient<InjectPointView>();
             builder.Services.AddTransient<InjectPointViewModel>();
 
+            builder.Services.AddSingleton<ShiftsPageView>();
+            builder.Services.AddSingleton<ShiftsViewModel>();
+
 #if DEBUG
             builder.Logging.AddDebug();
 #endif

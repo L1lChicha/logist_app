@@ -50,7 +50,6 @@ public partial class RoutesListViewModel : ObservableObject
 
         WeakReferenceMessenger.Default.Register<RoutesListViewModel, RouteUpdatedMessage>(this, (recipient, message) =>
         {
-            // Теперь recipient — это точно RoutesListViewModel, и метод RefreshAsync доступен
             MainThread.BeginInvokeOnMainThread(async () =>
             {
                 await recipient.RefreshAsync();
@@ -206,6 +205,8 @@ public partial class RoutesListViewModel : ObservableObject
             return null;
         }
     }
+
+
 
 
     [RelayCommand]

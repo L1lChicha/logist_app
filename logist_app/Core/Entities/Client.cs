@@ -30,6 +30,7 @@ namespace logist_app.Core.Entities
 
         [Column(TypeName = "jsonb")]
         [JsonPropertyName("schedule")] public RecurrenceSettings Schedule { get; set; }
+        [JsonPropertyName("is_private")] public bool IsPrivate { get; set; }
 
     }
 }

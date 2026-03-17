@@ -145,6 +145,12 @@ public partial class ActionPageView : ContentPage
         await Navigation.PushAsync(page);
     }
 
+    private async void viewShifts_Clicked(object sender, EventArgs e)
+    {
+        var page = App.Services.GetService<ShiftsPageView>();
+        await Navigation.PushAsync(page);
+    }
+
     private async void routeSettings_Clicked(object sender, EventArgs e)
     {
         var page = App.Services.GetService<RouteSettingsView>();

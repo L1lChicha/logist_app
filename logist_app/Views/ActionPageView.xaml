@@ -84,6 +84,7 @@
 
                     <Label Text="Management" Style="{StaticResource SectionLabelStyle}" Margin="5,0,0,10"/>
                     <Button x:Name="viewRoutes" Text="View Routes" Clicked="viewRoutes_Clicked" Style="{StaticResource MenuButtonStyle}"/>
+                    <Button x:Name="viewShifts" Text="View Shifts" Clicked="viewShifts_Clicked" Style="{StaticResource MenuButtonStyle}"/>
                     <Button x:Name="showClientsData" Text="Show Clients Data" Clicked="showClientsData_Clicked" Style="{StaticResource MenuButtonStyle}"/>
                     <Button x:Name="addNewClient" Text="Add New Client" AutomationId="BtnGoToAddClient" Clicked="addNewClient_Clicked" Style="{StaticResource MenuButtonStyle}"/>
                     <Button x:Name="ejectPoint" Text="Inject point" Clicked="injectPoint_Clicked" Style="{StaticResource MenuButtonStyle}"/>

@@ -158,6 +158,9 @@
 	  <MauiXaml Update="Views\RoutesPageView.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
+	  <MauiXaml Update="Views\ShiftsPageView.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="Views\VehiclesDataView.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>

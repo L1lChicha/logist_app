@@ -25,6 +25,20 @@
             color: #333;
         }
 
+
+        .marker-yellow {
+            background-color: #f1c40f !important; /* Приятный желтый */
+            color: #333 !important; /* Темный текст для контраста */
+            border: 2px solid #f39c12 !important; /* Чуть более темная рамка */
+        }
+
+        /* Оранжевый цвет для IsPrivate = true (частники) */
+        .marker-orange {
+            background-color: #e67e22 !important; /* Яркий оранжевый */
+            color: #fff !important; /* Белый текст */
+            border: 2px solid #d35400 !important; /* Темно-оранжевая рамка */
+        }
+
         /* НОВЫЙ СТИЛЬ ДЛЯ МАРКЕРА С ЦИФРОЙ */
         .custom-point-marker {
             background-color: #ff0000; /* Красный фон */
@@ -299,6 +313,15 @@
                         var clientName = (p.client && p.client.name) ? p.client.name : "Неизвестный клиент";
                         var clientAddress = (p.client && p.client.address) ? p.client.address : "Адрес не указан";
 
+
+                        var statusTranslations = {
+                            'pending': 'Не вывезена',
+                            'processed': 'Вывезена',
+                            'failed': 'Срыв вывоза',
+                            'in_progress': 'В процессе'
+                        };
+
+                        var displayStatus = statusTranslations[p.status] || p.status;
                         // Формируем расширенное содержимое попапа (по клику)
                         var popupContent = `
                     <div style="text-align:left; min-width: 150px; font-family: sans-serif;">
@@ -307,12 +330,20 @@
                         </div>
                         <b>Клиент:</b> ${clientName}<br>
                         <b>Адрес:</b> <span style="color: #2c3e50;">${clientAddress}</span><br>
-                        <b>Статус:</b> <i style="color: #7f8c8d;">${p.status}</i>
+                        <b>Кол-во конт:</b> <span style="color: #2c3e50;">${p.client.container_count}</span><br>
+
+                        <b>Статус:</b> <i style="color: #7f8c8d;">${displayStatus}</i>
                     </div>
                 `;
 
+                        var isPrivate = p.client && (p.client.isPrivate === true || p.client.IsPrivate === true || p.client.is_private === true);
+
+                        // 2. Выбираем CSS-класс в зависимости от значения
+                        var colorClass = isPrivate ? 'marker-orange' : 'marker-yellow';
+
+                        // 3. Добавляем цветной класс к нашему custom-point-marker
                         var numberedIcon = L.divIcon({
-                            className: 'custom-point-marker',
+                            className: 'custom-point-marker ' + colorClass, // <-- Обратите внимание на пробел внутри строки!
                             html: pointNumber,
                             iconSize: [28, 28],
                             iconAnchor: [14, 14],
@@ -323,8 +354,26 @@
                         var marker = L.marker(latLng, { icon: numberedIcon })
                             .bindPopup(popupContent);
 
+                        console.log("Данные клиента для точки " + pointNumber + ":", p.client);
+
+                        var isPrivate = false;
+
+                        // Если объект клиента вообще существует
+                        if (p.client) {
+                            // Пытаемся достать значение из любого возможного варианта названия
+                            var privValue = p.client.isPrivate || p.client.IsPrivate || p.client.is_private;
+
+                            // Превращаем то, что пришло, в текст и проверяем (сработает и на true, и на "true", и на "True")
+                            if (privValue === true || String(privValue).toLowerCase() === 'true') {
+                                isPrivate = true;
+                            }
+                        }
+
+                        // Выбираем CSS-класс
+                        var colorClass = isPrivate ? 'marker-orange' : 'marker-yellow';
+                       
                         // ОПЦИОНАЛЬНО: Добавляем подсказку при наведении (Tooltip)
-                        marker.bindTooltip(clientAddress, {
+                        marker.bindTooltip(displayStatus, {
                             direction: 'top',
                             offset: [0, -15]
                         });

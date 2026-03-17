@@ -1,6 +1,7 @@
 ﻿using logist_app.Core.Entities;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Globalization;
 using System.Linq;
 using System.Text;
@@ -21,8 +22,26 @@ public class Route
     [JsonPropertyName("is_distributed")] public bool IsDistributed { get; set; }
     [JsonPropertyName("vehicle_loading_type")] public string? VehicleLoadingType { get; set; }
     [JsonPropertyName("route_points")] public List<RoutePoint> RoutePoints { get; set; } = new();
+    [Column(TypeName = "jsonb")]
+    [JsonPropertyName("statistics")] public StatisticsData Statistics { get; set; }
 
+    public string DisplayTonnage
+    {
+        get
+        {
+           return $"{Statistics.TotalTonnage.ToString("F1", CultureInfo.InvariantCulture)} T";
 
+        }
+    }
+
+    public string DisplayVolume
+    {
+        get
+        {
+            return $"{Statistics.TotalVolume.ToString("F1", CultureInfo.InvariantCulture)} М³";
+
+        }
+    }
 
 
     public string DisplayDistance
@@ -45,16 +64,24 @@ public class Route
     {
         get
         {
-            // Пример: Берем исходные минуты и делим на 1000
-            double result = Duration / 1000.0;
+            var time = TimeSpan.FromSeconds(Duration);
 
-            // Если нужно делить именно ЧАСЫ, то раскомментируйте строку ниже:
-            // double hours = Duration / 60.0; // 106
-            // double result = hours / 100.0;  // 1.06
+            // Форматируем строку: если есть часы, выводим с часами, если только минуты — без часов
+            if (time.Hours > 0)
+            {
+                return $"{time.Hours} ч {time.Minutes} мин";
+            }
 
-            return $"{result.ToString("F1", CultureInfo.InvariantCulture)} h";
+            return $"{time.Minutes} мин";
         }
     
-}
+    }
+    public class StatisticsData
+    {
+        [JsonPropertyName("total_volume")] public double TotalVolume { get; set; }
+        [JsonPropertyName("total_tonnage")] public double TotalTonnage { get; set; }
+        [JsonPropertyName("big_container_quantity")] public int BigContainerQuantity { get; set; }
+        [JsonPropertyName("standard_container_quantity")] public int StandardContainerQuantity { get; set; }
+    }
 
 }

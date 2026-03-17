@@ -2,6 +2,8 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:converters="clr-namespace:logist_app.Infrastructure.Service"
+             xmlns:vm="clr-namespace:logist_app.ViewModels"
+             xmlns:models="clr-namespace:logist_app.Core.Entities"
              x:Class="logist_app.Views.InjectPointView"
              Title="Inject point to route">
     <ContentPage.Resources>
