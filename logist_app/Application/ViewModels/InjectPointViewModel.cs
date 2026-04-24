@@ -114,14 +114,13 @@ namespace logist_app.ViewModels
             try
             {
                 var http = _httpFactory.CreateClient("Api");
-                // ВАЖНО: Добавьте токен авторизации, если нужно
 
                 var response = await http.PostAsJsonAsync("api/Route/inject-smart", dto);
 
                 if (response.IsSuccessStatusCode)
                 {
                     await Shell.Current.DisplayAlert("Успех", "Точка успешно добавлена в маршрут!", "OK");
-                    await Shell.Current.Navigation.PopAsync(); // Закрыть страницу
+                    await Shell.Current.Navigation.PopAsync();  
                 }
                 else
                 {

@@ -109,8 +109,7 @@ namespace logist_app.ViewModels
             try
             {
                 var id = _selectedDriver.Id;
-                int codeLength = 10;
-                int codeHoursValid = 1;
+                double codeHoursValid = 1;
 
                 var http = _httpFactory.CreateClient("Api");
 
@@ -121,9 +120,9 @@ namespace logist_app.ViewModels
                         new AuthenticationHeaderValue("Bearer", token);
                 }
 
-                var url = $"{_api.DriverGetCodeUrl}/{id}";
+                var url = $"{_api.DriverGetCodeUrl}/{id}?hoursValid={codeHoursValid}";
 
-                var response = await http.PostAsJsonAsync(url, new { codeLength, codeHoursValid });
+                var response = await http.PostAsync(url, null);
 
                 if (response.IsSuccessStatusCode)
                 {
